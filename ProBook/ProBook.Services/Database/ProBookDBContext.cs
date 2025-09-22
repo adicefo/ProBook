@@ -13,11 +13,33 @@ namespace ProBook.Services.Database
            : base(options) { }
 
         public DbSet<User> Users { get; set; }
+        public DbSet<Notebook> Notebooks { get; set; }
+        public DbSet<Page> Pages { get; set; }
+        public DbSet<Collection> Collections { get; set; }
+        public DbSet<NotebookCollection> NotebookCollections { get; set; }
+        public DbSet<Comment> Comments { get; set; }
+        public DbSet<SharedNotebook> SharedNotebooks { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
             // Further configuration if needed
+
+            modelBuilder.Entity<Page>()
+            .Property(p => p.Table)
+            .HasColumnType("jsonb");
+
+
+            modelBuilder.Entity<SharedNotebook>()
+        .HasOne(sn => sn.FromUser) 
+        .WithMany() 
+        .HasForeignKey(sn => sn.FromUserId);
+
+            modelBuilder.Entity<SharedNotebook>()
+     .HasOne(sn => sn.ToUser)
+     .WithMany()
+     .HasForeignKey(sn => sn.ToUserId);
+
         }
     }
 }
