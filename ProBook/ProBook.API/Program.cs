@@ -1,5 +1,7 @@
 using Mapster;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
+using ProBook.API.Auth;
 using ProBook.Services.Database;
 using ProBook.Services.Interface;
 using ProBook.Services.Service;
@@ -21,6 +23,9 @@ builder.Services.AddDbContext<ProBookDBContext>(options =>
 
 
 builder.Services.AddMapster();
+
+builder.Services.AddAuthentication("BasicAuthentication")
+    .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);
 
 
 var app = builder.Build();
