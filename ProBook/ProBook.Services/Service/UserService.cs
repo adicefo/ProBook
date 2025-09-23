@@ -1,6 +1,8 @@
 ﻿using MapsterMapper;
+using ProBook.Model.Request;
 using ProBook.Model.SearchObject;
 using ProBook.Services.Database;
+using ProBook.Services.Helper;
 using ProBook.Services.Interface;
 using System;
 using System.Collections.Generic;
@@ -10,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace ProBook.Services.Service
 {
-    public class UserService : BaseService<Model.Model.User, UserSearchObject, Database.User>, IUserService
+    public class UserService : BaseCRUDService<Model.Model.User, UserSearchObject, Database.User,UserInsertRequest,UserUpdateRequest>, IUserService
     {
         public UserService(ProBookDBContext context, IMapper mapper) : base(context, mapper)
         {
@@ -31,6 +33,25 @@ namespace ProBook.Services.Service
             return filteredQuery;
 
         }
+
+        public override void BeforeInsert(User entity, UserInsertRequest request)
+        {
+            if (request.Password != request.PasswordConfirm)
+                throw new Exception("Passwords do not match");
+            entity.RegisteredDate= DateTime.UtcNow;
+            entity.PasswordSalt = PasswordGenerate.GenerateSalt();
+            var password = PasswordGenerate.GenerateHash(entity.PasswordSalt, request.Password);
+            entity.PasswordHash= password;
+            base.BeforeInsert(entity, request);
+
+
+        }
+
+        public override void BeforeUpdate(User entity, UserUpdateRequest request)
+        {
+            base.BeforeUpdate(entity, request);
+        }
+
 
     }
 }

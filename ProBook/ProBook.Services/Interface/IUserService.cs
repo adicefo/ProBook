@@ -1,4 +1,5 @@
-﻿using ProBook.Model.SearchObject;
+﻿using ProBook.Model.Request;
+using ProBook.Model.SearchObject;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ProBook.Services.Interface
 {
-    public interface IUserService:IService<Model.Model.User,UserSearchObject>
+    public interface IUserService:ICRUDService<Model.Model.User,UserSearchObject,UserInsertRequest,UserUpdateRequest>
     {
 
     }
