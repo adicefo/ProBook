@@ -10,6 +10,6 @@ namespace ProBook.Services.Interface
 {
     public interface IUserService:ICRUDService<Model.Model.User,UserSearchObject,UserInsertRequest,UserUpdateRequest>
     {
-
+        Model.Model.User Login(string username, string password);
     }
 }

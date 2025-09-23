@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ProBook.Model.Helper;
 using ProBook.Model.Request;
@@ -14,6 +15,12 @@ namespace ProBook.API.Controllers
         {
         }
 
+        [HttpPost("/login")]
+        [AllowAnonymous]
+        public Model.Model.User Login(string username,string password)
+        {
+            return (_service as IUserService).Login(username, password);
+        }
         
     }
 }

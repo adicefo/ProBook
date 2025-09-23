@@ -18,7 +18,18 @@ namespace ProBook.Services.Service
         {
 
         }
+        public Model.Model.User Login(string username, string password)
+        {
+            var entity = Context.Users.FirstOrDefault(x => x.Username == username);
 
+            if (entity == null)
+            {
+                return null;
+            }
+            if (!PasswordGenerate.VerifyPassword(password, entity.PasswordHash, entity.PasswordSalt))
+                return null;
+            return this.Mapper.Map<Model.Model.User>(entity);
+        }
         public override IQueryable<User> AddFilter(UserSearchObject search, IQueryable<User> query)
         {
              var filteredQuery=base.AddFilter(search, query);
@@ -52,6 +63,6 @@ namespace ProBook.Services.Service
             base.BeforeUpdate(entity, request);
         }
 
-
+       
     }
 }

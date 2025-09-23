@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ProBook.Model.Helper;
 using ProBook.Model.SearchObject;
@@ -7,6 +8,7 @@ using ProBook.Services.Interface;
 namespace ProBook.API.Controllers
 {
     [Route("[controller]")]
+    [Authorize]
     public class BaseController<TModel,TSearch> : ControllerBase where TSearch:BaseSearchObject where TModel :class
     {
         protected IService<TModel, TSearch> _service;
