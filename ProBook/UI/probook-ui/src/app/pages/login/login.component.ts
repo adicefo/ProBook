@@ -19,10 +19,15 @@ export class LoginComponent {
     username: new FormControl('', [Validators.required]),
     password: new FormControl('', [Validators.required]),
   });
+  isObscured:boolean=true;
 
   submit() {
     if (this.loginForm.valid) {
       console.log(this.loginForm.value);
     }
+  }
+
+  toggleVisibility(){
+    this.isObscured=!this.isObscured;
   }
 }
