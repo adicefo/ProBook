@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using ProBook.API.Auth;
+using ProBook.API.Helper;
 using ProBook.Services.Database;
+using ProBook.Services.Helper;
 using ProBook.Services.Interface;
 using ProBook.Services.Service;
 
@@ -56,6 +58,11 @@ builder.Services.AddMapster();
 
 builder.Services.AddAuthentication("BasicAuthentication")
     .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);
+builder.Services.Configure<GoogleCloudSettings>(
+    builder.Configuration.GetSection("GoogleCloud"));
+
+
+builder.Services.AddTransient<ImageUploadHelper>();
 
 
 var app = builder.Build();

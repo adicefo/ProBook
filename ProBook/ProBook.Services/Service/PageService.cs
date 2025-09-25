@@ -16,11 +16,11 @@ namespace ProBook.Services.Service
 {
     public class PageService : BaseCRUDService<Model.Model.Page, PageSearchObject, Database.Page, PageInsertRequest, PageUpdateRequest>, IPageService
     {
-        private readonly StorageClient _storageClient;
 
-        public PageService(Database.ProBookDBContext context, IMapper mapper) : base(context, mapper)
+        private readonly ImageUploadHelper _imageUploadHelper;
+        public PageService(Database.ProBookDBContext context, IMapper mapper,ImageUploadHelper imageUploadHelper ) : base(context, mapper)
         {
-            _storageClient = StorageClient.Create();
+            _imageUploadHelper = imageUploadHelper;
         }
 
         public List<Page> GetAllPages(int notebookId)
@@ -50,14 +50,14 @@ namespace ProBook.Services.Service
             entity.CreatedAt = DateTime.UtcNow;
 
             if (request.File != null)
-                entity.ImageUrl = await ImageUploadHelper.UploadFileAsync(request.File, _storageClient);
+                entity.ImageUrl = await _imageUploadHelper.UploadFileAsync(request.File);
 
             base.BeforeInsert(entity, request);
         }
         public override async void BeforeUpdate(Database.Page entity, PageUpdateRequest request)
         {
             if (request.File != null)
-                entity.ImageUrl = await ImageUploadHelper.UploadFileAsync(request.File, _storageClient);
+                entity.ImageUrl = await _imageUploadHelper.UploadFileAsync(request.File);
         }
     }
 }
