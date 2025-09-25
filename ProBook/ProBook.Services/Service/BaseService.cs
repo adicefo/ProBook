@@ -28,7 +28,6 @@ namespace ProBook.Services.Service
             var query = Context.Set<TDbEntity>().AsQueryable();
 
             query = AddFilter(search, query);
-            query = AddInclude(search, query);
 
             int? count = await query.CountAsync();
            
@@ -55,13 +54,10 @@ namespace ProBook.Services.Service
             return Mapper.Map<TModel>(entity);
         }
 
-        public virtual IQueryable<TDbEntity> AddFilter(TSearch search, IQueryable<TDbEntity> query)
+        public virtual  IQueryable<TDbEntity> AddFilter(TSearch search, IQueryable<TDbEntity> query)
         {
             return query;
         }
-        public virtual IQueryable<TDbEntity> AddInclude(TSearch search, IQueryable<TDbEntity> query)
-        {
-            return query;
-        }
+        
     }
 }

@@ -22,7 +22,7 @@ namespace ProBook.Services.Service
             _imageUploadHelper = imageUploadHelper;
         }
 
-        public override IQueryable<Notebook> AddFilter(NotebookSearchObject search, IQueryable<Notebook> query)
+        public override  IQueryable<Notebook> AddFilter(NotebookSearchObject search, IQueryable<Notebook> query)
         {
             var filteredQuery= base.AddFilter(search, query);
 
@@ -31,14 +31,11 @@ namespace ProBook.Services.Service
             if (!string.IsNullOrEmpty(search.Description))
                 filteredQuery = filteredQuery.Where(x => x.Description.Contains(search.Description));
 
+            filteredQuery = filteredQuery.Include(x => x.User);
+
             return filteredQuery;
         }
-        public override IQueryable<Notebook> AddInclude(NotebookSearchObject search, IQueryable<Notebook> query)
-        {
-            var filteredQuery = base.AddInclude(search, query);
-            filteredQuery = EntityFrameworkQueryableExtensions.Include(filteredQuery, x => x.User);
-            return filteredQuery;
-        }
+        
 
         public override async Task BeforeInsert(Notebook entity, NotebookInsertRequest request)
         {

@@ -18,7 +18,7 @@ namespace ProBook.API.Controllers
 
         public override  Task<Notebook> Insert([FromForm]NotebookInsertRequest request)
         {
-            return  base.Insert(request);
+            return base.Insert(request);
         }
 
         public override async Task<Notebook> Update(int id, [FromForm] NotebookUpdateRequest request)

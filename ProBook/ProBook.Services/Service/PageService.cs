@@ -24,10 +24,12 @@ namespace ProBook.Services.Service
 
         public async Task<List<Page>> GetAllPagesAsync(int notebookId)
         {
-            var pages =Context.Pages.Where(x => x.NotebookId == notebookId).OrderBy(x => x.CreatedAt).ToList();
+            var result = new List<Model.Model.Page>();
+            var pages =  Context.Pages.Where(x => x.NotebookId == notebookId).OrderBy(x => x.CreatedAt);
             if(pages!=null)
             {
-                var result= Mapper.Map<List<Model.Model.Page>>(pages);
+                var list = await pages.ToListAsync();
+                 result= Mapper.Map(list,result);
                 return result;
             }
             return null;
@@ -36,14 +38,11 @@ namespace ProBook.Services.Service
 
         public override IQueryable<Database.Page> AddFilter(PageSearchObject search, IQueryable<Database.Page> query)
         {
-            return base.AddFilter(search, query);
-        }
-        public override IQueryable<Database.Page> AddInclude(PageSearchObject search, IQueryable<Database.Page> query)
-        {
-            var filteredQuery = base.AddInclude(search, query);
-            filteredQuery = EntityFrameworkQueryableExtensions.Include(filteredQuery, x => x.Notebook);
+            var filteredQuery= base.AddFilter(search, query);
+            filteredQuery = filteredQuery.Include(x => x.Notebook);
             return filteredQuery;
         }
+      
         public override async Task BeforeInsert(Database.Page entity, PageInsertRequest request)
         {
             entity.CreatedAt = DateTime.UtcNow;

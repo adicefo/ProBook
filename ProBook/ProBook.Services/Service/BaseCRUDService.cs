@@ -1,4 +1,5 @@
 ﻿using MapsterMapper;
+using Microsoft.EntityFrameworkCore;
 using ProBook.Model.SearchObject;
 using ProBook.Services.Database;
 using ProBook.Services.Interface;
@@ -41,7 +42,6 @@ namespace ProBook.Services.Service
             entity = Mapper.Map(request, entity);
             await BeforeUpdate(entity, request);
             await Context.SaveChangesAsync();
-           
             return Mapper.Map<TModel>(entity);
         }
 

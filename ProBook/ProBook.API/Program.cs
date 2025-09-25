@@ -55,6 +55,7 @@ builder.Services.AddDbContext<ProBookDBContext>(options =>
 
 
 builder.Services.AddMapster();
+TypeAdapterConfig.GlobalSettings.Default.MapToConstructor(true);
 
 builder.Services.AddAuthentication("BasicAuthentication")
     .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);
