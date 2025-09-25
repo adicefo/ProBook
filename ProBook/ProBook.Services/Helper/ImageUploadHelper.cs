@@ -34,7 +34,7 @@ namespace ProBook.Services.Helper
 
             var storageClient = await StorageClient.CreateAsync(credential);
 
-            var objectName = $"notebooks/{Guid.NewGuid()}_{file.FileName}";
+            var objectName = $"_{file.FileName}";
             await storageClient.UploadObjectAsync(
                 _settings.BucketName,
                 objectName,

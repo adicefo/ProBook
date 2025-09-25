@@ -45,7 +45,7 @@ namespace ProBook.Services.Service
 
         }
 
-        public override void BeforeInsert(User entity, UserInsertRequest request)
+        public override async Task BeforeInsert(User entity, UserInsertRequest request)
         {
             if (request.Password != request.PasswordConfirm)
                 throw new Exception("Passwords do not match");
@@ -53,16 +53,16 @@ namespace ProBook.Services.Service
             entity.PasswordSalt = PasswordGenerate.GenerateSalt();
             var password = PasswordGenerate.GenerateHash(entity.PasswordSalt, request.Password);
             entity.PasswordHash= password;
-            base.BeforeInsert(entity, request);
+           await  base.BeforeInsert(entity, request);
 
 
         }
 
-        public override void BeforeUpdate(User entity, UserUpdateRequest request)
+        public async override Task BeforeUpdate(User entity, UserUpdateRequest request)
         {
-            base.BeforeUpdate(entity, request);
+            await base.BeforeUpdate(entity, request);
         }
 
-       
+        
     }
 }

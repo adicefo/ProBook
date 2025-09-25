@@ -23,9 +23,9 @@ namespace ProBook.Services.Service
             _imageUploadHelper = imageUploadHelper;
         }
 
-        public List<Page> GetAllPages(int notebookId)
+        public async Task<List<Page>> GetAllPagesAsync(int notebookId)
         {
-            var pages = Context.Pages.Where(x => x.NotebookId == notebookId).OrderBy(x => x.CreatedAt).ToList();
+            var pages =Context.Pages.Where(x => x.NotebookId == notebookId).OrderBy(x => x.CreatedAt).ToList();
             if(pages!=null)
             {
                 var result= Mapper.Map<List<Model.Model.Page>>(pages);

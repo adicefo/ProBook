@@ -11,6 +11,6 @@ namespace ProBook.Services.Interface
 {
     public interface IPageService:ICRUDService<Model.Model.Page,PageSearchObject,PageInsertRequest,PageUpdateRequest>
     {
-        public List<Page> GetAllPages(int notebookId);
+        public Task<List<Page>> GetAllPagesAsync(int notebookId);
     }
 }

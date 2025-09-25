@@ -17,15 +17,15 @@ namespace ProBook.API.Controllers
             _service = service;
         }
         [HttpGet]
-        public virtual PagedResult<TModel> Get([FromQuery] TSearch searchObject)
+        public virtual async Task<PagedResult<TModel>> Get([FromQuery] TSearch searchObject)
         {
-            return _service.Get(searchObject);
+            return await _service.GetAsync(searchObject);
         }
 
         [HttpGet("{id}")]
-        public virtual TModel GetById(int id)
+        public virtual async Task<TModel> GetById(int id)
         {
-            return _service.GetById(id);
+            return await _service.GetByIdAsync(id);
         }
     }
 }

@@ -10,8 +10,8 @@ namespace ProBook.Services.Interface
 {
     public interface IService<TModel,TSearch> where TModel : class where TSearch : BaseSearchObject
     {
-        public PagedResult<TModel> Get(TSearch search);
+          Task<PagedResult<TModel>> GetAsync(TSearch search);
 
-        public TModel GetById(int id);
+          Task<TModel> GetByIdAsync(int id);
     }
 }

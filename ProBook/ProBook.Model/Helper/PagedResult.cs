@@ -8,7 +8,7 @@ namespace ProBook.Model.Helper
 {
     public class PagedResult<T>
     {
-        public List<T> Result { get; set; }
-        public int Count { get; set; }
+        public List<T>? Result { get; set; }
+        public int? Count { get; set; }
     }
 }

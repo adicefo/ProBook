@@ -41,20 +41,24 @@ namespace ProBook.Services.Service
             return filteredQuery;
         }
 
-        public override async void BeforeInsert(Notebook entity, NotebookInsertRequest request)
+        public override async Task BeforeInsert(Notebook entity, NotebookInsertRequest request)
         {
             entity.CreatedAt= DateTime.UtcNow;
 
             if (request.File != null)
                 entity.ImageUrl = await _imageUploadHelper.UploadFileAsync(request.File);
+            else
+                entity.ImageUrl = null;
+            
+            await base.BeforeInsert(entity, request);
 
-            base.BeforeInsert(entity, request);
         }
 
-        public override async void BeforeUpdate(Notebook entity, NotebookUpdateRequest request)
+        public override async Task BeforeUpdate(Notebook entity, NotebookUpdateRequest request)
         {
             if (request.File != null)
                 entity.ImageUrl = await _imageUploadHelper.UploadFileAsync(request.File);
+            await base.BeforeUpdate(entity, request);
         }
     }
 }

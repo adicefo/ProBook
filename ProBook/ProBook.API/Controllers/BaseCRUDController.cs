@@ -16,21 +16,21 @@ namespace ProBook.API.Controllers
         }
 
         [HttpPost]
-        public virtual TModel Insert(TInsert request)
+        public virtual async Task<TModel> Insert(TInsert request)
         {
-            return _service.Insert(request);
+            return await _service.InsertAsync(request);
         }
 
         [HttpPut]
-        public virtual TModel Update(int id,TUpdate request)
+        public virtual async Task<TModel> Update(int id,TUpdate request)
         {
-            return _service.Update(id,request);
+            return await _service.UpdateAsync(id, request);
         }
 
         [HttpDelete]
-        public virtual TModel Delete(int id)
+        public virtual async Task<TModel> Delete(int id)
         {
-            return _service.Delete(id);
+            return await _service.DeleteAsync(id);
         }
     }
 }

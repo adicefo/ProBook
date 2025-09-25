@@ -16,17 +16,17 @@ namespace ProBook.API.Controllers
         {
         }
 
-        [HttpGet("{notebookId}")]
-        public List<Page> GetAllPages(int notebookId)
+        [HttpGet("/getAllPages/{notebookId}")]
+        public async Task<List<Page>> GetAllPages(int notebookId)
         {
-            return (_service as IPageService).GetAllPages(notebookId);
+            return await (_service as IPageService).GetAllPagesAsync(notebookId);
         }
-        public override Page Insert([FromForm]PageInsertRequest request)
+        public override Task<Page> Insert([FromForm]PageInsertRequest request)
         {
             return base.Insert(request);
         }
 
-        public override Page Update(int id,[FromForm] PageUpdateRequest request)
+        public override Task<Page> Update(int id,[FromForm] PageUpdateRequest request)
         {
             return base.Update(id, request);
         }

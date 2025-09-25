@@ -16,12 +16,12 @@ namespace ProBook.API.Controllers
         {
         }
 
-        public override Notebook Insert([FromForm]NotebookInsertRequest request)
+        public override Task<Notebook> Insert([FromForm]NotebookInsertRequest request)
         {
-            return base.Insert(request);
+            return  base.Insert(request);
         }
 
-        public override Notebook Update(int id, [FromForm] NotebookUpdateRequest request)
+        public override Task<Notebook> Update(int id, [FromForm] NotebookUpdateRequest request)
         {
             return base.Update(id, request);
         }

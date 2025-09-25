@@ -1,4 +1,5 @@
 ﻿using MapsterMapper;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using ProBook.Model.Helper;
 using ProBook.Model.SearchObject;
@@ -21,7 +22,7 @@ namespace ProBook.Services.Service
             Context = context;
             Mapper = mapper;
         }
-        public PagedResult<TModel> Get(TSearch search)
+        public async Task<PagedResult<TModel>> Get(TSearch search)
         {
             List<TModel> result = new List<TModel>();
             var query = Context.Set<TDbEntity>().AsQueryable();
@@ -29,13 +30,14 @@ namespace ProBook.Services.Service
             query = AddFilter(search, query);
             query = AddInclude(search, query);
 
-            int count = query.Count();
+            int? count = await query.CountAsync();
+           
 
             if (search?.Page.HasValue == true && search?.PageSize.HasValue == true)
                 query = query.Skip(search.Page.Value * search.PageSize.Value)
                  .Take(search.PageSize.Value);
 
-            var list = query.ToList();
+            var list = await query.ToListAsync();
 
             result = Mapper.Map(list, result);
 
@@ -45,9 +47,9 @@ namespace ProBook.Services.Service
             return pageResult;
         }
 
-        public TModel GetById(int id)
+        public async Task<TModel> GetById(int id)
         {
-            var entity = Context.Set<TDbEntity>().Find(id);
+            var entity = await Context.Set<TDbEntity>().FindAsync(id);
             if (entity == null)
                 throw new Exception("Entity not found");
             return Mapper.Map<TModel>(entity);

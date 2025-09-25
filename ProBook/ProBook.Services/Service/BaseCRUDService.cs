@@ -17,49 +17,53 @@ namespace ProBook.Services.Service
 
         }
 
-        public TModel Insert(TInsert request)
+        public virtual async Task<TModel> InsertAsync(TInsert request)
         {
             var set=Context.Set<TDbEntity>();
             TDbEntity entity = Mapper.Map<TDbEntity>(request);
             Mapper.Map(request, entity);
-            BeforeInsert(entity, request);
+            await BeforeInsert(entity, request);
             set.Add(entity);
-            Context.SaveChanges();
+            await Context.SaveChangesAsync();
             var result = Mapper.Map<TModel>(entity);
             return result;
             
         }
 
-        public TModel Update(int id,TUpdate request)
+      
+
+        public virtual async Task<TModel> UpdateAsync(int id,TUpdate request)
         {
             var set=Context.Set<TDbEntity>();
             var entity = set.Find(id);
             if (entity == null)
                 throw new Exception("Entity not found");
             entity = Mapper.Map(request, entity);
-            BeforeUpdate(entity, request);
-            Context.SaveChanges();
+            await BeforeUpdate(entity, request);
+            await Context.SaveChangesAsync();
             var result=Mapper.Map<TModel>(entity);
             return result;
         }
 
-        public TModel Delete(int id)
+       
+
+        public virtual async Task<TModel> DeleteAsync(int id)
         {
             var set= Context.Set<TDbEntity>();
-            var entity = set.Find(id);
+            var entity = await set.FindAsync(id);
             if (entity == null)
                 throw new Exception("Entity not found");
-            set.Remove(entity);
-            Context.SaveChanges();
+             set.Remove(entity);
+            await Context.SaveChangesAsync();
             var result= Mapper.Map<TModel>(entity);
             return result;
         }
-        public virtual void BeforeInsert(TDbEntity entity,TInsert request)
+        public virtual async Task BeforeInsert(TDbEntity entity,TInsert request)
         {
 
         }
 
-        public virtual void BeforeUpdate(TDbEntity entity,TUpdate request)
+        public virtual async Task BeforeUpdate(TDbEntity entity,TUpdate request)
         {
 
         }
