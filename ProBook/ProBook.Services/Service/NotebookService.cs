@@ -18,7 +18,6 @@ namespace ProBook.Services.Service
     public class NotebookService : BaseCRUDService<Model.Model.Notebook, NotebookSearchObject, Database.Notebook, NotebookInsertRequest, NotebookUpdateRequest>, INotebookService
     {
         private readonly StorageClient _storageClient;
-        private readonly string _bucketName = "probook-notebooks";
         public NotebookService(ProBookDBContext context, IMapper mapper) : base(context, mapper)
         {
             _storageClient = StorageClient.Create();
@@ -47,14 +46,15 @@ namespace ProBook.Services.Service
             entity.CreatedAt= DateTime.UtcNow;
 
             if(request.File!=null)
-                entity.ImageUrl = await ImageUploadHelper.UploadFileAsync(request.File,_storageClient,_bucketName);
+                entity.ImageUrl = await ImageUploadHelper.UploadFileAsync(request.File,_storageClient);
 
             base.BeforeInsert(entity, request);
         }
 
-        public override void BeforeUpdate(Notebook entity, NotebookUpdateRequest request)
+        public override async void BeforeUpdate(Notebook entity, NotebookUpdateRequest request)
         {
-            base.BeforeUpdate(entity, request);
+            if (request.File != null)
+                entity.ImageUrl = await ImageUploadHelper.UploadFileAsync(request.File, _storageClient);
         }
     }
 }

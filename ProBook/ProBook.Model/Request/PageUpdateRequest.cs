@@ -7,10 +7,14 @@ using System.Threading.Tasks;
 
 namespace ProBook.Model.Request
 {
-    public class NotebookUpdateRequest
+    public class PageUpdateRequest
     {
-        public string? Name { get; set; }
-        public string? Description { get; set; }
+        public string? Title { get; set; }
+        public string? Content { get; set; }
+        public string? Table { get; set; }
+
         public IFormFile? File { get; set; }
+
+
     }
 }

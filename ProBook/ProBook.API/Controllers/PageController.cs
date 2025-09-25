@@ -1,0 +1,35 @@
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using ProBook.Model.Helper;
+using ProBook.Model.Model;
+using ProBook.Model.Request;
+using ProBook.Model.SearchObject;
+using ProBook.Services.Interface;
+
+namespace ProBook.API.Controllers
+{
+    [ApiController]
+    public class PageController : BaseCRUDController<Model.Model.Page,PageSearchObject,PageInsertRequest,PageUpdateRequest>
+    {
+        public PageController(IPageService service):base(service)
+        {
+        }
+
+        [HttpGet("{notebookId}")]
+        public List<Page> GetAllPages(int notebookId)
+        {
+            return (_service as IPageService).GetAllPages(notebookId);
+        }
+        public override Page Insert([FromForm]PageInsertRequest request)
+        {
+            return base.Insert(request);
+        }
+
+        public override Page Update(int id,[FromForm] PageUpdateRequest request)
+        {
+            return base.Update(id, request);
+        }
+
+    }
+}
