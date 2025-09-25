@@ -17,6 +17,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "ProBook API", Version = "v1" });
+    c.OperationFilter<FileUploadOperationFilter>();
+
     c.AddSecurityDefinition("basic", new OpenApiSecurityScheme
     {
         Name = "Authorization",
