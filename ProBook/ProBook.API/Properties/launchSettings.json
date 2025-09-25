@@ -40,6 +40,9 @@
       "useSSL": true
     }
   },
+  "credentials": {
+    "GOOGLE_CLOUD_CREDENTIALS": "C:\\Users\\adice\\Downloads\\singular-arcana-449521-v2-a6c0ae18130c"
+  }
   "$schema": "http://json.schemastore.org/launchsettings.json",
   "iisSettings": {
     "windowsAuthentication": false,

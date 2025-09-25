@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using ProBook.Model.Request;
 using ProBook.Model.SearchObject;
 using ProBook.Services.Database;
+using ProBook.Services.Helper;
 using ProBook.Services.Interface;
 using System;
 using System.Collections.Generic;
@@ -21,21 +22,6 @@ namespace ProBook.Services.Service
         public NotebookService(ProBookDBContext context, IMapper mapper) : base(context, mapper)
         {
             _storageClient = StorageClient.Create();
-        }
-
-        public async Task<string> UploadFileAsync(IFormFile file)
-        {
-            if (file == null || file.Length == 0)
-                throw new ArgumentException("File is empty");
-
-            using var memoryStream = new MemoryStream();
-            await file.CopyToAsync(memoryStream);
-            memoryStream.Position = 0;
-
-            var objectName = $"notebooks/{Guid.NewGuid()}_{file.FileName}";
-            await _storageClient.UploadObjectAsync(_bucketName, objectName, file.ContentType, memoryStream);
-
-            return $"https://storage.googleapis.com/{_bucketName}/{objectName}";
         }
 
         public override IQueryable<Notebook> AddFilter(NotebookSearchObject search, IQueryable<Notebook> query)
@@ -61,7 +47,8 @@ namespace ProBook.Services.Service
             entity.CreatedAt= DateTime.UtcNow;
 
             if(request.File!=null)
-                entity.ImageUrl = await UploadFileAsync(request.File);
+                entity.ImageUrl = await ImageUploadHelper.UploadFileAsync(request.File,_storageClient,_bucketName);
+
             base.BeforeInsert(entity, request);
         }
 
