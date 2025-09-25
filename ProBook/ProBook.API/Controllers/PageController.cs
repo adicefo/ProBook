@@ -21,14 +21,14 @@ namespace ProBook.API.Controllers
         {
             return await (_service as IPageService).GetAllPagesAsync(notebookId);
         }
-        public override Task<Page> Insert([FromForm]PageInsertRequest request)
+        public override  Task<Page> Insert([FromForm]PageInsertRequest request)
         {
-            return base.Insert(request);
+            return  base.Insert(request);
         }
 
-        public override Task<Page> Update(int id,[FromForm] PageUpdateRequest request)
+        public override  Task<Page> Update(int id,[FromForm] PageUpdateRequest request)
         {
-            return base.Update(id, request);
+            return  base.Update(id, request);
         }
 
     }

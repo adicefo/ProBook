@@ -12,7 +12,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
 namespace ProBook.Services.Service
 {
     public class NotebookService : BaseCRUDService<Model.Model.Notebook, NotebookSearchObject, Database.Notebook, NotebookInsertRequest, NotebookUpdateRequest>, INotebookService

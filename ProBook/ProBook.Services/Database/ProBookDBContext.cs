@@ -25,9 +25,7 @@ namespace ProBook.Services.Database
             base.OnModelCreating(modelBuilder);
             // Further configuration if needed
 
-            modelBuilder.Entity<Page>()
-            .Property(p => p.Table)
-            .HasColumnType("jsonb");
+           
 
 
             modelBuilder.Entity<SharedNotebook>()

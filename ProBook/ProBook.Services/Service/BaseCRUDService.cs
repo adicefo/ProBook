@@ -25,12 +25,12 @@ namespace ProBook.Services.Service
             await BeforeInsert(entity, request);
             set.Add(entity);
             await Context.SaveChangesAsync();
-            var result = Mapper.Map<TModel>(entity);
-            return result;
+            
+            return Mapper.Map<TModel>(entity); 
             
         }
 
-      
+        
 
         public virtual async Task<TModel> UpdateAsync(int id,TUpdate request)
         {
@@ -41,11 +41,11 @@ namespace ProBook.Services.Service
             entity = Mapper.Map(request, entity);
             await BeforeUpdate(entity, request);
             await Context.SaveChangesAsync();
-            var result=Mapper.Map<TModel>(entity);
-            return result;
+           
+            return Mapper.Map<TModel>(entity);
         }
 
-       
+      
 
         public virtual async Task<TModel> DeleteAsync(int id)
         {
@@ -55,9 +55,11 @@ namespace ProBook.Services.Service
                 throw new Exception("Entity not found");
              set.Remove(entity);
             await Context.SaveChangesAsync();
-            var result= Mapper.Map<TModel>(entity);
-            return result;
+            return Mapper.Map<TModel>(entity);
         }
+
+        
+
         public virtual async Task BeforeInsert(TDbEntity entity,TInsert request)
         {
 

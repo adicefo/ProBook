@@ -11,7 +11,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
 namespace ProBook.Services.Service
 {
     public class PageService : BaseCRUDService<Model.Model.Page, PageSearchObject, Database.Page, PageInsertRequest, PageUpdateRequest>, IPageService
@@ -45,19 +44,23 @@ namespace ProBook.Services.Service
             filteredQuery = EntityFrameworkQueryableExtensions.Include(filteredQuery, x => x.Notebook);
             return filteredQuery;
         }
-        public override async void BeforeInsert(Database.Page entity, PageInsertRequest request)
+        public override async Task BeforeInsert(Database.Page entity, PageInsertRequest request)
         {
             entity.CreatedAt = DateTime.UtcNow;
 
             if (request.File != null)
                 entity.ImageUrl = await _imageUploadHelper.UploadFileAsync(request.File);
 
-            base.BeforeInsert(entity, request);
+            
+
+            await base.BeforeInsert(entity, request);
         }
-        public override async void BeforeUpdate(Database.Page entity, PageUpdateRequest request)
+        public override async Task BeforeUpdate(Database.Page entity, PageUpdateRequest request)
         {
             if (request.File != null)
                 entity.ImageUrl = await _imageUploadHelper.UploadFileAsync(request.File);
+
+            await base.BeforeUpdate(entity, request);
         }
     }
 }
