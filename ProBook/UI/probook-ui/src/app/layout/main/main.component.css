@@ -46,10 +46,12 @@
 .header h1 {
     margin-bottom: 0;
     font-size: 1.8rem;
-
+    
     font-weight: 500;
 }
-
+.header-container{
+    margin-left:50px;
+}
 
 .header .right span {
     margin-right: 1rem;
@@ -80,4 +82,53 @@ main {
     padding: 1rem;
     overflow-y: auto;
     background-color: #fafafa;
+}
+
+.logo-icon {
+    font-size: 2rem;
+    height: 2rem;
+    width: 2rem;
+    color: white;
+    margin-right: 0.5rem;
+}
+
+.header-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+    margin-left: 1rem;
+}
+
+.user-profile:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background: linear-gradient(45deg, #ff4081, #f48fb1);
+    color: white;
+    font-weight: 500;
+}
+
+.right span{
+    font-size: 1.1rem;
 }

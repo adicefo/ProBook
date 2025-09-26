@@ -5,14 +5,34 @@
             <div class="date">{{ currentDateTime | date:'EEEE, MMMM d, y' }}</div>
         </div>
     </div>
-
-    <div class="center">
-        <h1>ProBook</h1>
+    <div class="header-container">
+        <div class="brand">
+            <mat-icon class="logo-icon">auto_stories</mat-icon>
+            <h1>ProBook</h1>
+        </div>
     </div>
+    <mat-menu #userMenu="matMenu">
+        <button mat-menu-item (click)="navigateToProfile()">
+            <mat-icon>person</mat-icon>
+            <span>Profile</span>
+        </button>
+        <button mat-menu-item (click)="navigateToSettings()">
+            <mat-icon>settings</mat-icon>
+            <span>Settings</span>
+        </button>
+        <mat-divider></mat-divider>
+        <button mat-menu-item (click)="logout()">
+            <mat-icon>exit_to_app</mat-icon>
+            <span>Logout</span>
+        </button>
+    </mat-menu>
 
     <div class="right">
         <span>Welcome, {{ username }}</span>
-        <button mat-button (click)="logout()">Logout</button>
+        <div class="user-profile" [matMenuTriggerFor]="userMenu">
+            <div class="avatar">{{ username.charAt(0).toUpperCase() }}</div>
+            <mat-icon>arrow_drop_down</mat-icon>
+        </div>
     </div>
 </header>
 

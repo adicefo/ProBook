@@ -6,6 +6,11 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatRippleModule } from '@angular/material/core';
+import { MatBadgeModule } from '@angular/material/badge';
 
 @NgModule({
     exports: [
@@ -15,7 +20,12 @@ import { MatToolbarModule } from '@angular/material/toolbar';
         MatButtonModule,
         MatIconModule,
         MatTabsModule,
-        MatToolbarModule
+        MatToolbarModule,
+        MatMenuModule,
+        MatDividerModule,
+        MatTooltipModule,
+        MatRippleModule,
+        MatBadgeModule
     ]
 })
 export class MaterialModule { }
