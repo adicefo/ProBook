@@ -1,5 +1,9 @@
 <header class="header">
     <div class="left">
+        <div class="datetime-container">
+            <div class="time">{{ currentDateTime | date:'HH:mm:ss' }}</div>
+            <div class="date">{{ currentDateTime | date:'EEEE, MMMM d, y' }}</div>
+        </div>
     </div>
 
     <div class="center">
