@@ -1,4 +1,7 @@
 ﻿using MapsterMapper;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using ProBook.Model.Request;
 using ProBook.Model.SearchObject;
 using ProBook.Services.Database;
@@ -14,9 +17,10 @@ namespace ProBook.Services.Service
 {
     public class UserService : BaseCRUDService<Model.Model.User, UserSearchObject, Database.User,UserInsertRequest,UserUpdateRequest>, IUserService
     {
-        public UserService(ProBookDBContext context, IMapper mapper) : base(context, mapper)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public UserService(ProBookDBContext context, IMapper mapper, IHttpContextAccessor httpContextAccessor) : base(context, mapper)
         {
-
+            _httpContextAccessor = httpContextAccessor;
         }
         public Model.Model.User Login(string username, string password)
         {
@@ -29,6 +33,16 @@ namespace ProBook.Services.Service
             if (!PasswordGenerate.VerifyPassword(password, entity.PasswordHash, entity.PasswordSalt))
                 return null;
             return this.Mapper.Map<Model.Model.User>(entity);
+        }
+        public async Task<Model.Model.User> GetCurrentUserAsync()
+        {
+            var username = _httpContextAccessor.HttpContext?.User?.Identity?.Name;
+            if (string.IsNullOrEmpty(username)) return null;
+            var user = await Context.Users.FirstOrDefaultAsync(u => u.Username == username);
+            if (user == null) return null;
+
+            return Mapper.Map<Model.Model.User>(user);
+
         }
         public override IQueryable<User> AddFilter(UserSearchObject search, IQueryable<User> query)
         {

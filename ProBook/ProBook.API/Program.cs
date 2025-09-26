@@ -64,6 +64,7 @@ builder.Services.Configure<GoogleCloudSettings>(
 
 
 builder.Services.AddTransient<ImageUploadHelper>();
+builder.Services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
 
 
 var app = builder.Build();

@@ -43,8 +43,7 @@ namespace ProBook.API.Auth
             {
                 var claims = new List<Claim>()
                 {
-                    new Claim(ClaimTypes.Name, user.Name),
-                    new Claim(ClaimTypes.NameIdentifier, user.Username)
+                    new Claim(ClaimTypes.Name, user.Username),
                 };
 
 

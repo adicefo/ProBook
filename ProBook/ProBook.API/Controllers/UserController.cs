@@ -13,6 +13,7 @@ namespace ProBook.API.Controllers
     {
         public UserController(IUserService service):base(service)
         {
+            
         }
 
         [HttpPost("/login")]
@@ -21,6 +22,10 @@ namespace ProBook.API.Controllers
         {
             return (_service as IUserService).Login(username, password);
         }
-        
+        [HttpGet("/getCurrentUser")]
+        public async Task<Model.Model.User> GetCurrentUser()
+        {
+            return await (_service as IUserService).GetCurrentUserAsync();
+        }
     }
 }
