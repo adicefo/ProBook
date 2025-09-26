@@ -35,11 +35,21 @@ namespace ProBook.Services.Service
 
             return filteredQuery;
         }
-        
+        public override IQueryable<Notebook> AddInclude(IQueryable<Notebook> query)
+        {
+            return query.Include(x => x.User);
+        }
+
 
         public override async Task BeforeInsert(Notebook entity, NotebookInsertRequest request)
         {
             entity.CreatedAt= DateTime.UtcNow;
+
+            User user = await Context.Users.FindAsync(request.UserId);
+            if (user == null)
+                throw new Exception("Entity not found");
+
+            entity.User = user;
 
             if (request.File != null)
                 entity.ImageUrl = await _imageUploadHelper.UploadFileAsync(request.File);

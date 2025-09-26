@@ -48,9 +48,15 @@ namespace ProBook.Services.Service
 
         public async Task<TModel> GetByIdAsync(int id)
         {
-            var entity = await Context.Set<TDbEntity>().FindAsync(id);
+            var query = Context.Set<TDbEntity>().AsQueryable();
+
+            query = AddInclude(query); 
+
+            var entity = await query.FirstOrDefaultAsync(x => EF.Property<int>(x, "Id") == id);
+
             if (entity == null)
                 throw new Exception("Entity not found");
+
             return Mapper.Map<TModel>(entity);
         }
 
@@ -58,6 +64,9 @@ namespace ProBook.Services.Service
         {
             return query;
         }
-        
+        public virtual IQueryable<TDbEntity> AddInclude(IQueryable<TDbEntity> query)
+        {
+            return query;
+        }
     }
 }

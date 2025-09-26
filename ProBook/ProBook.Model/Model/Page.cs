@@ -18,6 +18,6 @@ namespace ProBook.Model.Model
         public DateTime? CreatedAt { get; set; }
         public int NotebookId { get; set; }
 
-        public virtual Notebook Notebook { get; set; } = null!;
+        public virtual Notebook? Notebook { get; set; } = null!;
     }
 }

@@ -24,12 +24,13 @@ namespace ProBook.Services.Service
 
         public async Task<List<Page>> GetAllPagesAsync(int notebookId)
         {
-            var result = new List<Model.Model.Page>();
-            var pages =  Context.Pages.Where(x => x.NotebookId == notebookId).OrderBy(x => x.CreatedAt);
+            var pages = await Context.Pages.Where(x => x.NotebookId==notebookId)
+                .Include(x => x.Notebook)
+                .OrderBy(x => x.CreatedAt)
+                .ToListAsync();
             if(pages!=null)
             {
-                var list = await pages.ToListAsync();
-                 result= Mapper.Map(list,result);
+                var result = Mapper.Map<List<Model.Model.Page>>(pages);
                 return result;
             }
             return null;
@@ -42,10 +43,18 @@ namespace ProBook.Services.Service
             filteredQuery = filteredQuery.Include(x => x.Notebook);
             return filteredQuery;
         }
-      
+        public override IQueryable<Database.Page> AddInclude(IQueryable<Database.Page> query)
+        {
+            return query.Include(x => x.Notebook);
+        }
+
         public override async Task BeforeInsert(Database.Page entity, PageInsertRequest request)
         {
             entity.CreatedAt = DateTime.UtcNow;
+            Database.Notebook notebook = await Context.Notebooks.FindAsync(request.NotebookId);
+            if (notebook == null)
+                throw new Exception("Entity not found");
+            entity.Notebook = notebook;
 
             if (request.File != null)
                 entity.ImageUrl = await _imageUploadHelper.UploadFileAsync(request.File);
@@ -56,6 +65,7 @@ namespace ProBook.Services.Service
         }
         public override async Task BeforeUpdate(Database.Page entity, PageUpdateRequest request)
         {
+            
             if (request.File != null)
                 entity.ImageUrl = await _imageUploadHelper.UploadFileAsync(request.File);
 

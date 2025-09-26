@@ -31,34 +31,44 @@ namespace ProBook.Services.Service
             
         }
 
-        
 
-        public virtual async Task<TModel> UpdateAsync(int id,TUpdate request)
+
+        public virtual async Task<TModel> UpdateAsync(int id, TUpdate request)
         {
-            var set=Context.Set<TDbEntity>();
-            var entity = set.Find(id);
+            var set = Context.Set<TDbEntity>();
+
+            var entity = await AddInclude(set) 
+                .FirstOrDefaultAsync(x => EF.Property<int>(x, "Id") == id);
+
             if (entity == null)
                 throw new Exception("Entity not found");
+
             entity = Mapper.Map(request, entity);
             await BeforeUpdate(entity, request);
             await Context.SaveChangesAsync();
+
             return Mapper.Map<TModel>(entity);
         }
 
-      
+
 
         public virtual async Task<TModel> DeleteAsync(int id)
         {
-            var set= Context.Set<TDbEntity>();
-            var entity = await set.FindAsync(id);
+            var set = Context.Set<TDbEntity>();
+
+            var entity = await AddInclude(set) 
+                .FirstOrDefaultAsync(x => EF.Property<int>(x, "Id") == id);
+
             if (entity == null)
                 throw new Exception("Entity not found");
-             set.Remove(entity);
+
+            set.Remove(entity);
             await Context.SaveChangesAsync();
+
             return Mapper.Map<TModel>(entity);
         }
 
-        
+
 
         public virtual async Task BeforeInsert(TDbEntity entity,TInsert request)
         {
