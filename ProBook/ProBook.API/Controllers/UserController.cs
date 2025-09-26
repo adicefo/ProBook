@@ -22,7 +22,7 @@ namespace ProBook.API.Controllers
         {
             return (_service as IUserService).Login(username, password);
         }
-        [HttpGet("/getCurrentUser")]
+        [HttpGet("/User/getCurrentUser")]
         public async Task<Model.Model.User> GetCurrentUser()
         {
             return await (_service as IUserService).GetCurrentUserAsync();

@@ -66,6 +66,16 @@ builder.Services.Configure<GoogleCloudSettings>(
 builder.Services.AddTransient<ImageUploadHelper>();
 builder.Services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngularDev",
+        policy => policy
+            .WithOrigins("http://localhost:4200") // Your Angular app's URL
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowCredentials());
+});
+
 
 var app = builder.Build();
 
@@ -78,6 +88,8 @@ if (app.Environment.IsDevelopment())
 
 
 app.UseHttpsRedirection();
+
+app.UseCors("AllowAngularDev");
 
 app.UseAuthentication();
 app.UseAuthorization();

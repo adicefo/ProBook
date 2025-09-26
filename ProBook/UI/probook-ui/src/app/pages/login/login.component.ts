@@ -3,7 +3,8 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { CommonModule } from '@angular/common';
 import { MaterialModule } from '../../material.module';
 import { Router } from '@angular/router';
-
+import { UserService } from '../../services/user-service';
+import { AuthService } from '../../services/auth-service';
 @Component({
   selector: 'app-login',
   standalone: true,
@@ -22,14 +23,29 @@ export class LoginComponent {
   });
   isObscured: boolean = true;
 
-  constructor(private router: Router) { }
+  error: string | null = null;
+
+  constructor(private router: Router, private authService: AuthService, private userService: UserService) { }
 
   submit() {
     if (this.loginForm.valid) {
-      console.log(this.loginForm.value);
-      // In a real app, you would authenticate with a backend here
-      localStorage.setItem('auth_token', 'demo_token');
-      this.router.navigate(['/app']);
+      this.authService.login(this.loginForm.value.username, this.loginForm.value.password);
+      try {
+        this.userService.getAllUsers().subscribe(
+          (res: any) => {
+            this.router.navigate(['/app']);
+          },
+          (err: any) => {
+            this.error = "Invalid username or password";
+          }
+        );
+
+      }
+      catch (err: any) {
+        this.error = "Invalid username or password";
+        alert("Invalid username or password");
+      }
+
     }
   }
 

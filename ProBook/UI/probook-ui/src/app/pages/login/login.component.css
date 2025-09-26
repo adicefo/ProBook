@@ -54,10 +54,10 @@ mat-form-field {
     margin-bottom: 15px;
 }
 
-.error {
-    color: red;
+.error-message {
+    margin: 10px 0;
+    text-align: center;
     font-size: 14px;
-    margin-top: 5px;
 }
 
 
@@ -80,6 +80,7 @@ button {
 .visibility-icon {
     cursor: pointer;
 }
-mat-icon{
+
+mat-icon {
     color: #3f51b5;
 }

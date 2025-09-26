@@ -3,7 +3,8 @@ import { Router, RouterModule, RouterLink, RouterLinkActive } from '@angular/rou
 import { CommonModule, DatePipe } from '@angular/common';
 import { MaterialModule } from '../../material.module';
 import { interval, Subscription } from 'rxjs';
-
+import { UserService } from '../../services/user-service';
+import { AuthService } from '../../services/auth-service';
 @Component({
   selector: 'app-main',
   standalone: true,
@@ -23,11 +24,16 @@ export class MainComponent implements OnInit, OnDestroy {
   currentDateTime: Date = new Date();
   private clockSubscription: Subscription | undefined;
 
-  constructor(private router: Router) { }
+  constructor(private router: Router, private authService: AuthService, private userService: UserService) { }
 
   ngOnInit() {
     this.clockSubscription = interval(1000).subscribe(() => {
       this.currentDateTime = new Date();
+    });
+    this.userService.getCurrentUser().subscribe((res: any) => {
+      this.username = res.username;
+    }, (err: any) => {
+      console.log(err);
     });
   }
 
@@ -38,7 +44,7 @@ export class MainComponent implements OnInit, OnDestroy {
   }
 
   logout(): void {
-    localStorage.removeItem('auth_token');
+    this.authService.logout();
     this.router.navigate(['/']);
   }
 }
