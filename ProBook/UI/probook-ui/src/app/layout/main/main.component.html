@@ -1,27 +1,29 @@
 <header class="header">
     <div class="left">
-      
     </div>
-  
-    <div class="center">
-      <h1>ProBook</h1>
-    </div>
-  
-    <div class="right">
-      <span>Welcome, {{ username }}</span>
-      <button mat-button (click)="logout()">Logout</button>
-    </div>
-  </header>
-  
-  <nav mat-tab-nav-bar>
-    <a mat-tab-link routerLink="/notebooks" routerLinkActive #rla1="routerLinkActive" [active]="rla1.isActive">
-      Notebooks
-    </a>
-    <a mat-tab-link routerLink="/collections" routerLinkActive #rla2="routerLinkActive" [active]="rla2.isActive">
-      Collections
-    </a>
-    <a mat-tab-link routerLink="/shared" routerLinkActive #rla3="routerLinkActive" [active]="rla3.isActive">
-      Shared Notebooks
-    </a>
-  </nav>
 
+    <div class="center">
+        <h1>ProBook</h1>
+    </div>
+
+    <div class="right">
+        <span>Welcome, {{ username }}</span>
+        <button mat-button (click)="logout()">Logout</button>
+    </div>
+</header>
+
+<nav mat-tab-nav-bar [tabPanel]="tabPanel" mat-stretch-tabs="false" mat-align-tabs="center">
+    <a mat-tab-link routerLink="/app/notebooks" routerLinkActive #rla1="routerLinkActive" [active]="rla1.isActive">
+        <mat-icon>book</mat-icon> Notebooks
+    </a>
+    <a mat-tab-link routerLink="/app/collections" routerLinkActive #rla2="routerLinkActive" [active]="rla2.isActive">
+        <mat-icon>collections_bookmark</mat-icon> Collections
+    </a>
+    <a mat-tab-link routerLink="/app/sharedNotebooks" routerLinkActive #rla3="routerLinkActive"
+        [active]="rla3.isActive">
+        <mat-icon>folder_shared</mat-icon> Shared Notebooks
+    </a>
+</nav>
+<mat-tab-nav-panel #tabPanel>
+    <router-outlet></router-outlet>
+</mat-tab-nav-panel>
