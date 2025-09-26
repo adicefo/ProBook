@@ -1,0 +1,27 @@
+<header class="header">
+    <div class="left">
+      
+    </div>
+  
+    <div class="center">
+      <h1>ProBook</h1>
+    </div>
+  
+    <div class="right">
+      <span>Welcome, {{ username }}</span>
+      <button mat-button (click)="logout()">Logout</button>
+    </div>
+  </header>
+  
+  <nav mat-tab-nav-bar>
+    <a mat-tab-link routerLink="/notebooks" routerLinkActive #rla1="routerLinkActive" [active]="rla1.isActive">
+      Notebooks
+    </a>
+    <a mat-tab-link routerLink="/collections" routerLinkActive #rla2="routerLinkActive" [active]="rla2.isActive">
+      Collections
+    </a>
+    <a mat-tab-link routerLink="/shared" routerLinkActive #rla3="routerLinkActive" [active]="rla3.isActive">
+      Shared Notebooks
+    </a>
+  </nav>
+
