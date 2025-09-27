@@ -5,6 +5,8 @@ import { MaterialModule } from '../../material.module';
 import { interval, Subscription } from 'rxjs';
 import { UserService } from '../../services/user-service';
 import { AuthService } from '../../services/auth-service';
+import { User } from '../../interfaces/user-interface';
+import { UserContextService } from '../../services/user-context-service';
 @Component({
   selector: 'app-main',
   standalone: true,
@@ -20,18 +22,19 @@ import { AuthService } from '../../services/auth-service';
   styleUrl: './main.component.css'
 })
 export class MainComponent implements OnInit, OnDestroy {
-  username: string = 'User';
+  loggedInUser:User|null=null;
   currentDateTime: Date = new Date();
   private clockSubscription: Subscription | undefined;
 
-  constructor(private router: Router, private authService: AuthService, private userService: UserService) { }
+  constructor(private router: Router, private authService: AuthService, private userService: UserService,private userContextService:UserContextService) { }
 
   ngOnInit() {
     this.clockSubscription = interval(1000).subscribe(() => {
       this.currentDateTime = new Date();
     });
     this.userService.getCurrentUser().subscribe((res: any) => {
-      this.username = res.username;
+      this.userContextService.setUser(res);
+      this.loggedInUser=res;
     }, (err: any) => {
       console.log(err);
     });

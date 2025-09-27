@@ -28,9 +28,9 @@
     </mat-menu>
 
     <div class="right">
-        <span>Welcome, {{ username }}</span>
+        <span>Welcome, {{ loggedInUser?.username }}</span>
         <div class="user-profile" [matMenuTriggerFor]="userMenu">
-            <div class="avatar">{{ username.charAt(0).toUpperCase() }}</div>
+            <div class="avatar">{{ loggedInUser?.username?.charAt(0)?.toUpperCase() }}</div>
             <mat-icon>arrow_drop_down</mat-icon>
         </div>
     </div>
@@ -49,5 +49,5 @@
     </a>
 </nav>
 <mat-tab-nav-panel #tabPanel>
-    <router-outlet></router-outlet>
+    <router-outlet ></router-outlet>
 </mat-tab-nav-panel>

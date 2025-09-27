@@ -132,7 +132,7 @@
 
 .menu-button {
     color: rgba(255, 255, 255, 0.9) !important;
-    background: #f48fb1 !important;
+    background: #f4ec8f !important;
     backdrop-filter: blur(4px);
     transition: all 0.2s ease;
 }

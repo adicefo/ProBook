@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MaterialModule } from '../../material.module';
 import { NotebookService } from '../../services/notebook-service';
 import { Notebook } from '../../interfaces/notebook-interface';
 import { Router } from '@angular/router';
+import { User } from '../../interfaces/user-interface';
+import { UserContextService } from '../../services/user-context-service';
 
 @Component({
   selector: 'app-notebook',
@@ -20,12 +22,20 @@ export class NotebookComponent implements OnInit {
   loading = true;
   error: string | null = null;
 
+  loggedInUser:User|null=null;
+
+
   constructor(
     private notebookService: NotebookService,
-    private router: Router
+    private router: Router, 
+    private userContextService:UserContextService
   ) { }
 
   ngOnInit(): void {
+    this.userContextService.user$.subscribe(user => {
+      this.loggedInUser=user;
+      this.loadNotebooks();
+    });
     this.loadNotebooks();
   }
 
@@ -34,7 +44,7 @@ export class NotebookComponent implements OnInit {
     this.error = null;
 
    
-    const userId = 1;
+    const userId = this.loggedInUser?.id ?? 0;
 
     this.notebookService.getAllNotebooks(userId).subscribe({
       next: (notebooks) => {
@@ -69,7 +79,7 @@ export class NotebookComponent implements OnInit {
     });
   }
 
-  // Generate a random notebook cover color for visual variety
+
   getNotebookCoverColor(index: number): string {
     const colors = [
       '#6366f1', // indigo
@@ -78,8 +88,8 @@ export class NotebookComponent implements OnInit {
       '#10b981', // emerald
       '#f59e0b', // amber
       '#ef4444', // red
-      '#ec4899', // pink
-      '#84cc16'  // lime
+      '#84cc16',  // lime
+      '#ffea00'  //yellow
     ];
     return colors[index % colors.length];
   }
