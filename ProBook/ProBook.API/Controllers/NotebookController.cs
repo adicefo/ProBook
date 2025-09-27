@@ -15,6 +15,11 @@ namespace ProBook.API.Controllers
         public NotebookController(INotebookService service):base(service)
         {
         }
+        [HttpGet("/Notebook/getAllNotebooks/{userId}")]
+        public async Task<List<Model.Model.Notebook>>GetAllNotebooks(int userId)
+        {
+            return await (_service as INotebookService).GetAllNotebooks(userId);
+        }
 
         public override  Task<Notebook> Insert([FromForm]NotebookInsertRequest request)
         {

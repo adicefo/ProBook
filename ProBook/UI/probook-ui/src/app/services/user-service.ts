@@ -13,8 +13,8 @@ export class UserService {
     constructor(private apiService: ApiService) {
 
     }
-    getAllUsers(): Observable<SearchResult<User>> {
-        return this.apiService.get<SearchResult<User>>(this.endpoint);
+    getAllUsers(params:any={}): Observable<SearchResult<User>> {
+        return this.apiService.get<SearchResult<User>>(this.endpoint,params);
     }
     getUserById(id: number): Observable<User> {
         return this.apiService.getById<User>(this.endpoint, id);

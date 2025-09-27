@@ -16,7 +16,7 @@ namespace ProBook.API.Controllers
         {
         }
 
-        [HttpGet("/getAllPages/{notebookId}")]
+        [HttpGet("/Page/getAllPages/{notebookId}")]
         public async Task<List<Page>> GetAllPages(int notebookId)
         {
             return await (_service as IPageService).GetAllPagesAsync(notebookId);

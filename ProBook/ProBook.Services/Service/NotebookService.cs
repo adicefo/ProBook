@@ -22,6 +22,21 @@ namespace ProBook.Services.Service
             _imageUploadHelper = imageUploadHelper;
         }
 
+        public async Task<List<Model.Model.Notebook>> GetAllNotebooks(int userId)
+        {
+            var notebooks = await Context.Notebooks.
+                Where(x => x.UserId == userId)
+                .Include(x => x.User)
+                .OrderByDescending(x => x.CreatedAt)
+                .ToListAsync();
+            if(notebooks!=null)
+            {
+                var result = Mapper.Map <List<Model.Model.Notebook>>(notebooks);
+                return result;
+            }
+            return null;
+
+        }
         public override  IQueryable<Notebook> AddFilter(NotebookSearchObject search, IQueryable<Notebook> query)
         {
             var filteredQuery= base.AddFilter(search, query);
@@ -66,5 +81,7 @@ namespace ProBook.Services.Service
                 entity.ImageUrl = await _imageUploadHelper.UploadFileAsync(request.File);
             await base.BeforeUpdate(entity, request);
         }
+
+        
     }
 }
