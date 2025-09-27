@@ -1,1 +1,99 @@
-<p>notebook works!</p>
+<div class="notebooks-container">
+    <!-- Header Section -->
+    <div class="header">
+        <h1>My Notebooks</h1>
+        <p class="subtitle">Organize your thoughts and ideas</p>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="loading" class="loading-container">
+        <mat-spinner></mat-spinner>
+        <p>Loading your notebooks...</p>
+    </div>
+
+    <!-- Error State -->
+    <div *ngIf="error && !loading" class="error-container">
+        <mat-icon>error_outline</mat-icon>
+        <p>{{ error }}</p>
+        <button mat-raised-button color="primary" (click)="loadNotebooks()">
+            <mat-icon>refresh</mat-icon>
+            Try Again
+        </button>
+    </div>
+
+    <!-- Notebooks Grid -->
+    <div *ngIf="!loading && !error" class="notebooks-grid">
+        <div *ngFor="let notebook of notebooks; let i = index" class="notebook-card"
+            [style.--notebook-color]="getNotebookCoverColor(i)" (click)="onNotebookClick(notebook)" matRipple>
+            <!-- Notebook Cover -->
+            <div class="notebook-cover">
+                <!-- Created Date -->
+                <div class="created-date">
+                    {{ formatDate(notebook.createdAt) }}
+                </div>
+
+                <!-- Menu Dropdown -->
+                <div class="menu-container">
+                    <button mat-icon-button [matMenuTriggerFor]="notebookMenu" (click)="$event.stopPropagation()"
+                        class="menu-button">
+                        <mat-icon>more_vert</mat-icon>
+                    </button>
+                    <mat-menu #notebookMenu="matMenu">
+                        <button mat-menu-item (click)="onMenuAction('edit', notebook)">
+                            <mat-icon>edit</mat-icon>
+                            <span>Edit</span>
+                        </button>
+                        <button mat-menu-item (click)="onMenuAction('share', notebook)">
+                            <mat-icon>share</mat-icon>
+                            <span>Share</span>
+                        </button>
+                        <mat-divider></mat-divider>
+                        <button mat-menu-item (click)="onMenuAction('delete', notebook)" class="delete-option">
+                            <mat-icon>delete</mat-icon>
+                            <span>Delete</span>
+                        </button>
+                    </mat-menu>
+                </div>
+
+                <!-- Notebook Content -->
+                <div class="notebook-content">
+                    <!-- Notebook Title -->
+                    <h3 class="notebook-title">
+                        {{ notebook.name || 'Untitled Notebook' }}
+                    </h3>
+
+                    <!-- Notebook Description -->
+                    <p *ngIf="notebook.description" class="notebook-description">
+                        {{ notebook.description }}
+                    </p>
+                </div>
+
+                <!-- Notebook Binding/Spine -->
+                <div class="notebook-binding"></div>
+            </div>
+
+            <!-- Notebook Shadow -->
+            <div class="notebook-shadow"></div>
+        </div>
+
+        <!-- Add New Notebook Card -->
+        <div class="notebook-card add-notebook-card" matRipple>
+            <div class="add-notebook-content">
+                <mat-icon class="add-icon">add</mat-icon>
+                <h3>Create New Notebook</h3>
+                <p>Start writing your ideas</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!loading && !error && notebooks.length === 0" class="empty-state">
+        <mat-icon class="empty-icon">book</mat-icon>
+        <h2>No notebooks yet</h2>
+        <p>Create your first notebook to get started</p>
+        <button mat-raised-button color="primary">
+            <mat-icon>add</mat-icon>
+            Create Notebook
+        </button>
+    </div>
+</div>

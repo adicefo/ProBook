@@ -30,6 +30,6 @@ export class PageService {
         return this.apiService.delete<Page>(this.endpoint, id);
     }
     getAllPages(notebookId:number): Observable<Page[]> {
-        return this.apiService.get<Page[]>(this.endpoint + '/getAllPages'+{notebookId});
+        return this.apiService.get<Page[]>(this.endpoint + '/getAllPages/'+{notebookId});
     }
 }

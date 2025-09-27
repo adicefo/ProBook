@@ -14,8 +14,8 @@ export class NotebookService {
     constructor(private apiService: ApiService) {
 
     }
-    getAll(params:any={}): Observable<SearchResult<Notebook>> {
-        return this.apiService.get<SearchResult<Notebook>>(this.endpoint,params);
+    getAll(params: any = {}): Observable<SearchResult<Notebook>> {
+        return this.apiService.get<SearchResult<Notebook>>(this.endpoint, params);
     }
     getNotebookById(id: number): Observable<Notebook> {
         return this.apiService.getById<Notebook>(this.endpoint, id);
@@ -29,7 +29,7 @@ export class NotebookService {
     deleteNotebook(id: number): Observable<Notebook> {
         return this.apiService.delete<Notebook>(this.endpoint, id);
     }
-    getAllNotebooks(userId:number): Observable<Notebook[]> {
-        return this.apiService.get<Notebook[]>(this.endpoint + '/getAllNotebooks'+{userId});
+    getAllNotebooks(userId: number): Observable<Notebook[]> {
+        return this.apiService.get<Notebook[]>(this.endpoint + '/getAllNotebooks/' +userId);
     }
 }
