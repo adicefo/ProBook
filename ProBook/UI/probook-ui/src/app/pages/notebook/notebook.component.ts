@@ -5,7 +5,7 @@ import { NotebookService } from '../../services/notebook-service';
 import { Notebook } from '../../interfaces/notebook-interface';
 import { Router } from '@angular/router';
 import { User } from '../../interfaces/user-interface';
-import { UserContextService } from '../../services/user-context-service';
+import { UserService } from '../../services/user-service';
 
 @Component({
   selector: 'app-notebook',
@@ -28,15 +28,17 @@ export class NotebookComponent implements OnInit {
   constructor(
     private notebookService: NotebookService,
     private router: Router, 
-    private userContextService:UserContextService
+
+    private userService:UserService
   ) { }
 
   ngOnInit(): void {
-    this.userContextService.user$.subscribe(user => {
-      this.loggedInUser=user;
-      this.loadNotebooks();
-    });
+   this.userService.getCurrentUser().subscribe((res:any)=>{
+    this.loggedInUser=res;
     this.loadNotebooks();
+   }, (err:any)=>{
+    this.loadNotebooks();
+   });
   }
 
   loadNotebooks(): void {
