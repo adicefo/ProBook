@@ -64,7 +64,9 @@ export class NotebookComponent implements OnInit {
     });
   }
   onNotebookClick(notebook: Notebook): void {
-
+    if (notebook.id) {
+      this.router.navigate(['/app/notebook', notebook.id]);
+    }
   }
   openAddNotebookDialog(id?: number): void {
     const dialogRef = this.dialog.open(AddNotebookComponent, {

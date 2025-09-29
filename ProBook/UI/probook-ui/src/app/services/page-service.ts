@@ -14,8 +14,8 @@ export class PageService {
     constructor(private apiService: ApiService) {
 
     }
-    getAll(params:any={}): Observable<SearchResult<Page>> {
-        return this.apiService.get<SearchResult<Page>>(this.endpoint,params);
+    getAll(params: any = {}): Observable<SearchResult<Page>> {
+        return this.apiService.get<SearchResult<Page>>(this.endpoint, params);
     }
     getById(id: number): Observable<Page> {
         return this.apiService.getById<Page>(this.endpoint, id);
@@ -29,7 +29,7 @@ export class PageService {
     delete(id: number): Observable<Page> {
         return this.apiService.delete<Page>(this.endpoint, id);
     }
-    getAllPages(notebookId:number): Observable<Page[]> {
-        return this.apiService.get<Page[]>(this.endpoint + '/getAllPages/'+{notebookId});
+    getAllPages(notebookId: number): Observable<Page[]> {
+        return this.apiService.get<Page[]>(this.endpoint + '/getAllPages/' + notebookId);
     }
 }

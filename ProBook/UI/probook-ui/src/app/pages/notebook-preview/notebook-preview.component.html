@@ -1,0 +1,110 @@
+<div class="notebook-preview-container">
+    <!-- Header with notebook info and back button -->
+    <div class="header">
+        <button mat-icon-button (click)="goBack()" class="back-button">
+            <mat-icon>arrow_back</mat-icon>
+        </button>
+        <div class="notebook-info" *ngIf="notebook">
+            <h2>{{ notebook.name }}</h2>
+            <p class="description" *ngIf="notebook.description">{{ notebook.description }}</p>
+        </div>
+    </div>
+
+    <!-- Loading state -->
+    <div class="loading-container" *ngIf="loading">
+        <mat-spinner></mat-spinner>
+        <p>Loading pages...</p>
+    </div>
+
+    <!-- Error state -->
+    <div class="error-container" *ngIf="error && !loading">
+        <mat-icon class="error-icon">error</mat-icon>
+        <p>{{ error }}</p>
+        <button mat-raised-button color="primary" (click)="goBack()">Go Back</button>
+    </div>
+
+    <!-- Notebook view -->
+    <div class="notebook-container" *ngIf="!loading && !error">
+        <!-- Navigation arrows -->
+        <button mat-fab class="nav-arrow left-arrow" [disabled]="!canNavigateLeft()" (click)="navigateLeft()">
+            <mat-icon>chevron_left</mat-icon>
+        </button>
+
+        <button mat-fab class="nav-arrow right-arrow" [disabled]="!canNavigateRight()" (click)="navigateRight()">
+            <mat-icon>chevron_right</mat-icon>
+        </button>
+
+        <!-- Notebook spread (two pages side by side) -->
+        <div class="notebook-spread">
+            <!-- Left Page -->
+            <div class="page left-page">
+                <div class="page-content" *ngIf="leftPage; else emptyLeftPage">
+                    <div class="page-header">
+                        <h3 class="page-title">{{ leftPage.title || 'Untitled' }}</h3>
+                        <span class="page-date">{{ formatDate(leftPage.createdAt) }}</span>
+                    </div>
+
+                    <div class="page-body">
+                        <div class="page-image" *ngIf="leftPage.imageUrl">
+                            <img [src]="leftPage.imageUrl" [alt]="leftPage.title || 'Page image'" />
+                        </div>
+                        <div class="page-text">
+                            <p>{{ leftPage.content || 'No content' }}</p>
+                        </div>
+                    </div>
+                </div>
+                <ng-template #emptyLeftPage>
+                    <div class="empty-page">
+                        <p>No content</p>
+                    </div>
+                </ng-template>
+            </div>
+
+            <!-- Right Page -->
+            <div class="page right-page">
+                <div class="page-content" *ngIf="rightPage; else emptyRightPage">
+                    <div class="page-header">
+                        <h3 class="page-title">{{ rightPage.title || 'Untitled' }}</h3>
+                        <span class="page-date">{{ formatDate(rightPage.createdAt) }}</span>
+                    </div>
+
+                    <div class="page-body">
+                        <div class="page-image" *ngIf="rightPage.imageUrl">
+                            <img [src]="rightPage.imageUrl" [alt]="rightPage.title || 'Page image'" />
+                        </div>
+                        <div class="page-text">
+                            <p>{{ rightPage.content || 'No content' }}</p>
+                        </div>
+                    </div>
+                </div>
+                <ng-template #emptyRightPage>
+                    <div class="empty-page" *ngIf="!showCreatePagePlaceholder">
+                        <p>No content</p>
+                    </div>
+                    <!-- Create new page placeholder -->
+                    <div class="create-page-placeholder" *ngIf="showCreatePagePlaceholder" (click)="onCreateNewPage()">
+                        <mat-icon class="add-icon">add_circle_outline</mat-icon>
+                        <h4>Create New Page</h4>
+                        <p>Click to add a new page to this notebook</p>
+                    </div>
+                </ng-template>
+            </div>
+        </div>
+
+        <!-- Page indicator -->
+        <div class="page-indicator" *ngIf="pages.length > 0">
+            <span>{{ currentPageIndex + 1 }}-{{ min(currentPageIndex + 2, pages.length) }} of {{ pages.length }}</span>
+        </div>
+
+        <!-- Empty state when no pages -->
+        <div class="empty-notebook" *ngIf="pages.length === 0">
+            <mat-icon class="empty-icon">book</mat-icon>
+            <h3>No pages yet</h3>
+            <p>This notebook is empty. Start by creating your first page.</p>
+            <button mat-raised-button color="primary" (click)="onCreateNewPage()">
+                <mat-icon>add</mat-icon>
+                Create First Page
+            </button>
+        </div>
+    </div>
+</div>

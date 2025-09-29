@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { LoginComponent } from './pages/login/login.component';
 import { MainComponent } from './layout/main/main.component';
 import { NotebookComponent } from './pages/notebook/notebook.component';
+import { NotebookPreviewComponent } from './pages/notebook-preview/notebook-preview.component';
 import { CollectionComponent } from './pages/collection/collection.component';
 import { SharedNotebookComponent } from './pages/shared-notebook/shared-notebook.component';
 
@@ -13,6 +14,7 @@ export const routes: Routes = [
         children: [
             { path: '', redirectTo: 'notebooks', pathMatch: 'full' },
             { path: 'notebooks', component: NotebookComponent },
+            { path: 'notebook/:id', component: NotebookPreviewComponent },
             { path: 'collections', component: CollectionComponent },
             { path: 'sharedNotebooks', component: SharedNotebookComponent }
         ]
