@@ -63,7 +63,10 @@ export class ApiService {
   }
 
   delete<T>(endpoint: string, id: number | string): Observable<T> {
-    return this.http.delete<T>(`${this.baseUrl}/${endpoint}/${id}`, {
+    let url=`${this.baseUrl}/${endpoint}`;
+    const queryString=this.getQueryString({id:id});
+    url = `${url}?${queryString}`;
+    return this.http.delete<T>(url, {
       headers: this.getHeaders(),
       withCredentials: true,
     });
