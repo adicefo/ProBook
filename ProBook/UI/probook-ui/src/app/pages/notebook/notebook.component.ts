@@ -6,7 +6,9 @@ import { Notebook } from '../../interfaces/notebook-interface';
 import { Router } from '@angular/router';
 import { User } from '../../interfaces/user-interface';
 import { UserService } from '../../services/user-service';
-
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { AddNotebookComponent } from '../add-notebook/add-notebook.component';
 @Component({
   selector: 'app-notebook',
   standalone: true,
@@ -22,30 +24,31 @@ export class NotebookComponent implements OnInit {
   loading = true;
   error: string | null = null;
 
-  loggedInUser:User|null=null;
+  loggedInUser: User | null = null;
 
 
   constructor(
     private notebookService: NotebookService,
-    private router: Router, 
+    private router: Router,
 
-    private userService:UserService
+    private userService: UserService,
+    private dialog: MatDialog, private snackBar: MatSnackBar
   ) { }
 
   ngOnInit(): void {
-   this.userService.getCurrentUser().subscribe((res:any)=>{
-    this.loggedInUser=res;
-    this.loadNotebooks();
-   }, (err:any)=>{
-    this.loadNotebooks();
-   });
+    this.userService.getCurrentUser().subscribe((res: any) => {
+      this.loggedInUser = res;
+      this.loadNotebooks();
+    }, (err: any) => {
+      this.loadNotebooks();
+    });
   }
 
   loadNotebooks(): void {
     this.loading = true;
     this.error = null;
 
-   
+
     const userId = this.loggedInUser?.id ?? 0;
 
     this.notebookService.getAllNotebooks(userId).subscribe({
@@ -60,12 +63,33 @@ export class NotebookComponent implements OnInit {
       }
     });
   }
-
   onNotebookClick(notebook: Notebook): void {
-    // TODO: Navigate to notebook detail page
-    console.log('Notebook clicked:', notebook);
-    // this.router.navigate(['/notebook', notebook.id]);
+
   }
+  openAddNotebookDialog(id?: number): void {
+    const dialogRef = this.dialog.open(AddNotebookComponent, {
+      width: '400px',
+      data: { userId: id }
+    });
+
+    dialogRef.afterClosed().subscribe((result: any) => {
+      if (result) {
+        console.log('Notebook data:', result);
+        this.notebookService.createNotebook(result.formData).subscribe((res: any) => {
+          this.snackBar.open('Notebook created successfully!', 'Close', {
+            duration: 3000
+          });
+          this.loadNotebooks();
+        }, (err: any) => {
+          this.snackBar.open('Failed to create notebook', 'Close', {
+            duration: 3000
+          });
+        })
+
+      }
+    });
+  }
+
 
   onMenuAction(action: string, notebook: Notebook): void {
     console.log(`${action} action for notebook:`, notebook);

@@ -9,9 +9,13 @@ export class ApiService {
 
   constructor(private http: HttpClient) {}
 
-  private getHeaders(): HttpHeaders {
+  private getHeaders(isFormData:boolean=false): HttpHeaders {
     const token = localStorage.getItem('auth_token');
-    let headers = new HttpHeaders().set('Content-Type', 'application/json');
+    let headers = new HttpHeaders();
+    if (!isFormData) {
+      headers = headers.set('Content-Type', 'application/json');
+    }
+  
 
     if (token) {
       headers = headers.set('Authorization', `Basic ${token}`);
@@ -45,7 +49,12 @@ export class ApiService {
       withCredentials: true,
     });
   }
-
+  postFormData<T>(endpoint: string, body: any): Observable<T> {
+    return this.http.post<T>(`${this.baseUrl}/${endpoint}`, body, {
+      headers: this.getHeaders(true),
+      withCredentials: true,
+    });
+  }
   put<T>(endpoint: string, id: number | string, body: any): Observable<T> {
     return this.http.put<T>(`${this.baseUrl}/${endpoint}/${id}`, body, {
       headers: this.getHeaders(),

@@ -12,8 +12,15 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatRippleModule } from '@angular/material/core';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-
+import { MatDialogModule, MatDialogContent, MatDialogTitle, MatDialogActions } from '@angular/material/dialog';
+import { MatSelectModule } from '@angular/material/select';
+import { MatOptionModule } from '@angular/material/core';
 @NgModule({
+    imports: [
+        MatDialogContent,
+        MatDialogTitle,
+        MatDialogActions
+    ],
     exports: [
         MatCardModule,
         MatFormFieldModule,
@@ -27,7 +34,13 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
         MatTooltipModule,
         MatRippleModule,
         MatBadgeModule,
-        MatProgressSpinnerModule
+        MatProgressSpinnerModule,
+        MatDialogModule,
+        MatDialogContent,
+        MatDialogTitle,
+        MatDialogActions,
+        MatSelectModule,
+        MatOptionModule
     ]
 })
 export class MaterialModule { }

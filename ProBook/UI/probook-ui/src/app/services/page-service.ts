@@ -21,7 +21,7 @@ export class PageService {
         return this.apiService.getById<Page>(this.endpoint, id);
     }
     create(page: any): Observable<Page> {
-        return this.apiService.post<Page>(this.endpoint, page);
+        return this.apiService.postFormData<Page>(this.endpoint, page);
     }
     update(id: number, page: any): Observable<Page> {
         return this.apiService.put<Page>(this.endpoint, id, page);
