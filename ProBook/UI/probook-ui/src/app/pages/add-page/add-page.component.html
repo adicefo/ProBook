@@ -1,0 +1,98 @@
+<div class="add-page-container">
+    <!-- Header -->
+    <div class="header">
+        <h2>Notebook: {{notebook?.name}}</h2>
+        <button mat-icon-button (click)="cancel()">
+            <mat-icon>close</mat-icon>
+        </button>
+    </div>
+
+    <!-- Form Container -->
+    <form [formGroup]="pageForm" class="page-form">
+
+        <!-- Title Section -->
+        <div class="form-section">
+            <h3>Page Title</h3>
+            <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Enter page title</mat-label>
+                <input matInput formControlName="title" placeholder="My Page Title" required />
+                <mat-error *ngIf="pageForm.get('title')?.hasError('required')">
+                    Title is required
+                </mat-error>
+            </mat-form-field>
+        </div>
+
+        <!-- Content Type Selection -->
+        <div class="form-section">
+            <h3>Content Type</h3>
+            <mat-button-toggle-group [value]="contentType" (change)="onContentTypeChange($event.value)"
+                class="content-type-toggle">
+                <mat-button-toggle value="text">
+                    <mat-icon>text_fields</mat-icon>
+                    Text Only
+                </mat-button-toggle>
+                <mat-button-toggle value="image">
+                    <mat-icon>image</mat-icon>
+                    Image Only
+                </mat-button-toggle>
+                <mat-button-toggle value="both">
+                    <mat-icon>article</mat-icon>
+                    Text & Image
+                </mat-button-toggle>
+            </mat-button-toggle-group>
+        </div>
+
+        <!-- Text Content Section -->
+        <div class="form-section" *ngIf="contentType === 'text' || contentType === 'both'">
+            <h3>Text Content</h3>
+            <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Enter your content</mat-label>
+                <textarea matInput formControlName="content" rows="6" placeholder="Write your page content here...">
+        </textarea>
+                <mat-error *ngIf="pageForm.get('content')?.hasError('required')">
+                    Content is required
+                </mat-error>
+            </mat-form-field>
+        </div>
+
+        <!-- Image Upload Section -->
+        <div class="form-section" *ngIf="contentType === 'image' || contentType === 'both'">
+            <h3>Image Upload</h3>
+
+            <!-- Upload Zone -->
+            <div class="upload-zone" *ngIf="!selectedFile" (click)="fileInput.click()">
+                <mat-icon class="upload-icon">cloud_upload</mat-icon>
+                <h4>Click to Upload Image</h4>
+                <p>Select an image file from your device</p>
+            </div>
+
+            <!-- File Preview -->
+            <div class="file-preview" *ngIf="selectedFile">
+                <div class="file-info">
+                    <mat-icon>image</mat-icon>
+                    <span>{{ selectedFileName }}</span>
+                    <button mat-icon-button (click)="removeFile()">
+                        <mat-icon>close</mat-icon>
+                    </button>
+                </div>
+                <button mat-stroked-button (click)="fileInput.click()">
+                    Change Image
+                </button>
+            </div>
+
+            <input #fileInput type="file" accept="image/*" (change)="onFileSelected($event)" style="display: none;" />
+        </div>
+
+    </form>
+
+    <!-- Footer Actions -->
+    <div class="footer-actions">
+        <button mat-button (click)="cancel()" [disabled]="loading">
+            Cancel
+        </button>
+        <button mat-raised-button color="primary" (click)="save()" [disabled]="!isFormValid() || loading">
+            <mat-spinner *ngIf="loading" diameter="20"></mat-spinner>
+            <span *ngIf="!loading">Create Page</span>
+        </button>
+    </div>
+</div>

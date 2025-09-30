@@ -23,9 +23,9 @@ export class NotebookComponent implements OnInit {
   notebooks: Notebook[] = [];
   loading = true;
   error: string | null = null;
-  showDeleteConfirmation:boolean=false;
+  showDeleteConfirmation: boolean = false;
   loggedInUser: User | null = null;
-  notebookToDelete:Notebook|null=null;
+  notebookToDelete: Notebook | null = null;
 
   constructor(
     private notebookService: NotebookService,
@@ -95,27 +95,27 @@ export class NotebookComponent implements OnInit {
 
   onMenuAction(action: string, notebook: Notebook): void {
     console.log(`${action} action for notebook:`, notebook);
-    if(event){
+    if (event) {
       event.stopPropagation();
     }
-    if(action==='delete'){
-      this.showDeleteConfirmation=true;
-      this.notebookToDelete=notebook;
+    if (action === 'delete') {
+      this.showDeleteConfirmation = true;
+      this.notebookToDelete = notebook;
     }
     // TODO: Implement menu actions (edit, delete, share, etc.)
   }
 
-  cancelDelete():void{
-    this.showDeleteConfirmation=false;
-    this.notebookToDelete=null;
+  cancelDelete(): void {
+    this.showDeleteConfirmation = false;
+    this.notebookToDelete = null;
   }
-  deleteNotebook():void{
-    this.notebookService.deleteNotebook(this.notebookToDelete?.id??0).subscribe((res:any)=>{
+  deleteNotebook(): void {
+    this.notebookService.deleteNotebook(this.notebookToDelete?.id ?? 0).subscribe((res: any) => {
       this.loadNotebooks();
-      this.snackBar.open('Notebook deleted successfully','Close');
-      this.showDeleteConfirmation=false;
-      this.notebookToDelete=null;
-    },(err:any)=>{
+      this.snackBar.open('Notebook deleted successfully', 'Close');
+      this.showDeleteConfirmation = false;
+      this.notebookToDelete = null;
+    }, (err: any) => {
       this.snackBar.open('Failed to delete notebook');
       console.log(err);
     })

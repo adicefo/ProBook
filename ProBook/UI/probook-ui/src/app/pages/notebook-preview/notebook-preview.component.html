@@ -5,8 +5,7 @@
             <mat-icon>arrow_back</mat-icon>
         </button>
         <div class="notebook-info" *ngIf="notebook">
-            <h2>{{ notebook.name }}</h2>
-            <p class="description" *ngIf="notebook.description">{{ notebook.description }}</p>
+            <h2> {{ notebook.name }}</h2>
         </div>
     </div>
 
@@ -24,7 +23,7 @@
     </div>
 
     <!-- Notebook view -->
-    <div class="notebook-container" *ngIf="!loading && !error">
+    <div class="notebook-container" *ngIf="!loading && !error&& pages.length>0">
         <!-- Navigation arrows -->
         <button mat-fab class="nav-arrow left-arrow" [disabled]="!canNavigateLeft()" (click)="navigateLeft()">
             <mat-icon>chevron_left</mat-icon>
@@ -57,7 +56,13 @@
                     <div class="empty-page">
                         <p>No content</p>
                     </div>
+                    <div class="create-page-placeholder" *ngIf="showCreatePagePlaceholder" (click)="onCreateNewPage()">
+                        <mat-icon class="add-icon">add_circle_outline</mat-icon>
+                        <h4>Create New Page</h4>
+                        <p>Click to add a new page to this notebook</p>
+                    </div>
                 </ng-template>
+
             </div>
 
             <!-- Right Page -->
@@ -90,21 +95,37 @@
                 </ng-template>
             </div>
         </div>
+        <!--Just in case the number of pages is even-->
+        <div class="notebook-spread2" *ngIf="showCreatePagePlaceholder && pages.length % 2 === 0">
+            <ng-template #emptyLeftPage>
+                <div class="empty-page">
+                    <p>No content</p>
+                </div>
+                <div class="create-page-placeholder" *ngIf="showCreatePagePlaceholder" (click)="onCreateNewPage()">
+                    <mat-icon class="add-icon">add_circle_outline</mat-icon>
+                    <h4>Create New Page</h4>
+                    <p>Click to add a new page to this notebook</p>
+                </div>
+            </ng-template>
+        </div>
 
         <!-- Page indicator -->
         <div class="page-indicator" *ngIf="pages.length > 0">
-            <span>{{ currentPageIndex + 1 }}-{{ min(currentPageIndex + 2, pages.length) }} of {{ pages.length }}</span>
+            <span>{{ showCreatePagePlaceholder&& pages.length%2===0? currentPageIndex :currentPageIndex+1 }}-{{
+                min(currentPageIndex + 2, pages.length) }} of {{ pages.length }}</span>
         </div>
 
-        <!-- Empty state when no pages -->
-        <div class="empty-notebook" *ngIf="pages.length === 0">
-            <mat-icon class="empty-icon">book</mat-icon>
-            <h3>No pages yet</h3>
-            <p>This notebook is empty. Start by creating your first page.</p>
-            <button mat-raised-button color="primary" (click)="onCreateNewPage()">
-                <mat-icon>add</mat-icon>
-                Create First Page
-            </button>
-        </div>
+
     </div>
+    <!-- Empty state when no pages -->
+    <div class="empty-notebook" *ngIf="pages.length === 0">
+        <mat-icon class="empty-icon">book</mat-icon>
+        <h3>No pages yet</h3>
+        <p>This notebook is empty. Start by creating your first page.</p>
+        <button mat-raised-button color="primary" (click)="onCreateNewPage()">
+            <mat-icon>add</mat-icon>
+            Create First Page
+        </button>
+    </div>
+
 </div>

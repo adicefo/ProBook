@@ -80,7 +80,7 @@ export class NotebookPreviewComponent implements OnInit {
 
   get showCreatePagePlaceholder(): boolean {
     // Show on the right side if there's an odd number of pages and we're at the last pair
-    return this.currentPageIndex + 1 >= this.pages.length && this.pages.length % 2 === 1;
+    return this.currentPageIndex + 1 >= this.pages.length;
   }
 
   canNavigateLeft(): boolean {
@@ -88,7 +88,7 @@ export class NotebookPreviewComponent implements OnInit {
   }
 
   canNavigateRight(): boolean {
-    return this.currentPageIndex + 2 < this.pages.length;
+    return this.currentPageIndex + 2 <= this.pages.length;
   }
 
   navigateLeft(): void {
@@ -108,8 +108,9 @@ export class NotebookPreviewComponent implements OnInit {
   }
 
   onCreateNewPage(): void {
-    // TODO: Implement create new page functionality
-    console.log('Create new page clicked');
+    if (this.notebook?.id) {
+      this.router.navigate(['/app/notebook', this.notebook.id, 'add-page']);
+    }
   }
 
   formatDate(date: Date | undefined): string {

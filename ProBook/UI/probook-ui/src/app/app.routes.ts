@@ -3,6 +3,7 @@ import { LoginComponent } from './pages/login/login.component';
 import { MainComponent } from './layout/main/main.component';
 import { NotebookComponent } from './pages/notebook/notebook.component';
 import { NotebookPreviewComponent } from './pages/notebook-preview/notebook-preview.component';
+import { AddPageComponent } from './pages/add-page/add-page.component';
 import { CollectionComponent } from './pages/collection/collection.component';
 import { SharedNotebookComponent } from './pages/shared-notebook/shared-notebook.component';
 
@@ -15,6 +16,7 @@ export const routes: Routes = [
             { path: '', redirectTo: 'notebooks', pathMatch: 'full' },
             { path: 'notebooks', component: NotebookComponent },
             { path: 'notebook/:id', component: NotebookPreviewComponent },
+            { path: 'notebook/:id/add-page', component: AddPageComponent },
             { path: 'collections', component: CollectionComponent },
             { path: 'sharedNotebooks', component: SharedNotebookComponent }
         ]
