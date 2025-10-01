@@ -21,11 +21,12 @@ namespace ProBook.API.Controllers
             return await (_service as INotebookService).GetAllNotebooks(userId);
         }
 
+        [HttpPost]
         public override  Task<Notebook> Insert([FromForm]NotebookInsertRequest request)
         {
             return base.Insert(request);
         }
-
+        [HttpPut]
         public override async Task<Notebook> Update(int id, [FromForm] NotebookUpdateRequest request)
         {
             return await base.Update(id, request);

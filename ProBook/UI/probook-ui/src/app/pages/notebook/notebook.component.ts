@@ -68,14 +68,17 @@ export class NotebookComponent implements OnInit {
       this.router.navigate(['/app/notebook', notebook.id]);
     }
   }
-  openAddNotebookDialog(id?: number): void {
+  openAddNotebookDialog(id?: number,notebook:Notebook|null=null): void {
     const dialogRef = this.dialog.open(AddNotebookComponent, {
       width: '400px',
-      data: { userId: id }
+      data: { userId: id,
+        notebook: notebook!==null?notebook:null
+       }
     });
 
     dialogRef.afterClosed().subscribe((result: any) => {
-      if (result) {
+      if (result&&!result.data.isEdit) {
+        
         console.log('Notebook data:', result);
         this.notebookService.createNotebook(result.formData).subscribe((res: any) => {
           this.snackBar.open('Notebook created successfully!', 'Close', {
@@ -89,6 +92,22 @@ export class NotebookComponent implements OnInit {
         })
 
       }
+      else if(result&&result.data.isEdit){
+
+        this.notebookService.updateNotebook(notebook?.id??0,result.formData).subscribe(
+          (res:any)=>{
+            this.snackBar.open('Notebook updated successfully.','Close',{
+              duration:2000
+            });
+            this.loadNotebooks();
+          },(err:any)=>{
+            this.snackBar.open('Failed to update notebook.','Close',{
+              duration:2000
+            });
+            this.loadNotebooks();
+          }
+        )
+      }
     });
   }
 
@@ -101,6 +120,9 @@ export class NotebookComponent implements OnInit {
     if (action === 'delete') {
       this.showDeleteConfirmation = true;
       this.notebookToDelete = notebook;
+    }
+    if(action==='edit'){
+      this.openAddNotebookDialog(notebook.userId,notebook);
     }
     // TODO: Implement menu actions (edit, delete, share, etc.)
   }

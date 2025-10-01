@@ -24,7 +24,7 @@ export class PageService {
         return this.apiService.postFormData<Page>(this.endpoint, page);
     }
     update(id: number, page: any): Observable<Page> {
-        return this.apiService.put<Page>(this.endpoint, id, page);
+        return this.apiService.putFormData<Page>(this.endpoint, id, page);
     }
     delete(id: number): Observable<Page> {
         return this.apiService.delete<Page>(this.endpoint, id);

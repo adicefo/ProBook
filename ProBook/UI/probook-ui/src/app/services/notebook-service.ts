@@ -24,7 +24,7 @@ export class NotebookService {
         return this.apiService.postFormData<Notebook>(this.endpoint, notebook);
     }
     updateNotebook(id: number, notebook: any): Observable<Notebook> {
-        return this.apiService.put<Notebook>(this.endpoint, id, notebook);
+        return this.apiService.putFormData<Notebook>(this.endpoint, id, notebook);
     }
     deleteNotebook(id: number): Observable<Notebook> {
         return this.apiService.delete<Notebook>(this.endpoint, id);

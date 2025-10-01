@@ -56,8 +56,20 @@ export class ApiService {
     });
   }
   put<T>(endpoint: string, id: number | string, body: any): Observable<T> {
-    return this.http.put<T>(`${this.baseUrl}/${endpoint}/${id}`, body, {
+    let url=`${this.baseUrl}/${endpoint}`;
+    const queryString=this.getQueryString({id:id});
+    url = `${url}?${queryString}`;
+    return this.http.put<T>(url, body, {
       headers: this.getHeaders(),
+      withCredentials: true,
+    });
+  }
+  putFormData<T>(endpoint: string, id: number | string, body: any):Observable<T>{
+    let url=`${this.baseUrl}/${endpoint}`;
+    const queryString=this.getQueryString({id:id});
+    url = `${url}?${queryString}`;
+    return this.http.put<T>(url, body, {
+      headers: this.getHeaders(true),
       withCredentials: true,
     });
   }

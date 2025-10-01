@@ -26,8 +26,9 @@ export class AddNotebookComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     this.notebookForm = this.fb.group({
-      name: ['', Validators.required],
-      description: ['']
+      name: [ this.data.notebook!==null?this.data.notebook.name:'', Validators.required],
+      description: [ this.data.notebook!==null?this.data.notebook.description:''],
+      imageUrl:[this.data.notebook!==null?this.data.notebook.imageUrl:null]
     });
   }
   ngOnInit(): void {
@@ -64,7 +65,8 @@ export class AddNotebookComponent implements OnInit {
           name: this.notebookForm.get('name')?.value,
           description: this.notebookForm.get('description')?.value,
           file: this.selectedFile,
-          userId: this.userId
+          userId: this.userId,
+          isEdit:this.data.notebook!==null
         }
       });
     }, 1000);
