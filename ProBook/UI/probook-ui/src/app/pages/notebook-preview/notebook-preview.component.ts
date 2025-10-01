@@ -6,6 +6,7 @@ import { PageService } from '../../services/page-service';
 import { NotebookService } from '../../services/notebook-service';
 import { Page } from '../../interfaces/page-interface';
 import { Notebook } from '../../interfaces/notebook-interface';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-notebook-preview',
@@ -22,8 +23,10 @@ export class NotebookPreviewComponent implements OnInit {
   pages: Page[] = [];
   currentPageIndex = 0;
   loading = true;
+  pageToDelete:Page|null=null;
   error: string | null = null;
-
+  showDeleteConfirmation:boolean=false;
+  snackBar:MatSnackBar=new MatSnackBar();
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -113,6 +116,33 @@ export class NotebookPreviewComponent implements OnInit {
     }
   }
 
+  onMenuAction(action: string, page: Page): void {
+    console.log(`${action} action for notebook:`, page);
+    if (event) {
+      event.stopPropagation();
+    }
+    if(action==='delete'){
+      this.showDeleteConfirmation=true;
+      this.pageToDelete=page;
+    }
+   
+    // TODO: Implement menu actions (edit, delete, share, etc.)
+  }
+  cancelDelete():void{
+    this.showDeleteConfirmation=false;
+    this.pageToDelete=null;
+  }
+  deletePage():void{
+    this.pageService.delete(this.pageToDelete?.id ?? 0).subscribe((res: any) => {
+      this.loadPages(this.notebook?.id ?? 0);
+      this.snackBar.open('Page deleted successfully', 'Close');
+      this.showDeleteConfirmation = false;
+      this.pageToDelete = null;
+    }, (err: any) => {
+      this.snackBar.open('Failed to delete page');
+      console.log(err);
+    })
+  }
   formatDate(date: Date | undefined): string {
     if (!date) return '';
     return new Date(date).toLocaleDateString('en-US', {
