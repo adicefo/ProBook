@@ -11,8 +11,8 @@ import { AuthService } from '../../services/auth-service';
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    MaterialModule
-  ],
+    MaterialModule,
+],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })

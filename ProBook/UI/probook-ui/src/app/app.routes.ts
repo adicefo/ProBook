@@ -6,9 +6,11 @@ import { NotebookPreviewComponent } from './pages/notebook-preview/notebook-prev
 import { AddPageComponent } from './pages/add-page/add-page.component';
 import { CollectionComponent } from './pages/collection/collection.component';
 import { SharedNotebookComponent } from './pages/shared-notebook/shared-notebook.component';
+import { RegisterComponent } from './pages/register/register.component';
 
 export const routes: Routes = [
     { path: '', pathMatch: 'full', component: LoginComponent },
+    {path:'register',component:RegisterComponent},
     {
         path: 'app',
         component: MainComponent,

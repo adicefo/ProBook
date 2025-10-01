@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ProBook.Model.Helper;
+using ProBook.Model.Model;
 using ProBook.Model.Request;
 using ProBook.Model.SearchObject;
 using ProBook.Services.Interface;
@@ -14,6 +15,13 @@ namespace ProBook.API.Controllers
         public UserController(IUserService service):base(service)
         {
             
+        }
+
+        [AllowAnonymous]
+        public override  Task<User> Insert(UserInsertRequest request)
+        {
+            return  base.Insert(request);
+
         }
 
         [HttpPost("/login")]
