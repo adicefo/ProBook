@@ -10,7 +10,7 @@ import { RegisterComponent } from './pages/register/register.component';
 
 export const routes: Routes = [
     { path: '', pathMatch: 'full', component: LoginComponent },
-    {path:'register',component:RegisterComponent},
+    { path: 'register', component: RegisterComponent },
     {
         path: 'app',
         component: MainComponent,
@@ -19,6 +19,7 @@ export const routes: Routes = [
             { path: 'notebooks', component: NotebookComponent },
             { path: 'notebook/:id', component: NotebookPreviewComponent },
             { path: 'notebook/:id/add-page', component: AddPageComponent },
+            { path: 'notebook/:id/edit-page/:pageId', component: AddPageComponent },
             { path: 'collections', component: CollectionComponent },
             { path: 'sharedNotebooks', component: SharedNotebookComponent }
         ]

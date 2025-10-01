@@ -129,6 +129,62 @@
     color: #333;
 }
 
+/* Existing Image Preview (Edit Mode) */
+.existing-image-preview {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 20px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background: #f8f9fa;
+}
+
+.image-container {
+    position: relative;
+    display: inline-block;
+    max-width: 100%;
+}
+
+.preview-image {
+    max-width: 100%;
+    max-height: 300px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    object-fit: contain;
+}
+
+.image-overlay {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.image-container:hover .image-overlay {
+    opacity: 1;
+}
+
+.remove-btn {
+    background: rgba(244, 67, 54, 0.9);
+    color: white;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+}
+
+.remove-btn:hover {
+    background: rgba(244, 67, 54, 1);
+}
+
+.image-actions {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+}
+
 /* Footer Actions */
 .footer-actions {
     display: flex;

@@ -23,10 +23,10 @@ export class NotebookPreviewComponent implements OnInit {
   pages: Page[] = [];
   currentPageIndex = 0;
   loading = true;
-  pageToDelete:Page|null=null;
+  pageToDelete: Page | null = null;
   error: string | null = null;
-  showDeleteConfirmation:boolean=false;
-  snackBar:MatSnackBar=new MatSnackBar();
+  showDeleteConfirmation: boolean = false;
+  snackBar: MatSnackBar = new MatSnackBar();
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -121,18 +121,26 @@ export class NotebookPreviewComponent implements OnInit {
     if (event) {
       event.stopPropagation();
     }
-    if(action==='delete'){
-      this.showDeleteConfirmation=true;
-      this.pageToDelete=page;
+    if (action === 'delete') {
+      this.showDeleteConfirmation = true;
+      this.pageToDelete = page;
+    } else if (action === 'edit') {
+      this.editPage(page);
     }
-   
-    // TODO: Implement menu actions (edit, delete, share, etc.)
+
+    // TODO: Implement other menu actions (share, etc.)
   }
-  cancelDelete():void{
-    this.showDeleteConfirmation=false;
-    this.pageToDelete=null;
+
+  editPage(page: Page): void {
+    if (this.notebook?.id && page.id) {
+      this.router.navigate(['/app/notebook', this.notebook.id, 'edit-page', page.id]);
+    }
   }
-  deletePage():void{
+  cancelDelete(): void {
+    this.showDeleteConfirmation = false;
+    this.pageToDelete = null;
+  }
+  deletePage(): void {
     this.pageService.delete(this.pageToDelete?.id ?? 0).subscribe((res: any) => {
       this.loadPages(this.notebook?.id ?? 0);
       this.snackBar.open('Page deleted successfully', 'Close');
