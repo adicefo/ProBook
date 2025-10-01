@@ -48,6 +48,7 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<INotebookService, NotebookService>();
 builder.Services.AddTransient<IPageService, PageService>();
+builder.Services.AddTransient<ISharedNotebookService, SharedNotebookService>();
 
 
 builder.Services.AddDbContext<ProBookDBContext>(options =>
