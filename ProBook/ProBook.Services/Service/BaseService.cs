@@ -28,6 +28,7 @@ namespace ProBook.Services.Service
             var query = Context.Set<TDbEntity>().AsQueryable();
 
             query = AddFilter(search, query);
+            query = AddInclude(query);
 
             int? count = await query.CountAsync();
            

@@ -29,6 +29,9 @@ namespace ProBook.Services.Service
                 filteredQuery = filteredQuery.Where(x => x.FromUserId == search.FromUserId);
             if(search.ToUserId.HasValue)
                 filteredQuery = filteredQuery.Where(x => x.ToUserId == search.ToUserId);
+            filteredQuery.Include(x => x.Notebook);
+            filteredQuery.Include(x => x.FromUser);
+            filteredQuery.Include(x => x.ToUser);
             return filteredQuery;
 
         }
