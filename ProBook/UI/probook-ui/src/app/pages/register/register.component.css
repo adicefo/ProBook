@@ -12,7 +12,9 @@ body{
     background: linear-gradient(135deg, #3f51b5, #ffa0f9);
 
 }
-
+.back-button{
+    margin-left:10px;
+}
 mat-card {
     max-width: 400px;
     width: 100%;
@@ -47,7 +49,8 @@ mat-card-content {
 .image-center {
     width: 120px;
     height: 100px;
-    margin-left: 120px;
+    margin-top: -50px;
+    margin-left: 115px;
 }
 
 form {

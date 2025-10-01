@@ -60,4 +60,7 @@ export class RegisterComponent {
   toggleVisibility(){
 this.isObscured=!this.isObscured;
   }
+  navigateToLogin(){
+    this.router.navigate(['']);
+  }
 }
