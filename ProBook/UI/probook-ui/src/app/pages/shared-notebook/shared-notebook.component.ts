@@ -82,7 +82,9 @@ export class SharedNotebookComponent implements OnInit {
 
   onNotebookClick(sharedNotebook: SharedNotebook): void {
     if (sharedNotebook.notebook?.id) {
-      this.router.navigate(['/app/notebook', sharedNotebook.notebook.id]);
+      this.router.navigate(['/app/notebook', sharedNotebook.notebook.id], { 
+        queryParams: { isShare: true }
+      });
     }
   }
 

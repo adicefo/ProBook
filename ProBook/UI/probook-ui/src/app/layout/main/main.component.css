@@ -63,7 +63,12 @@
     border: 1px solid white;
 }
 
-
+.logout-button{
+    color:red !important; 
+}
+.logout-icon{
+    color:red !important; 
+}
 nav[mat-tab-nav-bar] {
     background: #e8eaf6;
     /* light indigo background */

@@ -66,16 +66,12 @@
                             <mat-icon>more_vert</mat-icon>
                         </button>
                         <mat-menu #notebookMenu="matMenu">
-                            <button mat-menu-item (click)="onMenuAction('comment', sharedNotebook, $event)">
-                                <mat-icon>comment</mat-icon>
-                                <span>Leave Comment</span>
-                            </button>
                             <button mat-menu-item disabled>
-                                <mat-icon class="disabled-icon">edit_off</mat-icon>
+                                <mat-icon class="disabled-icon">edit</mat-icon>
                                 <span class="disabled-text">Edit (Locked)</span>
                             </button>
                             <button mat-menu-item disabled>
-                                <mat-icon class="disabled-icon">delete_outline</mat-icon>
+                                <mat-icon class="disabled-icon">delete</mat-icon>
                                 <span class="disabled-text">Delete (Locked)</span>
                             </button>
                         </mat-menu>

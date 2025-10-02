@@ -264,13 +264,6 @@
     transform: scale(1.1);
 }
 
-.disabled-icon {
-    color: #cbd5e0 !important;
-}
-
-.disabled-text {
-    color: #cbd5e0 !important;
-}
 
 /* Notebook Content */
 .notebook-content {

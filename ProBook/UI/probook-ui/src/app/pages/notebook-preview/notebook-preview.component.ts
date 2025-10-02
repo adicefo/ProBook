@@ -27,6 +27,7 @@ export class NotebookPreviewComponent implements OnInit {
   error: string | null = null;
   showDeleteConfirmation: boolean = false;
   snackBar: MatSnackBar = new MatSnackBar();
+  isShare: boolean = false;
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -37,6 +38,8 @@ export class NotebookPreviewComponent implements OnInit {
   ngOnInit(): void {
     this.route.params.subscribe(params => {
       const notebookId = +params['id'];
+      this.isShare= this.route.snapshot.queryParams['isShare'] as boolean;
+      console.log(this.isShare);
       if (notebookId) {
         this.loadNotebook(notebookId);
         this.loadPages(notebookId);
