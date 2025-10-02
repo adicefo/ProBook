@@ -9,6 +9,8 @@ import { UserService } from '../../services/user-service';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AddNotebookComponent } from '../add-notebook/add-notebook.component';
+import { ShareModalComponent } from '../share-modal/share-modal.component';
+import { SharedNotebookService } from '../../services/sharedNotebook-service';
 @Component({
   selector: 'app-notebook',
   standalone: true,
@@ -30,7 +32,7 @@ export class NotebookComponent implements OnInit {
   constructor(
     private notebookService: NotebookService,
     private router: Router,
-
+    private sharedNotebookService: SharedNotebookService,
     private userService: UserService,
     private dialog: MatDialog, private snackBar: MatSnackBar
   ) { }
@@ -68,17 +70,45 @@ export class NotebookComponent implements OnInit {
       this.router.navigate(['/app/notebook', notebook.id]);
     }
   }
-  openAddNotebookDialog(id?: number,notebook:Notebook|null=null): void {
-    const dialogRef = this.dialog.open(AddNotebookComponent, {
-      width: '400px',
-      data: { userId: id,
-        notebook: notebook!==null?notebook:null
-       }
+  openShareModal(notebook: Notebook): void {
+    const dialogRef = this.dialog.open(ShareModalComponent, {
+      width: '600px',
+      data: {
+        fromUserId: this.loggedInUser?.id,
+        notebook: notebook,
+      }
     });
 
     dialogRef.afterClosed().subscribe((result: any) => {
-      if (result&&!result.data.isEdit) {
+      
+      if (result && result.formData) {
+        console.log('Sharing notebook with user:', result.user);
+        this.sharedNotebookService.create(result.formData).subscribe((res:any)=>{
+          this.snackBar.open('Notebook shared successfully','Close',{
+            duration:2000
+          }); 
+
+        },(err:any)=>{
+          this.snackBar.open('Failed to share notebook','Close',{
+            duration:2000
+          });
+        })
         
+      }
+    });
+  }
+  openAddNotebookDialog(id?: number, notebook: Notebook | null = null): void {
+    const dialogRef = this.dialog.open(AddNotebookComponent, {
+      width: '400px',
+      data: {
+        userId: id,
+        notebook: notebook !== null ? notebook : null
+      }
+    });
+
+    dialogRef.afterClosed().subscribe((result: any) => {
+      if (result && !result.data.isEdit) {
+
         console.log('Notebook data:', result);
         this.notebookService.createNotebook(result.formData).subscribe((res: any) => {
           this.snackBar.open('Notebook created successfully!', 'Close', {
@@ -92,17 +122,17 @@ export class NotebookComponent implements OnInit {
         })
 
       }
-      else if(result&&result.data.isEdit){
+      else if (result && result.data.isEdit) {
 
-        this.notebookService.updateNotebook(notebook?.id??0,result.formData).subscribe(
-          (res:any)=>{
-            this.snackBar.open('Notebook updated successfully.','Close',{
-              duration:2000
+        this.notebookService.updateNotebook(notebook?.id ?? 0, result.formData).subscribe(
+          (res: any) => {
+            this.snackBar.open('Notebook updated successfully.', 'Close', {
+              duration: 2000
             });
             this.loadNotebooks();
-          },(err:any)=>{
-            this.snackBar.open('Failed to update notebook.','Close',{
-              duration:2000
+          }, (err: any) => {
+            this.snackBar.open('Failed to update notebook.', 'Close', {
+              duration: 2000
             });
             this.loadNotebooks();
           }
@@ -121,8 +151,11 @@ export class NotebookComponent implements OnInit {
       this.showDeleteConfirmation = true;
       this.notebookToDelete = notebook;
     }
-    if(action==='edit'){
-      this.openAddNotebookDialog(notebook.userId,notebook);
+    if (action === 'edit') {
+      this.openAddNotebookDialog(notebook.userId, notebook);
+    }
+    if (action === 'share') {
+      this.openShareModal(notebook);
     }
     // TODO: Implement menu actions (edit, delete, share, etc.)
   }

@@ -128,7 +128,7 @@ export class NotebookPreviewComponent implements OnInit {
       this.editPage(page);
     }
 
-    // TODO: Implement other menu actions (share, etc.)
+    
   }
 
   editPage(page: Page): void {

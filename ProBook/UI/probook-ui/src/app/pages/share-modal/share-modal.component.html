@@ -1,0 +1,85 @@
+<h2 mat-dialog-title>Share Notebook</h2>
+
+<mat-dialog-content class="dialog-content">
+    <!-- Notebook Name (Readonly) -->
+    <div class="notebook-info">
+        <label class="info-label">Notebook</label>
+        <div class="notebook-display">
+            <i class="bi bi-journal-text"></i>
+            <span>{{ notebook!.name }}</span>
+        </div>
+    </div>
+
+    <!-- User Search Section -->
+    <div class="user-search-section">
+        <label class="info-label">Search User</label>
+
+        <!-- Inline Filters -->
+        <div class="filters-inline">
+            <div class="input-group">
+                <span class="input-icon"><i class="bi bi-search"></i></span>
+                <input type="text" [formControl]="nameFilter" placeholder="Search by name..." class="form-control"
+                    (focus)="onFilterFocus()" />
+            </div>
+            <div class="input-group">
+                <span class="input-icon"><i class="bi bi-search"></i></span>
+                <input type="text" [formControl]="surnameFilter" placeholder="Search by surname..." class="form-control"
+                    (focus)="onFilterFocus()" />
+            </div>
+           
+        </div>
+
+        <!-- User Dropdown -->
+        <div class="user-dropdown" *ngIf="showDropdown && !loading">
+            <div class="user-list">
+                <div class="user-item" *ngFor="let user of filteredUsers" (click)="selectUser(user)">
+                    <div class="user-avatar">
+                        <i class="bi bi-person-circle"></i>
+                    </div>
+                    <div class="user-details">
+                        <div class="user-name">{{ user.name }} {{ user.surname }}</div>
+                    </div>
+                </div>
+                <div class="no-users" *ngIf="filteredUsers.length === 0">
+                    <i class="bi bi-inbox"></i>
+                    <span>No users found</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading State -->
+        <div class="loading-state" *ngIf="loading">
+            <mat-spinner diameter="30"></mat-spinner>
+            <span>Loading users...</span>
+        </div>
+    </div>
+
+    <!-- Selected User Display -->
+    <div class="selected-user-section" *ngIf="selectedUser">
+        <label class="info-label">Selected User</label>
+        <div class="selected-user-card">
+            <div class="user-info">
+                <div class="user-avatar-large">
+                    <i class="bi bi-person-circle"></i>
+                </div>
+                <div class="user-details">
+                    <div class="user-name-large">{{ selectedUser.name }} {{ selectedUser.surname }}</div>
+                    <div class="user-email">{{ selectedUser.email }}</div>
+                    <div class="user-username" *ngIf="selectedUser.username">
+                        <i class="bi bi-at"></i> {{ selectedUser.username }}
+                    </div>
+                </div>
+            </div>
+            <button class="btn-remove" (click)="removeSelectedUser()" title="Remove selection">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+    </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button mat-button (click)="cancel()">Cancel</button>
+    <button mat-raised-button color="primary" (click)="save()" [disabled]="!selectedUser || loading">
+        <span>Share</span>
+    </button>
+</mat-dialog-actions>
