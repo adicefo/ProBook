@@ -68,7 +68,7 @@
                         <mat-menu #notebookMenu="matMenu">
                             <button mat-menu-item disabled>
                                 <mat-icon class="disabled-icon">edit</mat-icon>
-                                <span class="disabled-text">Edit (Locked)</span>
+                                <span class="disabled-text">Edit</span>
                             </button>
                             <button mat-menu-item disabled>
                                 <mat-icon class="disabled-icon">delete</mat-icon>
@@ -135,9 +135,13 @@
                 <div class="shared-item-content">
                     <div class="shared-item-header">
                         <div class="shared-item-info">
-                            <mat-icon class="notebook-icon">book</mat-icon>
+                            <mat-icon class="notebook-icon" [matBadge]="getCommentCount(sharedNotebook.id)"
+                                [matBadgeHidden]="getCommentCount(sharedNotebook.id) === 0" matBadgeColor="warn"
+                                matBadgeSize="medium" (click)="onBadgeClick(sharedNotebook, $event)"
+                                [class.has-badge]="getCommentCount(sharedNotebook.id) > 0"
+                                [matTooltip]="getCommentCount(sharedNotebook.id) > 0 ? 'Click to mark ' + getCommentCount(sharedNotebook.id) + ' new comment(s) as viewed' : 'No new comments'">book</mat-icon>
                             <div class="shared-item-text">
-                                <h3 class="shared-notebook-name">{{ sharedNotebook.notebook?.name || 'Untitled
+                                <h3 class="shared-notebook-name">{{sharedNotebook.notebook?.name || 'Untitled
                                     Notebook' }}</h3>
                                 <p class="shared-with">
                                     <mat-icon class="small-icon">person</mat-icon>

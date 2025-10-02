@@ -3,6 +3,7 @@ import { SearchResult } from "../interfaces/searchResult";
 import { SharedNotebook } from "../interfaces/sharedNotebook-interface";
 import { ApiService } from "./api-service";
 import { Injectable } from "@angular/core";
+import { NumberOfCommentsResponse } from "../interfaces/numberComments-interface";
 
 @Injectable({
     providedIn: 'root'
@@ -28,5 +29,8 @@ export class SharedNotebookService{
     }
     delete(id:number):Observable<SharedNotebook>{
         return this.apiService.delete<SharedNotebook>(this.endpoint,id);
+    }
+    getNumberOfComments(id:number):Observable<NumberOfCommentsResponse>{
+      return  this.apiService.get<NumberOfCommentsResponse>(this.endpoint + '/getNumberOfComments/' + id);
     }
 }

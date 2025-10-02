@@ -19,7 +19,22 @@ namespace ProBook.Services.Service
         {
 
         }
+        public async Task<Tuple<int,List<int>>> GetNumberOfComments(int id)
+        {
+            var sharedNotebook = await Context.SharedNotebooks.FindAsync(id);
+            if (sharedNotebook == null)
+                throw new Exception("Entity not found");
 
+            
+            var comments = await Context.Comments
+                .Where(x => x.Page.NotebookId == sharedNotebook.NotebookId)
+                .Where(x => x.Viewed == false)
+                .Select(x=>x.Id).ToListAsync();
+            var countComments=comments.Count();
+           
+            return Tuple.Create(countComments,comments);
+            
+        }
         public override IQueryable<SharedNotebook> AddFilter(SharedNotebookSearchObject search, IQueryable<SharedNotebook> query)
         {
             var filteredQuery= base.AddFilter(search, query);
@@ -43,6 +58,16 @@ namespace ProBook.Services.Service
 
         public override async Task BeforeInsert(SharedNotebook entity, SharedNotebookInsertRequest request)
         {
+            if (CheckIfAlreadyShared(request))
+                throw new Exception("Notebook has been already shared");
+
+            if (CheckValidNotebooks(request))
+                throw new Exception("Not valid elements");
+
+            if (request.FromUserId == request.ToUserId)
+                throw new Exception("Invalid request");
+
+
             entity.SharedDate= DateTime.UtcNow;
             Database.Notebook notebook = await Context.Notebooks.FindAsync(request.NotebookId);
             if (notebook == null)
@@ -68,5 +93,24 @@ namespace ProBook.Services.Service
         {
             await base.BeforeUpdate(entity, request);
         }
+
+        public bool CheckIfAlreadyShared(SharedNotebookInsertRequest request)
+        {
+            var sharedNotebook = Context.SharedNotebooks.
+                Where(x => x.NotebookId == request.NotebookId && x.FromUserId == request.FromUserId && x.ToUserId == request.ToUserId)
+                .Any();
+            return sharedNotebook;
+        }
+
+        public bool CheckValidNotebooks(SharedNotebookInsertRequest request)
+        {
+            var notebook = Context.Notebooks.
+                Where(x => x.UserId == request.FromUserId)
+                .Where(x => x.Id == request.NotebookId)
+                .Any();
+            return !notebook;
+        }
+
+        
     }
 }

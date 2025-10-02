@@ -17,5 +17,11 @@ namespace ProBook.API.Controllers
         {
         }
 
+        [HttpGet("/SharedNotebook/getNumberOfComments/{id}")]
+        public async Task<Tuple<int,List<int>>> GetNumberOfComments(int id)
+        {
+            return await (_service as ISharedNotebookService).GetNumberOfComments(id);
+        }
+
     }
 }

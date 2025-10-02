@@ -14,7 +14,7 @@ namespace ProBook.Model.Model
         public DateTime? CreatedAt { get; set; }
         public int? PageId { get; set; }
         public int? UserId { get; set; }
-
+        public bool? Viewed { get; set; }
         public virtual Model.Page? Page { get; set; } = null!;
         public virtual Model.User? User { get; set; } = null!;
     }

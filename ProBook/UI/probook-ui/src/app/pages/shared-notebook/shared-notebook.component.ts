@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SharedNotebook } from '../../interfaces/sharedNotebook-interface';
 import { User } from '../../interfaces/user-interface';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-shared-notebook',
@@ -28,7 +29,8 @@ export class SharedNotebookComponent implements OnInit {
   selectedTab: 'received' | 'shared' = 'received';
   sharedNotebookToDelete: SharedNotebook | null = null;
   showDeleteConfirmation = false;
-
+  commentCounts: Map<number, number> = new Map(); 
+  
   constructor(
     private sharedNotebookService: SharedNotebookService,
     private userService: UserService,
@@ -37,18 +39,7 @@ export class SharedNotebookComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.userService.getCurrentUser().subscribe({
-      next: (user) => {
-        this.currentUser = user;
-        this.loadSharedNotebooks();
-      },
-      error: (err) => {
-        this.error = 'Failed to load user information';
-        this.loading = false;
-        this.loadingSharedByMe = false;
-        console.error('Error loading user:', err);
-      }
-    });
+    
   }
 
   loadSharedNotebooks(): void {
@@ -72,17 +63,54 @@ export class SharedNotebookComponent implements OnInit {
       next: (result) => {
         this.sharedByMeNotebooks = result.result || [];
         this.loadingSharedByMe = false;
+        // Load comment counts for each shared notebook
+        this.loadCommentCounts();
       },
       error: (err) => {
         this.loadingSharedByMe = false;
         console.error('Error loading shared by me:', err);
       }
     });
+
+  }
+
+  loadCommentCounts(): void {
+    if (this.sharedByMeNotebooks.length === 0) return;
+    this.sharedByMeNotebooks.forEach(element => {
+      this.sharedNotebookService.getNumberOfComments(element.id!).subscribe({
+        next: (result) => {
+          this.commentCounts.set(element.id!, result.item1);
+        },
+        error: (err) => {
+          console.error('Error loading comment counts:', err);
+        }
+      });
+    });
+     
+    
+  }
+
+  getCommentCount(sharedNotebookId: number | undefined): number {
+    if (!sharedNotebookId) return 0;
+    return this.commentCounts.get(sharedNotebookId) || 0;
+  }
+
+  onBadgeClick(sharedNotebook: SharedNotebook, event: Event): void {
+    event.stopPropagation();
+
+    if (!sharedNotebook.id) return;
+
+    // Clear the badge count
+    this.commentCounts.set(sharedNotebook.id, 0);
+
+    // TODO: Backend logic will be implemented later to mark comments as read
+    // For now, just show a message
+    this.snackBar.open('Comments marked as viewed', 'Close', { duration: 2000 });
   }
 
   onNotebookClick(sharedNotebook: SharedNotebook): void {
     if (sharedNotebook.notebook?.id) {
-      this.router.navigate(['/app/notebook', sharedNotebook.notebook.id], { 
+      this.router.navigate(['/app/notebook', sharedNotebook.notebook.id], {
         queryParams: { isShare: true }
       });
     }

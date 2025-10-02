@@ -92,6 +92,10 @@ export class NotebookComponent implements OnInit {
           this.snackBar.open('Failed to share notebook','Close',{
             duration:2000
           });
+          this.snackBar.open('Already shared with this user','Close',{
+            duration:2000
+          });
+
         })
         
       }
