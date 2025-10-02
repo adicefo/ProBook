@@ -15,7 +15,7 @@ namespace ProBook.Model.Model
         public int? PageId { get; set; }
         public int? UserId { get; set; }
 
-        public virtual Page Page { get; set; } = null!;
-        public virtual User User { get; set; } = null!;
+        public virtual Model.Page? Page { get; set; } = null!;
+        public virtual Model.User? User { get; set; } = null!;
     }
 }

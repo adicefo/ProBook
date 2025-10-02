@@ -29,20 +29,16 @@ namespace ProBook.Services.Service
                 filteredQuery = filteredQuery.Where(x => x.FromUserId == search.FromUserId);
             if(search.ToUserId.HasValue)
                 filteredQuery = filteredQuery.Where(x => x.ToUserId == search.ToUserId);
-            filteredQuery.Include(x => x.Notebook);
-            filteredQuery.Include(x => x.FromUser);
-            filteredQuery.Include(x => x.ToUser);
+            filteredQuery.Include(x => x.Notebook).Include(x=>x.FromUser).Include(x=>x.ToUser);
+            
             return filteredQuery;
 
         }
 
         public override IQueryable<SharedNotebook> AddInclude(IQueryable<SharedNotebook> query)
         {
-            var filtered= base.AddInclude(query);
-            filtered = filtered.Include(x => x.Notebook);
-            filtered=filtered.Include(x => x.FromUserId);
-            filtered = filtered.Include(x => x.ToUserId);
-            return filtered;
+            
+            return query.Include(x=>x.Notebook).Include(x=>x.FromUser).Include(x=>x.ToUser);
         }
 
         public override async Task BeforeInsert(SharedNotebook entity, SharedNotebookInsertRequest request)

@@ -22,7 +22,7 @@ namespace ProBook.Services.Service
             Context = context;
             Mapper = mapper;
         }
-        public async Task<PagedResult<TModel>> GetAsync(TSearch search)
+        public virtual async Task<PagedResult<TModel>> GetAsync(TSearch search)
         {
             List<TModel> result = new List<TModel>();
             var query = Context.Set<TDbEntity>().AsQueryable();
@@ -47,7 +47,7 @@ namespace ProBook.Services.Service
             return pageResult;
         }
 
-        public async Task<TModel> GetByIdAsync(int id)
+        public virtual async Task<TModel> GetByIdAsync(int id)
         {
             var query = Context.Set<TDbEntity>().AsQueryable();
 

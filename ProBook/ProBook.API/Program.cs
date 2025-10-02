@@ -1,9 +1,11 @@
 using Mapster;
+using MapsterMapper;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using ProBook.API.Auth;
 using ProBook.API.Helper;
+using ProBook.Services.Config;
 using ProBook.Services.Database;
 using ProBook.Services.Helper;
 using ProBook.Services.Interface;
@@ -57,7 +59,8 @@ builder.Services.AddDbContext<ProBookDBContext>(options =>
 
 
 builder.Services.AddMapster();
-TypeAdapterConfig.GlobalSettings.Default.MapToConstructor(true);
+var config = TypeAdapterConfig.GlobalSettings;
+MappsterConfig.RegisterMappings();
 
 builder.Services.AddAuthentication("BasicAuthentication")
     .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);
@@ -67,7 +70,9 @@ builder.Services.Configure<GoogleCloudSettings>(
 
 builder.Services.AddTransient<ImageUploadHelper>();
 builder.Services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
-
+// Register IMapper for DI
+builder.Services.AddSingleton(config);
+builder.Services.AddScoped<IMapper, ServiceMapper>();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAngularDev",

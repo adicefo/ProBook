@@ -35,11 +35,14 @@ namespace ProBook.Services.Service
             return null;
         }
 
+
+
         public override IQueryable<Database.Comment> AddFilter(CommentSearchObject search, IQueryable<Database.Comment> query)
         {
             var filteredQuery = base.AddFilter(search, query);
             if (search.PageId.HasValue)
                 filteredQuery = filteredQuery.Where(x => x.PageId == search.PageId);
+           filteredQuery=filteredQuery.Include(x => x.User).Include(x => x.Page);
             return filteredQuery;
         }
         public override IQueryable<Database.Comment> AddInclude(IQueryable<Database.Comment> query)
@@ -49,12 +52,12 @@ namespace ProBook.Services.Service
         public override async Task BeforeInsert(Database.Comment entity, CommentInsertRequest request)
         {
             entity.CreatedAt= DateTime.UtcNow;
-            Database.Page page = await Context.Pages.FindAsync(request.PageId);
+            Database.Page page = await Context.Pages.FirstOrDefaultAsync(x=>x.Id==request.PageId);
             if (page == null)
                 throw new Exception("Entity not found");
             entity.Page = page;
 
-            Database.User user = await Context.Users.FindAsync(request.UserId);
+            Database.User user =  await Context.Users.FirstOrDefaultAsync(x=>x.Id==request.UserId);
             if (user == null)
                 throw new Exception("Entity not found");
             entity.User = user;
