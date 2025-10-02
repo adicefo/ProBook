@@ -1,1 +1,216 @@
-<p>shared-notebook works!</p>
+<div class="shared-notebooks-container">
+    <!-- Header Section -->
+    <div class="header">
+        <div class="header-content">
+            <mat-icon class="header-icon">people</mat-icon>
+            <div class="header-text">
+                <h1>Shared Notebooks</h1>
+                <p class="subtitle">Collaborate and share knowledge</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs-container">
+        <button class="tab-button" [class.active]="selectedTab === 'received'" (click)="changeTab('received')">
+            <mat-icon>inbox</mat-icon>
+            <span>Shared With Me</span>
+            <span class="badge" *ngIf="sharedWithMeNotebooks.length > 0">{{sharedWithMeNotebooks.length}}</span>
+        </button>
+        <button class="tab-button" [class.active]="selectedTab === 'shared'" (click)="changeTab('shared')">
+            <mat-icon>send</mat-icon>
+            <span>Shared By Me</span>
+            <span class="badge" *ngIf="sharedByMeNotebooks.length > 0">{{sharedByMeNotebooks.length}}</span>
+        </button>
+    </div>
+
+    <!-- Shared With Me Section -->
+    <div *ngIf="selectedTab === 'received'" class="section">
+        <!-- Loading State -->
+        <div *ngIf="loading" class="loading-container">
+            <mat-spinner color="primary"></mat-spinner>
+            <p>Loading shared notebooks...</p>
+        </div>
+
+        <!-- Error State -->
+        <div *ngIf="error && !loading" class="error-container">
+            <mat-icon>error_outline</mat-icon>
+            <p>{{ error }}</p>
+            <button mat-raised-button color="primary" (click)="loadSharedNotebooks()">
+                <mat-icon>refresh</mat-icon>
+                Try Again
+            </button>
+        </div>
+
+        <!-- Notebooks Grid -->
+        <div *ngIf="!loading && !error" class="notebooks-grid">
+            <div *ngFor="let sharedNotebook of sharedWithMeNotebooks; let i = index" class="notebook-card"
+                [style.--notebook-color]="getNotebookCoverColor(i)" (click)="onNotebookClick(sharedNotebook)" matRipple>
+                <!-- Notebook Cover -->
+                <div class="notebook-cover">
+                    <!-- Shared Badge -->
+                    <div class="shared-badge">
+                        <mat-icon>person</mat-icon>
+                        <span>{{sharedNotebook.fromUser?.name}}</span>
+                    </div>
+
+                    <!-- Shared Date -->
+                    <div class="shared-date">
+                        {{ formatDate(sharedNotebook.sharedDate) }}
+                    </div>
+
+                    <!-- Menu Dropdown (Only Comment) -->
+                    <div class="menu-container">
+                        <button mat-icon-button [matMenuTriggerFor]="notebookMenu" (click)="$event.stopPropagation()"
+                            class="menu-button">
+                            <mat-icon>more_vert</mat-icon>
+                        </button>
+                        <mat-menu #notebookMenu="matMenu">
+                            <button mat-menu-item (click)="onMenuAction('comment', sharedNotebook, $event)">
+                                <mat-icon>comment</mat-icon>
+                                <span>Leave Comment</span>
+                            </button>
+                            <button mat-menu-item disabled>
+                                <mat-icon class="disabled-icon">edit_off</mat-icon>
+                                <span class="disabled-text">Edit (Locked)</span>
+                            </button>
+                            <button mat-menu-item disabled>
+                                <mat-icon class="disabled-icon">delete_outline</mat-icon>
+                                <span class="disabled-text">Delete (Locked)</span>
+                            </button>
+                        </mat-menu>
+                    </div>
+
+                    <!-- Notebook Content -->
+                    <div class="notebook-content">
+                        <!-- Notebook Title -->
+                        <h3 class="notebook-title">
+                            {{ sharedNotebook.notebook?.name || 'Untitled Notebook' }}
+                        </h3>
+
+                        <!-- Notebook Description -->
+                        <p *ngIf="sharedNotebook.notebook?.description" class="notebook-description">
+                            {{ sharedNotebook.notebook?.description }}
+                        </p>
+
+                        <!-- Edit Permission Badge -->
+                        <div class="permission-badge" *ngIf="sharedNotebook.isForEdit">
+                            <mat-icon>edit</mat-icon>
+                            <span>Can Edit</span>
+                        </div>
+                        <div class="permission-badge read-only" *ngIf="!sharedNotebook.isForEdit">
+                            <mat-icon>visibility</mat-icon>
+                            <span>View Only</span>
+                        </div>
+                    </div>
+
+                    <!-- Notebook Binding/Spine -->
+                    <div class="notebook-binding"></div>
+                </div>
+
+                <!-- Notebook Shadow -->
+                <div class="notebook-shadow"></div>
+            </div>
+
+            <!-- Empty State -->
+            <div *ngIf="sharedWithMeNotebooks.length === 0" class="empty-state-full">
+                <mat-icon class="empty-icon">folder_shared</mat-icon>
+                <h2>No Shared Notebooks</h2>
+                <p>Notebooks shared with you will appear here</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Shared By Me Section -->
+    <div *ngIf="selectedTab === 'shared'" class="section">
+        <!-- Loading State -->
+        <div *ngIf="loadingSharedByMe" class="loading-container">
+            <mat-spinner color="primary"></mat-spinner>
+            <p>Loading your shared notebooks...</p>
+        </div>
+
+        <!-- Shared List -->
+        <div *ngIf="!loadingSharedByMe" class="shared-list">
+            <div *ngFor="let sharedNotebook of sharedByMeNotebooks; let i = index" class="shared-item" matRipple>
+                <!-- Color Indicator -->
+                <div class="color-indicator" [style.background]="getNotebookCoverColor(i)"></div>
+
+                <!-- Shared Item Content -->
+                <div class="shared-item-content">
+                    <div class="shared-item-header">
+                        <div class="shared-item-info">
+                            <mat-icon class="notebook-icon">book</mat-icon>
+                            <div class="shared-item-text">
+                                <h3 class="shared-notebook-name">{{ sharedNotebook.notebook?.name || 'Untitled
+                                    Notebook' }}</h3>
+                                <p class="shared-with">
+                                    <mat-icon class="small-icon">person</mat-icon>
+                                    Shared with <strong>{{ sharedNotebook.toUser?.name || 'Unknown User'
+                                        }}</strong>
+                                    <span class="email-text" *ngIf="sharedNotebook.toUser?.email">({{
+                                        sharedNotebook.toUser?.email }})</span>
+                                </p>
+                            </div>
+                        </div>
+                        <button mat-icon-button class="delete-button" (click)="onDeleteShared(sharedNotebook, $event)"
+                            matTooltip="Remove shared access">
+                            <mat-icon>delete_outline</mat-icon>
+                        </button>
+                    </div>
+
+                    <div class="shared-item-footer">
+                        <div class="shared-info-chips">
+                            <div class="info-chip">
+                                <mat-icon>calendar_today</mat-icon>
+                                <span>{{ formatDate(sharedNotebook.sharedDate) }}</span>
+                            </div>
+                            <div class="info-chip" *ngIf="sharedNotebook.isForEdit">
+                                <mat-icon>edit</mat-icon>
+                                <span>Can Edit</span>
+                            </div>
+                            <div class="info-chip read-only" *ngIf="!sharedNotebook.isForEdit">
+                                <mat-icon>visibility</mat-icon>
+                                <span>View Only</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Empty State -->
+            <div *ngIf="sharedByMeNotebooks.length === 0" class="empty-state-full">
+                <mat-icon class="empty-icon">share</mat-icon>
+                <h2>No Shared Notebooks</h2>
+                <p>You haven't shared any notebooks yet</p>
+                <p class="hint-text">Share notebooks from your notebook collection</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal" *ngIf="showDeleteConfirmation" (click)="cancelDelete()">
+    <div class="modal-content delete-modal" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+            <h2>Remove Shared Access</h2>
+            <button class="btn-close" (click)="cancelDelete()">×</button>
+        </div>
+        <div class="modal-body">
+            <div class="warning-icon">
+                <mat-icon>warning</mat-icon>
+            </div>
+            <p class="warning-text">Are you sure you want to remove shared access?</p>
+            <p class="notebook-name" *ngIf="sharedNotebookToDelete">
+                <strong>{{ sharedNotebookToDelete.notebook?.name }}</strong>
+            </p>
+            <p class="user-name" *ngIf="sharedNotebookToDelete">
+                Shared with: <strong>{{ sharedNotebookToDelete.toUser?.name }}</strong>
+            </p>
+            <p class="info-text">This user will no longer have access to this notebook.</p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-secondary" (click)="cancelDelete()">Cancel</button>
+            <button class="btn-danger" (click)="confirmDeleteShared()">Remove Access</button>
+        </div>
+    </div>
+</div>
