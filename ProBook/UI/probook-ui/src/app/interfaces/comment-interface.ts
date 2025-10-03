@@ -5,6 +5,7 @@ export interface Comment{
     id?:number;
     content?:string;
     createdAt?:Date;
+    viewed?:boolean;
     pageId?:number;
     userid?:number;
     page?:Page;
