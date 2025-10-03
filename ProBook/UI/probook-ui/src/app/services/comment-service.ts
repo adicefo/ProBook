@@ -29,4 +29,7 @@ export class CommentService{
     delete(id:number):Observable<Comment>{
         return this.apiService.delete<Comment>(this.endpoint,id);
     }
+    updateViewed(list:number[]):Observable<Comment[]>{
+        return this.apiService.post<Comment[]>(this.endpoint + '/updateView',list);
+    }
 }

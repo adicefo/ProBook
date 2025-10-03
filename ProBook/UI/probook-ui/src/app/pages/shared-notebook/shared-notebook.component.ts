@@ -8,6 +8,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { SharedNotebook } from '../../interfaces/sharedNotebook-interface';
 import { User } from '../../interfaces/user-interface';
 import { forkJoin } from 'rxjs';
+import { CommentService } from '../../services/comment-service';
 
 @Component({
   selector: 'app-shared-notebook',
@@ -29,17 +30,30 @@ export class SharedNotebookComponent implements OnInit {
   selectedTab: 'received' | 'shared' = 'received';
   sharedNotebookToDelete: SharedNotebook | null = null;
   showDeleteConfirmation = false;
-  commentCounts: Map<number, number> = new Map(); 
-  
+  commentCounts: Map<number, number> = new Map();
+  commentIds:number[]=[];
+
   constructor(
     private sharedNotebookService: SharedNotebookService,
     private userService: UserService,
+    private commentService:CommentService,
     private router: Router,
     private snackBar: MatSnackBar
   ) { }
 
   ngOnInit(): void {
-    
+    this.userService.getCurrentUser().subscribe({
+      next: (user) => {
+        this.currentUser = user;
+        this.loadSharedNotebooks();
+      },
+      error: (err) => {
+        this.error = 'Failed to load user information';
+        this.loading = false;
+        this.loadingSharedByMe = false;
+        console.error('Error loading current user:', err);
+      }
+    });
   }
 
   loadSharedNotebooks(): void {
@@ -80,14 +94,15 @@ export class SharedNotebookComponent implements OnInit {
       this.sharedNotebookService.getNumberOfComments(element.id!).subscribe({
         next: (result) => {
           this.commentCounts.set(element.id!, result.item1);
+          this.commentIds=result.item2;
         },
         error: (err) => {
           console.error('Error loading comment counts:', err);
         }
       });
     });
-     
-    
+
+
   }
 
   getCommentCount(sharedNotebookId: number | undefined): number {
@@ -105,6 +120,16 @@ export class SharedNotebookComponent implements OnInit {
 
     // TODO: Backend logic will be implemented later to mark comments as read
     // For now, just show a message
+    this.commentService.updateViewed(this.commentIds).subscribe({
+      next: () => {
+        this.router.navigate(['/app/notebook/',sharedNotebook.notebook?.id],{
+          queryParams:{isShare:false}
+        });
+      },
+      error: (err) => {
+        console.error('Error marking comments as viewed:', err);
+      }
+    });
     this.snackBar.open('Comments marked as viewed', 'Close', { duration: 2000 });
   }
 

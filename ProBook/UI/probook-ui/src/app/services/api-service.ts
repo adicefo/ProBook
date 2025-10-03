@@ -36,6 +36,8 @@ export class ApiService {
     });
   }
 
+
+
   getById<T>(endpoint: string, id: number | string): Observable<T> {
     return this.http.get<T>(`${this.baseUrl}/${endpoint}/${id}`, {
       headers: this.getHeaders(),

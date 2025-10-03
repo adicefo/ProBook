@@ -141,7 +141,7 @@
                                 [class.has-badge]="getCommentCount(sharedNotebook.id) > 0"
                                 [matTooltip]="getCommentCount(sharedNotebook.id) > 0 ? 'Click to mark ' + getCommentCount(sharedNotebook.id) + ' new comment(s) as viewed' : 'No new comments'">book</mat-icon>
                             <div class="shared-item-text">
-                                <h3 class="shared-notebook-name">{{sharedNotebook.notebook?.name || 'Untitled
+                                <h3 class="shared-notebook-name"> {{sharedNotebook.notebook?.name || 'Untitled
                                     Notebook' }}</h3>
                                 <p class="shared-with">
                                     <mat-icon class="small-icon">person</mat-icon>

@@ -21,8 +21,12 @@ namespace ProBook.API.Controllers
         {
             return await (_service as ICommentService).GetAllComments(pageId);
         }
+        [HttpPost("/Comment/updateView")]
+        public async Task<List<Model.Model.Comment>> UpdateViewed([FromBody] List<int> commentIds)
+        {
+            return await (_service as ICommentService).UpdateViewed(commentIds);
+        }
 
-      
 
     }
 }

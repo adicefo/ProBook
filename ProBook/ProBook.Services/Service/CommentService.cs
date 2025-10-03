@@ -34,7 +34,30 @@ namespace ProBook.Services.Service
             }
             return null;
         }
+        public async Task<List<Model.Model.Comment>> UpdateViewed(List<int> commentIds)
+        {
+            if (commentIds.Count == 0)
+                return new List<Model.Model.Comment>();
+            var list = new List<Database.Comment>();
+             commentIds.ForEach(id =>
+            {
+                var comment = Context.Comments.FirstOrDefault(x => x.Id == id);
+                if(comment==null)
+                    throw new Exception("Entity not found,invalid operation");
+                if(comment.Viewed==false)
+                {
+                    comment.Viewed = true;
+                    list.Add(comment);
+                }    
+            });
+            await Context.SaveChangesAsync();
 
+            if (list.Count == 0)
+                return new List<Model.Model.Comment>();
+
+            return Mapper.Map<List<Model.Model.Comment>>(list);
+           
+        }
 
 
         public override IQueryable<Database.Comment> AddFilter(CommentSearchObject search, IQueryable<Database.Comment> query)
@@ -69,5 +92,7 @@ namespace ProBook.Services.Service
         {
             await base.BeforeUpdate(entity, request);
         }
+
+        
     }
 }
