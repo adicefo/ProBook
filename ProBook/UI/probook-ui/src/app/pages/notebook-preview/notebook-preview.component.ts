@@ -72,7 +72,7 @@ export class NotebookPreviewComponent implements OnInit {
       const notebookId = +params['id'];
       this.isShare = this.route.snapshot.queryParams['isShare'] as boolean;
       const openComments = this.route.snapshot.queryParams['openComments'] as string;
-      this.sharedNotebookId = this.route.snapshot.queryParams['snId'] as number;
+      this.sharedNotebookId = this.route.snapshot.queryParams['snId'] as number??0;
       console.log(this.isShare+":"+this.sharedNotebookId);
       if (notebookId) {
         this.loadNotebook(notebookId);
@@ -269,12 +269,12 @@ export class NotebookPreviewComponent implements OnInit {
     }
 
     //check if the shared notebook id is undefined
-    if(this.sharedNotebookId===undefined)
+    if(this.sharedNotebookId===0)
     {
       this.sharedNotebookService.getAll({fromUserId:this.currentUser?.id}).subscribe({
         next:(result)=>{
           console.log(result.result);
-          if(result.result!==null){
+          if(result.result?.length&&result.result.length>0){
             this.sharedNotebookId=result.result![0].id!;
             
           }
@@ -288,9 +288,9 @@ export class NotebookPreviewComponent implements OnInit {
         error:(err)=>{
           console.error('Error loading shared notebooks:', err);
         } 
-      })
+      });
     }    
-
+   console.log("Shared notebook id after :"+this.sharedNotebookId);
     const newComment = {
       content: this.newCommentText,
       pageId: this.selectedPageForComments.id,
@@ -299,7 +299,7 @@ export class NotebookPreviewComponent implements OnInit {
       viewed: false
     };
 
-    console.log(newComment.sharedNotebookId);
+    console.log("Shared notebook id:"+newComment.sharedNotebookId);
 
     this.commentService.create(newComment).subscribe({
       next: (comment) => {
@@ -360,6 +360,8 @@ export class NotebookPreviewComponent implements OnInit {
         }
       });
     }
+    else
+       comment.viewed=true;
     
   }
 
