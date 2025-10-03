@@ -14,6 +14,7 @@ import { User } from '../../interfaces/user-interface';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../utils/confirm-dialog/confirm-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
+import { SharedNotebookService } from '../../services/sharedNotebook-service';
 
 @Component({
   selector: 'app-notebook-preview',
@@ -34,7 +35,7 @@ export class NotebookPreviewComponent implements OnInit {
   error: string | null = null;
   snackBar: MatSnackBar = new MatSnackBar();
   isShare: boolean = false;
-
+  sharedNotebookId: number = 0;
   // Comment-related properties
   showCommentPanel: boolean = false;
   selectedPageForComments: Page | null = null;
@@ -42,6 +43,8 @@ export class NotebookPreviewComponent implements OnInit {
   loadingComments: boolean = false;
   newCommentText: string = '';
   currentUser: User | null = null;
+  pageCommentCounts: Map<number, number> = new Map();
+  hasNewComments: boolean = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -50,7 +53,8 @@ export class NotebookPreviewComponent implements OnInit {
     private notebookService: NotebookService,
     private commentService: CommentService,
     private userService: UserService,
-    private dialog:MatDialog
+    private sharedNotebookService: SharedNotebookService,
+    private dialog: MatDialog
   ) { }
 
   ngOnInit(): void {
@@ -67,10 +71,26 @@ export class NotebookPreviewComponent implements OnInit {
     this.route.params.subscribe(params => {
       const notebookId = +params['id'];
       this.isShare = this.route.snapshot.queryParams['isShare'] as boolean;
-      console.log(this.isShare);
+      const openComments = this.route.snapshot.queryParams['openComments'] as string;
+      this.sharedNotebookId = this.route.snapshot.queryParams['snId'] as number;
+      console.log(this.isShare+":"+this.sharedNotebookId);
       if (notebookId) {
         this.loadNotebook(notebookId);
-        this.loadPages(notebookId);
+        this.loadPages(notebookId).then(() => {
+
+          this.loadAllPageCommentCounts();
+
+          if (openComments === 'true' && this.pages.length > 0) {
+            this.hasNewComments = true;
+
+            const firstPageWithComments = this.pages.find(p => this.getPageCommentCount(p.id!) > 0);
+            if (firstPageWithComments) {
+              setTimeout(() => {
+                this.openCommentPanel(firstPageWithComments);
+              }, 500);
+            }
+          }
+        });
       }
     });
   }
@@ -87,18 +107,22 @@ export class NotebookPreviewComponent implements OnInit {
     });
   }
 
-  loadPages(notebookId: number): void {
+  loadPages(notebookId: number): Promise<void> {
     this.loading = true;
-    this.pageService.getAllPages(notebookId).subscribe({
-      next: (pages) => {
-        this.pages = pages;
-        this.loading = false;
-      },
-      error: (err) => {
-        this.error = 'Failed to load pages';
-        this.loading = false;
-        console.error('Error loading pages:', err);
-      }
+    return new Promise((resolve, reject) => {
+      this.pageService.getAllPages(notebookId).subscribe({
+        next: (pages) => {
+          this.pages = pages;
+          this.loading = false;
+          resolve();
+        },
+        error: (err) => {
+          this.error = 'Failed to load pages';
+          this.loading = false;
+          console.error('Error loading pages:', err);
+          reject(err);
+        }
+      });
     });
   }
 
@@ -153,7 +177,7 @@ export class NotebookPreviewComponent implements OnInit {
       event.stopPropagation();
     }
     if (action === 'delete') {
-      
+
     } else if (action === 'edit') {
       this.editPage(page);
     }
@@ -179,22 +203,22 @@ export class NotebookPreviewComponent implements OnInit {
         confirmText: 'Delete Page'
       } as ConfirmDialogData
     });
-  
+
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.pageService.delete(page?.id ?? 0).subscribe((res: any) => {
           this.loadPages(this.notebook?.id ?? 0);
           this.snackBar.open('Page deleted successfully', 'Close');
-       
+
         }, (err: any) => {
           this.snackBar.open('Failed to delete page');
           console.log(err);
         });
       }
     });
-    
+
   }
-  
+
   formatDate(date: Date | undefined): string {
     if (!date) return '';
     return new Date(date).toLocaleDateString('en-US', {
@@ -244,12 +268,38 @@ export class NotebookPreviewComponent implements OnInit {
       return;
     }
 
+    //check if the shared notebook id is undefined
+    if(this.sharedNotebookId===undefined)
+    {
+      this.sharedNotebookService.getAll({fromUserId:this.currentUser?.id}).subscribe({
+        next:(result)=>{
+          console.log(result.result);
+          if(result.result!==null){
+            this.sharedNotebookId=result.result![0].id!;
+            
+          }
+          else
+            {
+              this.snackBar.open('You are not allowed to comment on this notebook','Close',{duration:2000});
+              return;
+            }
+
+        },
+        error:(err)=>{
+          console.error('Error loading shared notebooks:', err);
+        } 
+      })
+    }    
+
     const newComment = {
       content: this.newCommentText,
       pageId: this.selectedPageForComments.id,
       userid: this.currentUser?.id,
+      sharedNotebookId: this.sharedNotebookId,
       viewed: false
     };
+
+    console.log(newComment.sharedNotebookId);
 
     this.commentService.create(newComment).subscribe({
       next: (comment) => {
@@ -264,7 +314,7 @@ export class NotebookPreviewComponent implements OnInit {
     });
   }
 
-  deleteComment(comment:any): void {
+  deleteComment(comment: any): void {
     if (!comment.id) return;
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '400px',
@@ -275,13 +325,13 @@ export class NotebookPreviewComponent implements OnInit {
         confirmText: 'Delete Comment'
       } as ConfirmDialogData
     });
-  
+
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.commentService.delete(comment?.id??0).subscribe({
+        this.commentService.delete(comment?.id ?? 0).subscribe({
           next: () => {
             this.comments = this.comments.filter(c => c.id !== comment?.id);
-            this.loadComments(this.selectedPageForComments?.id??0);
+            this.loadComments(this.selectedPageForComments?.id ?? 0);
             this.snackBar.open('Comment deleted successfully', 'Close', { duration: 2000 });
           },
           error: (err) => {
@@ -292,20 +342,25 @@ export class NotebookPreviewComponent implements OnInit {
       }
     });
 
-    
+
   }
 
   markCommentAsViewed(comment: CommentModel): void {
-    if (!comment.id || comment.viewed||(this.isShare && this.currentUser?.id === comment.user?.id)||this.currentUser?.id===comment.user?.id) return;
+    if (!comment.id || comment.viewed) return;
+    console.log(comment.sharedNotebook?.fromUserId+":"+this.currentUser?.id);
+    if(comment.sharedNotebook?.fromUserId===this.currentUser?.id)
+    {
+      this.commentService.updateViewed([comment.id]).subscribe({
+        next: () => {
+          comment.viewed = true;
 
-    this.commentService.updateViewed([comment.id]).subscribe({
-      next: () => {
-        comment.viewed = true;
-      },
-      error: (err) => { 
-        console.error('Error marking comment as viewed:', err);
-      }
-    });
+        },
+        error: (err) => {
+          console.error('Error marking comment as viewed:', err);
+        }
+      });
+    }
+    
   }
 
   getUnreadCommentCount(): number {
@@ -314,5 +369,73 @@ export class NotebookPreviewComponent implements OnInit {
 
   isCommentByCurrentUser(comment: CommentModel): boolean {
     return comment.user?.id === this.currentUser?.id;
+  }
+
+  // Load comment counts for all pages
+  loadAllPageCommentCounts(): void {
+    if (!this.pages || this.pages.length === 0) return;
+
+    this.pages.forEach(page => {
+      if (page.id) {
+        this.commentService.getAll({ pageId: page.id }).subscribe({
+          next: (result) => {
+            const unreadCount = result.result?.filter(c =>
+              !c.viewed && c.user?.id !== this.currentUser?.id
+            ).length || 0;
+            this.pageCommentCounts.set(page.id!, unreadCount);
+          },
+          error: (err) => {
+            console.error('Error loading comment count for page:', err);
+          }
+        });
+      }
+    });
+  }
+
+  getPageCommentCount(pageId: number): number {
+    return this.pageCommentCounts.get(pageId) || 0;
+  }
+
+  hasPageNewComments(pageId: number | undefined): boolean {
+    if (!pageId) return false;
+    return this.getPageCommentCount(pageId) > 0;
+  }
+
+  getTotalNewCommentsCount(): number {
+    let total = 0;
+    this.pageCommentCounts.forEach(count => total += count);
+    return total;
+  }
+
+  navigateToPageWithComments(forward: boolean = true): void {
+    const pagesWithComments = this.pages.filter(p => this.hasPageNewComments(p.id));
+
+    if (pagesWithComments.length === 0) {
+      this.snackBar.open('No pages with new comments', 'Close', { duration: 2000 });
+      return;
+    }
+
+    // Find next page with comments
+    let targetPage: Page | null = null;
+
+    if (forward) {
+      // Find next page with comments after current page
+      targetPage = pagesWithComments.find(p =>
+        this.pages.indexOf(p) > this.currentPageIndex
+      ) || pagesWithComments[0]; // Wrap to first if at end
+    } else {
+      // Find previous page with comments before current page
+      const reversedPages = [...pagesWithComments].reverse();
+      targetPage = reversedPages.find(p =>
+        this.pages.indexOf(p) < this.currentPageIndex
+      ) || pagesWithComments[pagesWithComments.length - 1]; // Wrap to last if at start
+    }
+
+    if (targetPage) {
+      const targetIndex = this.pages.indexOf(targetPage);
+      // Navigate to the page (adjust for two-page spread)
+      this.currentPageIndex = targetIndex % 2 === 0 ? targetIndex : targetIndex - 1;
+      this.openCommentPanel(targetPage);
+    }
   }
 }

@@ -17,9 +17,12 @@ namespace ProBook.Services.Database
         public int PageId { get; set; }
         public int UserId { get; set; }
 
+        public int SharedNotebookId { get; set; }
+
         public bool? Viewed { get; set; }
 
         public virtual Page Page { get; set; } = null!;
         public virtual User User { get; set; } = null!;
+        public virtual SharedNotebook SharedNotebook { get; set; } = null!;
     }
 }

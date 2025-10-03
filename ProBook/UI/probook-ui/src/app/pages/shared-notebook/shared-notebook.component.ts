@@ -31,12 +31,12 @@ export class SharedNotebookComponent implements OnInit {
   sharedNotebookToDelete: SharedNotebook | null = null;
   showDeleteConfirmation = false;
   commentCounts: Map<number, number> = new Map();
-  commentIds:number[]=[];
+  commentIds: number[] = [];
 
   constructor(
     private sharedNotebookService: SharedNotebookService,
     private userService: UserService,
-    private commentService:CommentService,
+    private commentService: CommentService,
     private router: Router,
     private snackBar: MatSnackBar
   ) { }
@@ -91,11 +91,11 @@ export class SharedNotebookComponent implements OnInit {
   loadCommentCounts(): void {
     if (this.sharedByMeNotebooks.length === 0) return;
     this.sharedByMeNotebooks.forEach(element => {
-      this.sharedNotebookService.getNumberOfComments(element.id!,this.currentUser?.id!).subscribe({
+      this.sharedNotebookService.getNumberOfComments(element.id!, this.currentUser?.id!).subscribe({
         next: (result) => {
-          
+
           this.commentCounts.set(element.id!, result.item1);
-          this.commentIds=result.item2;
+          this.commentIds = result.item2;
         },
         error: (err) => {
           console.error('Error loading comment counts:', err);
@@ -121,23 +121,22 @@ export class SharedNotebookComponent implements OnInit {
 
     // TODO: Backend logic will be implemented later to mark comments as read
     // For now, just show a message
-    this.commentService.updateViewed(this.commentIds).subscribe({
-      next: () => {
-        this.router.navigate(['/app/notebook/',sharedNotebook.notebook?.id],{
-          queryParams:{isShare:false}
+ 
+        this.router.navigate(['/app/notebook/', sharedNotebook.notebook?.id], {
+          queryParams: { isShare: false,snId:sharedNotebook.id }
         });
-      },
-      error: (err) => {
-        console.error('Error marking comments as viewed:', err);
-      }
-    });
-    this.snackBar.open('Comments marked as viewed', 'Close', { duration: 2000 });
+     
   }
 
   onNotebookClick(sharedNotebook: SharedNotebook): void {
     if (sharedNotebook.notebook?.id) {
+      const hasNewComments = this.getCommentCount(sharedNotebook.id) > 0;
       this.router.navigate(['/app/notebook', sharedNotebook.notebook.id], {
-        queryParams: { isShare: true }
+        queryParams: {
+          isShare: true,
+          openComments: hasNewComments ? 'true' : 'false',
+          snId:sharedNotebook?.id
+        }
       });
     }
   }

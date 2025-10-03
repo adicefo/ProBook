@@ -1,4 +1,5 @@
 import { Page } from "./page-interface";
+import { SharedNotebook } from "./sharedNotebook-interface";
 import { User } from "./user-interface";
 
 export interface Comment{
@@ -8,6 +9,8 @@ export interface Comment{
     viewed?:boolean;
     pageId?:number;
     userid?:number;
+    sharedNotebookId?:number;
     page?:Page;
     user?:User;
+    sharedNotebook?:SharedNotebook;
 }

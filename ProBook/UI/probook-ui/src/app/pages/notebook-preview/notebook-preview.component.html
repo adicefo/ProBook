@@ -38,6 +38,14 @@
             <!-- Left Page -->
             <div class="page left-page">
                 <div class="page-content" *ngIf="leftPage; else emptyLeftPage">
+                    <!-- New Comments Badge -->
+                    <div class="new-comments-indicator" *ngIf="hasPageNewComments(leftPage.id)"
+                        (click)="openCommentPanel(leftPage); $event.stopPropagation()"
+                        matTooltip="{{getPageCommentCount(leftPage.id!)}} new comment(s)">
+                        <mat-icon>chat_bubble</mat-icon>
+                        <span class="badge-count">{{ getPageCommentCount(leftPage.id!) }}</span>
+                    </div>
+
                     <div class="page-header">
                         <h3 class="page-title">{{ leftPage.title || 'Untitled' }}</h3>
                         <span class="page-date">{{ formatDate(leftPage.createdAt) }}</span>
@@ -88,6 +96,14 @@
             <!-- Right Page -->
             <div class="page right-page">
                 <div class="page-content" *ngIf="rightPage; else emptyRightPage">
+                    <!-- New Comments Badge -->
+                    <div class="new-comments-indicator" *ngIf="hasPageNewComments(rightPage.id)"
+                        (click)="openCommentPanel(rightPage); $event.stopPropagation()"
+                        matTooltip="{{getPageCommentCount(rightPage.id!)}} new comment(s)">
+                        <mat-icon>chat_bubble</mat-icon>
+                        <span class="badge-count">{{ getPageCommentCount(rightPage.id!) }}</span>
+                    </div>
+
                     <div class="page-header">
                         <h3 class="page-title">{{ rightPage.title || 'Untitled' }}</h3>
                         <span class="page-date">{{ formatDate(rightPage.createdAt) }}</span>
@@ -156,6 +172,28 @@
                 min(currentPageIndex + 2, pages.length) }} of {{ pages.length }}</span>
         </div>
 
+        <!-- Floating Comment Button with Navigation -->
+        <div class="floating-comment-controls" *ngIf="pages.length > 0">
+            <!-- Navigation to pages with comments -->
+            <button mat-mini-fab class="comment-nav-btn prev-comment-btn" *ngIf="getTotalNewCommentsCount() > 0"
+                (click)="navigateToPageWithComments(false)" matTooltip="Previous page with comments">
+                <mat-icon>arrow_upward</mat-icon>
+            </button>
+
+            <!-- Main floating comment button -->
+            <button mat-fab class="floating-comment-btn" [class.has-new-comments]="getTotalNewCommentsCount() > 0"
+                (click)="showCommentPanel = true" [matBadge]="getTotalNewCommentsCount()"
+                [matBadgeHidden]="getTotalNewCommentsCount() === 0" matBadgeColor="warn" matBadgeSize="medium"
+                matTooltip="View comments" [disabled]="getTotalNewCommentsCount() === 0">
+                <mat-icon>comment</mat-icon>
+            </button>
+
+            <!-- Navigation to pages with comments -->
+            <button mat-mini-fab class="comment-nav-btn next-comment-btn" *ngIf="getTotalNewCommentsCount() > 0"
+                (click)="navigateToPageWithComments(true)" matTooltip="Next page with comments">
+                <mat-icon>arrow_downward</mat-icon>
+            </button>
+        </div>
 
     </div>
     <!-- Empty state when no pages -->
@@ -175,7 +213,7 @@
 
     </div>
 
-   
+
 
     <!-- Comment Side Panel -->
     <div class="comment-panel" [class.open]="showCommentPanel">
@@ -184,7 +222,9 @@
                 <mat-icon>comment</mat-icon>
                 <h3>Comments</h3>
                 <span class="comment-count" *ngIf="comments.length > 0">({{ comments.length }})</span>
-                
+                <span class="unread-badge" *ngIf="getUnreadCommentCount() > 0">
+                    {{ getUnreadCommentCount() }} new
+                </span>
             </div>
             <button mat-icon-button (click)="closeCommentPanel()" class="close-panel-btn">
                 <mat-icon>close</mat-icon>
@@ -212,7 +252,7 @@
                     (mouseenter)="markCommentAsViewed(comment)">
 
                     <!-- NEW Badge for unviewed comments -->
-                    <div class="new-badge" *ngIf="comment.user?.id!==currentUser?.id&&!comment.viewed">
+                    <div class="new-badge" *ngIf="!comment.viewed">
                         <mat-icon>fiber_new</mat-icon>
                         <span>NEW</span>
                     </div>
@@ -222,8 +262,8 @@
                             <mat-icon class="avatar-icon">account_circle</mat-icon>
                             <strong>{{ comment.user?.name || 'Unknown User' }}</strong>
                         </div>
-                        <button mat-icon-button *ngIf="isCommentByCurrentUser(comment)"
-                            (click)="deleteComment(comment)" class="delete-comment-btn" matTooltip="Delete comment">
+                        <button mat-icon-button *ngIf="isCommentByCurrentUser(comment)" (click)="deleteComment(comment)"
+                            class="delete-comment-btn" matTooltip="Delete comment">
                             <mat-icon>delete_outline</mat-icon>
                         </button>
                     </div>
@@ -264,7 +304,7 @@
             </div>
         </div>
     </div>
-    
+
     <!-- Overlay when comment panel is open -->
     <div class="comment-overlay" *ngIf="showCommentPanel" (click)="closeCommentPanel()"></div>
 

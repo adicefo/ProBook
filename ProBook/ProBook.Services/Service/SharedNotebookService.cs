@@ -27,7 +27,7 @@ namespace ProBook.Services.Service
 
             
             var comments = await Context.Comments
-                .Where(x => x.Page.NotebookId == sharedNotebook.NotebookId)
+                .Where(x => x.SharedNotebookId == sharedNotebook.Id)
                 .Where(x => x.Viewed == false)
                 .Where(x=>x.UserId!=userId)
                 .Select(x=>x.Id).ToListAsync();

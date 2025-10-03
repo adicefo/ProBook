@@ -12,5 +12,6 @@ namespace ProBook.Model.Request
         public bool? Viewed { get; set; } = false;
         public int? PageId { get; set; }
         public int? UserId { get; set; }
+        public int? SharedNotebookId { get; set; }
     }
 }

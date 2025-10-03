@@ -65,12 +65,12 @@ namespace ProBook.Services.Service
             var filteredQuery = base.AddFilter(search, query);
             if (search.PageId.HasValue)
                 filteredQuery = filteredQuery.Where(x => x.PageId == search.PageId);
-           filteredQuery=filteredQuery.Include(x => x.User).Include(x => x.Page);
+           filteredQuery=filteredQuery.Include(x => x.User).Include(x => x.Page).Include(x=>x.SharedNotebook);
             return filteredQuery;
         }
         public override IQueryable<Database.Comment> AddInclude(IQueryable<Database.Comment> query)
         {
-            return query.Include(x => x.Page).Include(x=>x.User);
+            return query.Include(x => x.Page).Include(x=>x.User).Include(x=>x.SharedNotebook);
         }
         public override async Task BeforeInsert(Database.Comment entity, CommentInsertRequest request)
         {
@@ -84,6 +84,13 @@ namespace ProBook.Services.Service
             if (user == null)
                 throw new Exception("Entity not found");
             entity.User = user;
+
+            Database.SharedNotebook sn = await Context.SharedNotebooks.FirstOrDefaultAsync(x => x.Id == request.SharedNotebookId);
+            if (sn == null)
+                throw new Exception("Entity not found");
+            entity.SharedNotebook = sn;
+                
+            
 
             await base.BeforeInsert(entity, request);
         }

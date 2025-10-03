@@ -17,7 +17,7 @@ export const routes: Routes = [
         children: [
             { path: '', redirectTo: 'notebooks', pathMatch: 'full' },
             { path: 'notebooks', component: NotebookComponent },
-            { path: 'notebook/:id', component: NotebookPreviewComponent,data:{isShare:false}},
+            { path: 'notebook/:id', component: NotebookPreviewComponent,data:{isShare:false,snId:0}},
             { path: 'notebook/:id/add-page', component: AddPageComponent },
             { path: 'notebook/:id/edit-page/:pageId', component: AddPageComponent },
             { path: 'collections', component: CollectionComponent },

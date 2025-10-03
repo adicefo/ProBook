@@ -8,6 +8,6 @@ namespace ProBook.Model.SearchObject
 {
     public class CommentSearchObject:BaseSearchObject
     {
-        public int? PageId { get; set; } 
+        public int? PageId { get; set; }
     }
 }
