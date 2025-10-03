@@ -91,8 +91,9 @@ export class SharedNotebookComponent implements OnInit {
   loadCommentCounts(): void {
     if (this.sharedByMeNotebooks.length === 0) return;
     this.sharedByMeNotebooks.forEach(element => {
-      this.sharedNotebookService.getNumberOfComments(element.id!).subscribe({
+      this.sharedNotebookService.getNumberOfComments(element.id!,this.currentUser?.id!).subscribe({
         next: (result) => {
+          
           this.commentCounts.set(element.id!, result.item1);
           this.commentIds=result.item2;
         },

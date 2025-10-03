@@ -175,27 +175,7 @@
 
     </div>
 
-    <!-- Delete Confirmation Modal -->
-    <div class="modal" *ngIf="showDeleteConfirmation" (click)="cancelDelete()">
-        <div class="modal-content delete-modal" (click)="$event.stopPropagation()">
-            <div class="modal-header">
-                <h2>Confirm Deletion</h2>
-                <button class="btn-close" (click)="cancelDelete()">×</button>
-            </div>
-            <div class="modal-body">
-
-                <p class="warning-text">Are you sure you want to delete this page?</p>
-                <p class="notebook-name" *ngIf="pageToDelete">
-                    <strong>{{ pageToDelete!.title }}</strong>
-                </p>
-
-            </div>
-            <div class="modal-footer">
-                <button class="btn-secondary" (click)="cancelDelete()">Cancel</button>
-                <button class="btn-danger" (click)="deletePage()">Delete</button>
-            </div>
-        </div>
-    </div>
+   
 
     <!-- Comment Side Panel -->
     <div class="comment-panel" [class.open]="showCommentPanel">
@@ -204,9 +184,7 @@
                 <mat-icon>comment</mat-icon>
                 <h3>Comments</h3>
                 <span class="comment-count" *ngIf="comments.length > 0">({{ comments.length }})</span>
-                <span class="unread-badge" *ngIf="getUnreadCommentCount() > 0">
-                    {{ getUnreadCommentCount() }} new
-                </span>
+                
             </div>
             <button mat-icon-button (click)="closeCommentPanel()" class="close-panel-btn">
                 <mat-icon>close</mat-icon>
@@ -234,7 +212,7 @@
                     (mouseenter)="markCommentAsViewed(comment)">
 
                     <!-- NEW Badge for unviewed comments -->
-                    <div class="new-badge" *ngIf="!comment.viewed">
+                    <div class="new-badge" *ngIf="comment.user?.id!==currentUser?.id&&!comment.viewed">
                         <mat-icon>fiber_new</mat-icon>
                         <span>NEW</span>
                     </div>
@@ -245,7 +223,7 @@
                             <strong>{{ comment.user?.name || 'Unknown User' }}</strong>
                         </div>
                         <button mat-icon-button *ngIf="isCommentByCurrentUser(comment)"
-                            (click)="deleteComment(comment.id!)" class="delete-comment-btn" matTooltip="Delete comment">
+                            (click)="deleteComment(comment)" class="delete-comment-btn" matTooltip="Delete comment">
                             <mat-icon>delete_outline</mat-icon>
                         </button>
                     </div>
@@ -286,7 +264,7 @@
             </div>
         </div>
     </div>
-
+    
     <!-- Overlay when comment panel is open -->
     <div class="comment-overlay" *ngIf="showCommentPanel" (click)="closeCommentPanel()"></div>
 

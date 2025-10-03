@@ -30,7 +30,7 @@ export class SharedNotebookService{
     delete(id:number):Observable<SharedNotebook>{
         return this.apiService.delete<SharedNotebook>(this.endpoint,id);
     }
-    getNumberOfComments(id:number):Observable<NumberOfCommentsResponse>{
-      return  this.apiService.get<NumberOfCommentsResponse>(this.endpoint + '/getNumberOfComments/' + id);
+    getNumberOfComments(id:number,userId:number):Observable<NumberOfCommentsResponse>{
+      return  this.apiService.get<NumberOfCommentsResponse>(this.endpoint + '/getNumberOfComments/' + id + '/' + userId);
     }
 }

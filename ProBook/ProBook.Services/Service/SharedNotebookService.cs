@@ -19,7 +19,7 @@ namespace ProBook.Services.Service
         {
 
         }
-        public async Task<Tuple<int,List<int>>> GetNumberOfComments(int id)
+        public async Task<Tuple<int,List<int>>> GetNumberOfComments(int id,int userId)
         {
             var sharedNotebook = await Context.SharedNotebooks.FindAsync(id);
             if (sharedNotebook == null)
@@ -29,7 +29,10 @@ namespace ProBook.Services.Service
             var comments = await Context.Comments
                 .Where(x => x.Page.NotebookId == sharedNotebook.NotebookId)
                 .Where(x => x.Viewed == false)
+                .Where(x=>x.UserId!=userId)
                 .Select(x=>x.Id).ToListAsync();
+
+
             var countComments=comments.Count();
            
             return Tuple.Create(countComments,comments);

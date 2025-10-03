@@ -10,6 +10,6 @@ namespace ProBook.Services.Interface
 {
     public interface ISharedNotebookService:ICRUDService<Model.Model.SharedNotebook,SharedNotebookSearchObject,SharedNotebookInsertRequest,SharedNotebookUpdateRequest>
     {
-        Task<Tuple<int,List<int>>> GetNumberOfComments(int id);
+        Task<Tuple<int,List<int>>> GetNumberOfComments(int id,int userId);
     }
 }

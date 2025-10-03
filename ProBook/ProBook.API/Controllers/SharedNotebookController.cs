@@ -17,10 +17,10 @@ namespace ProBook.API.Controllers
         {
         }
 
-        [HttpGet("/SharedNotebook/getNumberOfComments/{id}")]
-        public async Task<Tuple<int,List<int>>> GetNumberOfComments(int id)
+        [HttpGet("/SharedNotebook/getNumberOfComments/{id}/{userId}")]
+        public async Task<Tuple<int,List<int>>> GetNumberOfComments(int id,int userId)
         {
-            return await (_service as ISharedNotebookService).GetNumberOfComments(id);
+            return await (_service as ISharedNotebookService).GetNumberOfComments(id,userId);
         }
 
     }

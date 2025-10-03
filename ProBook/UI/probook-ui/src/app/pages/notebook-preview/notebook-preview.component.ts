@@ -12,6 +12,8 @@ import { Notebook } from '../../interfaces/notebook-interface';
 import { Comment as CommentModel } from '../../interfaces/comment-interface';
 import { User } from '../../interfaces/user-interface';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { ConfirmDialogComponent, ConfirmDialogData } from '../../utils/confirm-dialog/confirm-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-notebook-preview',
@@ -29,9 +31,7 @@ export class NotebookPreviewComponent implements OnInit {
   pages: Page[] = [];
   currentPageIndex = 0;
   loading = true;
-  pageToDelete: Page | null = null;
   error: string | null = null;
-  showDeleteConfirmation: boolean = false;
   snackBar: MatSnackBar = new MatSnackBar();
   isShare: boolean = false;
 
@@ -49,7 +49,8 @@ export class NotebookPreviewComponent implements OnInit {
     private pageService: PageService,
     private notebookService: NotebookService,
     private commentService: CommentService,
-    private userService: UserService
+    private userService: UserService,
+    private dialog:MatDialog
   ) { }
 
   ngOnInit(): void {
@@ -152,8 +153,7 @@ export class NotebookPreviewComponent implements OnInit {
       event.stopPropagation();
     }
     if (action === 'delete') {
-      this.showDeleteConfirmation = true;
-      this.pageToDelete = page;
+      
     } else if (action === 'edit') {
       this.editPage(page);
     }
@@ -168,21 +168,33 @@ export class NotebookPreviewComponent implements OnInit {
       this.router.navigate(['/app/notebook', this.notebook.id, 'edit-page', page.id]);
     }
   }
-  cancelDelete(): void {
-    this.showDeleteConfirmation = false;
-    this.pageToDelete = null;
+
+  deletePage(page: any): void {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '400px',
+      data: {
+        title: 'Confirm Deletion',
+        message: 'Are you sure you want to delete this page?',
+        entityName: page.title,
+        confirmText: 'Delete Page'
+      } as ConfirmDialogData
+    });
+  
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.pageService.delete(page?.id ?? 0).subscribe((res: any) => {
+          this.loadPages(this.notebook?.id ?? 0);
+          this.snackBar.open('Page deleted successfully', 'Close');
+       
+        }, (err: any) => {
+          this.snackBar.open('Failed to delete page');
+          console.log(err);
+        });
+      }
+    });
+    
   }
-  deletePage(): void {
-    this.pageService.delete(this.pageToDelete?.id ?? 0).subscribe((res: any) => {
-      this.loadPages(this.notebook?.id ?? 0);
-      this.snackBar.open('Page deleted successfully', 'Close');
-      this.showDeleteConfirmation = false;
-      this.pageToDelete = null;
-    }, (err: any) => {
-      this.snackBar.open('Failed to delete page');
-      console.log(err);
-    })
-  }
+  
   formatDate(date: Date | undefined): string {
     if (!date) return '';
     return new Date(date).toLocaleDateString('en-US', {
@@ -252,23 +264,39 @@ export class NotebookPreviewComponent implements OnInit {
     });
   }
 
-  deleteComment(commentId: number): void {
-    if (!commentId) return;
-
-    this.commentService.delete(commentId).subscribe({
-      next: () => {
-        this.comments = this.comments.filter(c => c.id !== commentId);
-        this.snackBar.open('Comment deleted successfully', 'Close', { duration: 2000 });
-      },
-      error: (err) => {
-        console.error('Error deleting comment:', err);
-        this.snackBar.open('Failed to delete comment', 'Close', { duration: 2000 });
+  deleteComment(comment:any): void {
+    if (!comment.id) return;
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '400px',
+      data: {
+        title: 'Confirm Deletion',
+        message: 'Are you sure you want to delete this comment?',
+        entityName: comment.content,
+        confirmText: 'Delete Comment'
+      } as ConfirmDialogData
+    });
+  
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.commentService.delete(comment?.id??0).subscribe({
+          next: () => {
+            this.comments = this.comments.filter(c => c.id !== comment?.id);
+            this.loadComments(this.selectedPageForComments?.id??0);
+            this.snackBar.open('Comment deleted successfully', 'Close', { duration: 2000 });
+          },
+          error: (err) => {
+            console.error('Error deleting comment:', err);
+            this.snackBar.open('Failed to delete comment', 'Close', { duration: 2000 });
+          }
+        });
       }
     });
+
+    
   }
 
   markCommentAsViewed(comment: CommentModel): void {
-    if (!comment.id || comment.viewed||(this.isShare && this.currentUser?.id === comment.user?.id)) return;
+    if (!comment.id || comment.viewed||(this.isShare && this.currentUser?.id === comment.user?.id)||this.currentUser?.id===comment.user?.id) return;
 
     this.commentService.updateViewed([comment.id]).subscribe({
       next: () => {
@@ -285,6 +313,6 @@ export class NotebookPreviewComponent implements OnInit {
   }
 
   isCommentByCurrentUser(comment: CommentModel): boolean {
-    return comment.userid === this.currentUser?.id;
+    return comment.user?.id === this.currentUser?.id;
   }
 }
