@@ -360,7 +360,7 @@ export class NotebookPreviewComponent implements OnInit {
       this.commentService.updateViewed([comment.id]).subscribe({
         next: () => {
           comment.viewed = true;
-
+          this.loadAllPageCommentCounts();
         },
         error: (err) => {
           console.error('Error marking comment as viewed:', err);

@@ -175,10 +175,7 @@
         <!-- Floating Comment Button with Navigation -->
         <div class="floating-comment-controls" *ngIf="pages.length > 0">
             <!-- Navigation to pages with comments -->
-            <button mat-mini-fab class="comment-nav-btn prev-comment-btn" *ngIf="getTotalNewCommentsCount() > 0"
-                (click)="navigateToPageWithComments(false)" matTooltip="Previous page with comments">
-                <mat-icon>arrow_upward</mat-icon>
-            </button>
+           
 
             <!-- Main floating comment button -->
             <button mat-fab class="floating-comment-btn" [class.has-new-comments]="getTotalNewCommentsCount() > 0"
@@ -188,11 +185,7 @@
                 <mat-icon>comment</mat-icon>
             </button>
 
-            <!-- Navigation to pages with comments -->
-            <button mat-mini-fab class="comment-nav-btn next-comment-btn" *ngIf="getTotalNewCommentsCount() > 0"
-                (click)="navigateToPageWithComments(true)" matTooltip="Next page with comments">
-                <mat-icon>arrow_downward</mat-icon>
-            </button>
+           
         </div>
 
     </div>
