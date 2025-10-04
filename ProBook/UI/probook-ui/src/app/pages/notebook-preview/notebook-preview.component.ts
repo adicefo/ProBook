@@ -367,8 +367,7 @@ export class NotebookPreviewComponent implements OnInit {
         }
       });
     }
-    else
-      comment.viewed = true;
+    
 
   }
 
@@ -389,7 +388,7 @@ export class NotebookPreviewComponent implements OnInit {
         this.commentService.getAll({ pageId: page.id }).subscribe({
           next: (result) => {
             const unreadCount = result.result?.filter(c =>
-              !c.viewed && c.user?.id !== this.currentUser?.id
+              !c.viewed 
             ).length || 0;
             this.pageCommentCounts.set(page.id!, unreadCount);
           },
