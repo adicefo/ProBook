@@ -72,8 +72,8 @@ export class NotebookPreviewComponent implements OnInit {
       const notebookId = +params['id'];
       this.isShare = this.route.snapshot.queryParams['isShare'] as boolean;
       const openComments = this.route.snapshot.queryParams['openComments'] as string;
-      this.sharedNotebookId = this.route.snapshot.queryParams['snId'] as number??0;
-      console.log(this.isShare+":"+this.sharedNotebookId);
+      this.sharedNotebookId = this.route.snapshot.queryParams['snId'] as number ?? 0;
+      console.log(this.isShare + ":" + this.sharedNotebookId);
       if (notebookId) {
         this.loadNotebook(notebookId);
         this.loadPages(notebookId).then(() => {
@@ -269,28 +269,36 @@ export class NotebookPreviewComponent implements OnInit {
     }
 
     //check if the shared notebook id is undefined
-    if(this.sharedNotebookId===0)
-    {
-      this.sharedNotebookService.getAll({fromUserId:this.currentUser?.id}).subscribe({
-        next:(result)=>{
+    if (this.sharedNotebookId === 0) {
+      this.sharedNotebookService.getAll({ fromUserId: this.currentUser?.id }).subscribe({
+        next: (result) => {
           console.log(result.result);
-          if(result.result?.length&&result.result.length>0){
-            this.sharedNotebookId=result.result![0].id!;
-            
+          if (result.result?.length && result.result.length > 0) {
+            this.sharedNotebookId = result.result![0].id!;
+            this.createComment();
           }
-          else
-            {
-              this.snackBar.open('You are not allowed to comment on this notebook','Close',{duration:2000});
-              return;
-            }
+          else {
+            this.snackBar.open('You are not allowed to comment on this notebook', 'Close', { duration: 2000 });
+            return;
+          }
 
         },
-        error:(err)=>{
+        error: (err) => {
           console.error('Error loading shared notebooks:', err);
-        } 
+          this.snackBar.open('Failed to load shared notebook information', 'Close', { duration: 2000 });
+        }
       });
-    }    
-   console.log("Shared notebook id after :"+this.sharedNotebookId);
+    } else {
+      this.createComment();
+    }
+  }
+
+  private createComment(): void {
+    if (!this.selectedPageForComments?.id) {
+      return;
+    }
+
+    console.log("Shared notebook id after :" + this.sharedNotebookId);
     const newComment = {
       content: this.newCommentText,
       pageId: this.selectedPageForComments.id,
@@ -299,7 +307,7 @@ export class NotebookPreviewComponent implements OnInit {
       viewed: false
     };
 
-    console.log("Shared notebook id:"+newComment.sharedNotebookId);
+    console.log("Shared notebook id:" + newComment.sharedNotebookId);
 
     this.commentService.create(newComment).subscribe({
       next: (comment) => {
@@ -347,9 +355,8 @@ export class NotebookPreviewComponent implements OnInit {
 
   markCommentAsViewed(comment: CommentModel): void {
     if (!comment.id || comment.viewed) return;
-    console.log(comment.sharedNotebook?.fromUserId+":"+this.currentUser?.id);
-    if(comment.sharedNotebook?.fromUserId===this.currentUser?.id)
-    {
+    console.log(comment.sharedNotebook?.fromUserId + ":" + this.currentUser?.id);
+    if (comment.sharedNotebook?.fromUserId === this.currentUser?.id) {
       this.commentService.updateViewed([comment.id]).subscribe({
         next: () => {
           comment.viewed = true;
@@ -361,8 +368,8 @@ export class NotebookPreviewComponent implements OnInit {
       });
     }
     else
-       comment.viewed=true;
-    
+      comment.viewed = true;
+
   }
 
   getUnreadCommentCount(): number {
