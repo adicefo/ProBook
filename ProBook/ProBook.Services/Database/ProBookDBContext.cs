@@ -38,6 +38,11 @@ namespace ProBook.Services.Database
      .WithMany()
      .HasForeignKey(sn => sn.ToUserId);
 
+            modelBuilder.Entity<Comment>()
+                .HasOne(c=>c.SharedNotebook).WithMany(c=>c.Comments)
+                .HasForeignKey(c=>c.SharedNotebookId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_Comments_SharedNotebooks_SharedNotebookId");
         }
     }
 }

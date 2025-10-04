@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using ProBook.Services.Database;
@@ -11,9 +12,11 @@ using ProBook.Services.Database;
 namespace ProBook.Services.Migrations
 {
     [DbContext(typeof(ProBookDBContext))]
-    partial class ProBookDBContextModelSnapshot : ModelSnapshot
+    [Migration("20251004182219_AddedCommentSharedNotebookCascade")]
+    partial class AddedCommentSharedNotebookCascade
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
