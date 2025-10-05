@@ -21,11 +21,11 @@ export class CommentService {
     getById(id: number): Observable<Comment> {
         return this.apiService.getById<Comment>(this.endpoint, id);
     }
-    create(sharedNotebook: any): Observable<Comment> {
-        return this.apiService.post<Comment>(this.endpoint, sharedNotebook);
+    create(comment: any): Observable<Comment> {
+        return this.apiService.post<Comment>(this.endpoint, comment);
     }
-    update(id: number, sharedNotebook: any): Observable<Comment> {
-        return this.apiService.put<Comment>(this.endpoint, id, sharedNotebook);
+    update(id: number, comment: any): Observable<Comment> {
+        return this.apiService.put<Comment>(this.endpoint, id, comment);
     }
     delete(id: number): Observable<Comment> {
         return this.apiService.delete<Comment>(this.endpoint, id);

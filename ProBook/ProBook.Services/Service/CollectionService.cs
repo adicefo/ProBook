@@ -20,7 +20,7 @@ namespace ProBook.Services.Service
         {
         }
 
-        public async Task<Model.Model.NotebookCollection> AddToCollection(CollectionNotebookInsertRequest request)
+        public async Task<Model.Model.NotebookCollection> AddToCollection(CollectionNotebookRequest request)
         {
             Database.Notebook notebook = await Context.Notebooks.FirstOrDefaultAsync(x => x.Id == request.NotebookId);
             if (notebook == null)
@@ -66,6 +66,7 @@ namespace ProBook.Services.Service
 
                 response.Add(new CollectionResponse
                 {
+                    Id=x.Id,
                     Name = x.Name,
                     Description = x.Description,
                     CreatedAt=x.CreatedAt,
@@ -79,7 +80,19 @@ namespace ProBook.Services.Service
 
             
         }
+        public async Task<Model.Model.NotebookCollection> RemoveFromCollection(CollectionNotebookRequest request)
+        {
+            var collection = await Context.Collections.FirstOrDefaultAsync(x => x.Id == request.CollectionId);
+            if (collection == null)
+                throw new Exception("Collection not found");
+            var notebookCollection = await Context.NotebookCollections
+                .Where(x => x.CollectionId == request.CollectionId && x.NotebookId == request.NotebookId)
+                .FirstOrDefaultAsync();
+            if (notebookCollection == null)
+                throw new Exception("Entity does not exist in collection");
 
+            return Mapper.Map<Model.Model.NotebookCollection>(notebookCollection);
+        }
         public override IQueryable<Database.Collection> AddFilter(CollectionSearchObject search, IQueryable<Database.Collection> query)
         {
             var filteredQuery = base.AddFilter(search, query);
@@ -118,6 +131,6 @@ namespace ProBook.Services.Service
             await  base.BeforeUpdate(entity, request);
         }
 
-        
+       
     }
 }

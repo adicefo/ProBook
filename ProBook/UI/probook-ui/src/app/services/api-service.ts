@@ -85,6 +85,15 @@ export class ApiService {
       withCredentials: true,
     });
   }
+
+  deleteBody<T>(endpoint: string, body: any): Observable<T> {
+    return this.http.delete<T>(`${this.baseUrl}/${endpoint}`, {
+      body,
+      headers: this.getHeaders(),
+      withCredentials: true,
+    });
+  }
+
   private getQueryString(
     params: any,
     prefix: string = '',

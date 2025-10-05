@@ -21,9 +21,14 @@ namespace ProBook.API.Controllers
         }
 
         [HttpPost("/Collection/addToCollection")]
-        public Task<Model.Model.NotebookCollection> AddToCollection(CollectionNotebookInsertRequest request)
+        public Task<Model.Model.NotebookCollection> AddToCollection([FromBody]CollectionNotebookRequest request)
         {
             return (_service as ICollectionService).AddToCollection(request);
+        }
+        [HttpDelete("/Collection/removeFromCollection")]
+        public Task<Model.Model.NotebookCollection> RemoveFromCollection([FromBody] CollectionNotebookRequest request)
+        {
+            return (_service as ICollectionService).RemoveFromCollection(request);
         }
     }
 }

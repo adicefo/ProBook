@@ -13,6 +13,7 @@ namespace ProBook.Services.Interface
         CollectionInsertRequest,CollectionUpdateRequest>
     {
         Task<NotebookCollection> AddToCollection(CollectionNotebookInsertRequest request);
-        Task<List<CollectionResponse> GetCollectionResponse(int userId);
+        Task<NotebookCollection> RemoveFromCollection(int notebookId);
+        Task<List<CollectionResponse>> GetCollectionResponse(int userId);
     }
 }

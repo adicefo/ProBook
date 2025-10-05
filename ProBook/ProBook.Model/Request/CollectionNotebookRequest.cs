@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ProBook.Model.Request
 {
-    public class CollectionNotebookInsertRequest
+    public class CollectionNotebookRequest
     {
         public int? NotebookId { get; set; }
         public int? CollectionId { get; set; }
