@@ -131,6 +131,20 @@ export class AddToCollectionComponent implements OnInit {
 
   save() {
     if (!this.selectedCollection) return;
-    this.dialogRef.close(this.selectedCollection);
+
+    const formData={
+      collectionId:this.selectedCollection?.id??0,
+      notebookId:this.notebook?.id??0
+    };
+    setTimeout(() => {
+      this.loading = false;
+      this.dialogRef.close({
+        formData: formData,
+        data:{ 
+          collectionId:this.selectedCollection?.id??0,
+          notebookId:this.notebook?.id??0
+        }
+      });
+    }, 1000);
   }
 }

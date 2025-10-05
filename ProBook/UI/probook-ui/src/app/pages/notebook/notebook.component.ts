@@ -12,6 +12,7 @@ import { AddNotebookComponent } from '../add-notebook/add-notebook.component';
 import { ShareModalComponent } from '../share-modal/share-modal.component';
 import { SharedNotebookService } from '../../services/sharedNotebook-service';
 import { AddToCollectionComponent } from '../add-to-collection/add-to-collection.component';
+import { CollectionService } from '../../services/collection-service';
 @Component({
   selector: 'app-notebook',
   standalone: true,
@@ -35,6 +36,7 @@ export class NotebookComponent implements OnInit {
     private router: Router,
     private sharedNotebookService: SharedNotebookService,
     private userService: UserService,
+    private collectionService:CollectionService,
     private dialog: MatDialog, private snackBar: MatSnackBar
   ) { }
 
@@ -174,7 +176,27 @@ export class NotebookComponent implements OnInit {
       data: {
         notebook: notebook
       }
+    }); 
+    
+    dialogRef.afterClosed().subscribe((result: any) => {
+      
+      if (result && result.formData) {
+        this.collectionService.addToCollection(result.formData).subscribe((res:any)=>{
+          this.snackBar.open('Notebook added to  collection successfully','Close',{
+            duration:2000
+          }); 
+
+        },(err:any)=>{
+          this.snackBar.open('Failed to add  notebook to collection','Close',{
+            duration:2000 
+          });
+         
+
+        
+        })
+      }
     });
+      
   }
 
   cancelDelete(): void {
