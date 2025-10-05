@@ -12,6 +12,7 @@ namespace ProBook.Services.Interface
     public interface ICollectionService:ICRUDService<Model.Model.Collection,CollectionSearchObject,
         CollectionInsertRequest,CollectionUpdateRequest>
     {
-        Task<CollectionResponse> AddToCollection(CollectionNotebookInsertRequest request);
+        Task<NotebookCollection> AddToCollection(CollectionNotebookInsertRequest request);
+        Task<List<CollectionResponse> GetCollectionResponse(int userId);
     }
 }

@@ -14,6 +14,16 @@ namespace ProBook.API.Controllers
         {
         }
 
+        [HttpGet("/Collection/getCollectionResponse/{userId}")]
+        public async Task<List<CollectionResponse>>GetCollectionResponse(int userId)
+        {
+            return await (_service as ICollectionService).GetCollectionResponse(userId);
+        }
 
+        [HttpPost("/Collection/addToCollection")]
+        public Task<Model.Model.NotebookCollection> AddToCollection(CollectionNotebookInsertRequest request)
+        {
+            return (_service as ICollectionService).AddToCollection(request);
+        }
     }
 }

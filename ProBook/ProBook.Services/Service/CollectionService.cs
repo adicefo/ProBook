@@ -49,6 +49,36 @@ namespace ProBook.Services.Service
             return Mapper.Map<Model.Model.NotebookCollection>(entity);
             
         }
+        public async Task<List<CollectionResponse>> GetCollectionResponse(int userId)
+        {
+            var collections = await Context.Collections.
+                Where(x => x.UserId == userId)
+                .ToListAsync();
+            if (collections == null)
+                return null;
+            var response = new List<CollectionResponse>();
+            collections.ForEach(async x =>
+            {
+                var notebooks=await Context.NotebookCollections
+                .Where(nc=>nc.CollectionId==x.Id)
+                .Select(nc=>nc.Notebook)
+                .ToListAsync();
+
+                response.Add(new CollectionResponse
+                {
+                    Name = x.Name,
+                    Description = x.Description,
+                    CreatedAt=x.CreatedAt,
+                    User=Mapper.Map<Model.Model.User>(x.User),
+                    UserId=x.UserId,
+                    Notebooks=notebooks==null?null:Mapper.Map<List<Model.Model.Notebook>>(notebooks)
+                });
+
+            });
+            return response;
+
+            
+        }
 
         public override IQueryable<Database.Collection> AddFilter(CollectionSearchObject search, IQueryable<Database.Collection> query)
         {
@@ -87,5 +117,7 @@ namespace ProBook.Services.Service
         {
             await  base.BeforeUpdate(entity, request);
         }
+
+        
     }
 }
