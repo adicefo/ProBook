@@ -12,8 +12,14 @@
     </div>
 
     <!-- Collection Search Section -->
-    <div class="collection-search-section">
-        <label class="info-label">Search Collection</label>
+    <div class="collection-search-section" *ngIf="!showCreateNew">
+        <div class="section-header">
+            <label class="info-label">Search Collection</label>
+            <button class="btn-toggle" (click)="toggleCreateNew()" title="Create new collection">
+                <i class="bi bi-plus-circle"></i>
+                <span>Create New</span>
+            </button>
+        </div>
 
         <!-- Search Input -->
         <div class="input-group">
@@ -49,6 +55,41 @@
         <div class="loading-state" *ngIf="loading">
             <mat-spinner diameter="30"></mat-spinner>
             <span>Loading collections...</span>
+        </div>
+    </div>
+
+    <!-- Create New Collection Section -->
+    <div class="create-new-section" *ngIf="showCreateNew">
+        <div class="section-header">
+            <label class="info-label">Create New Collection</label>
+            <button class="btn-toggle" (click)="toggleCreateNew()" title="Back to search">
+                <i class="bi bi-arrow-left"></i>
+                <span>Back to Search</span>
+            </button>
+        </div>
+
+        <div class="create-form">
+            <!-- Collection Name Input -->
+            <div class="form-field">
+                <label class="field-label">Name <span class="required">*</span></label>
+                <input type="text" [formControl]="newCollectionName" placeholder="Enter collection name..."
+                    class="form-control" maxlength="100" />
+            </div>
+
+            <!-- Collection Description Input -->
+            <div class="form-field">
+                <label class="field-label">Description</label>
+                <textarea [formControl]="newCollectionDescription" placeholder="Enter description (optional)..."
+                    class="form-control textarea-control" rows="3" maxlength="500"></textarea>
+            </div>
+
+            <!-- Create Button -->
+            <button class="btn-create" (click)="createNewCollection()"
+                [disabled]="!newCollectionName.value?.trim() || creating">
+                <mat-spinner *ngIf="creating" diameter="20"></mat-spinner>
+                <i *ngIf="!creating" class="bi bi-plus-lg"></i>
+                <span>{{ creating ? 'Creating...' : 'Create Collection' }}</span>
+            </button>
         </div>
     </div>
 

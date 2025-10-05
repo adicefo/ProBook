@@ -22,6 +22,12 @@ export class AddToCollectionComponent implements OnInit {
   loading = false;
   notebook: Notebook | null = null;
 
+  // New collection creation
+  showCreateNew = false;
+  newCollectionName = new FormControl('');
+  newCollectionDescription = new FormControl('');
+  creating = false;
+
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
     private collectionService: CollectionService,
@@ -41,7 +47,7 @@ export class AddToCollectionComponent implements OnInit {
           this.showDropdown = true;
         }),
         switchMap(value =>
-          this.collectionService.getAll({ name: value,userId:this.notebook?.userId }).pipe(
+          this.collectionService.getAll({ name: value, userId: this.notebook?.userId }).pipe(
             tap(() => (this.loading = false))
           )
         )
@@ -56,8 +62,8 @@ export class AddToCollectionComponent implements OnInit {
   }
 
   loadCollections(searchTerm: string) {
-    this.loading = true; 
-    this.collectionService.getAll({ userId:this.notebook?.userId }).subscribe({
+    this.loading = true;
+    this.collectionService.getAll({ userId: this.notebook?.userId }).subscribe({
       next: (res: any) => {
         console.log(res.result);
         this.filteredCollections = res.items || [];
@@ -81,6 +87,42 @@ export class AddToCollectionComponent implements OnInit {
 
   removeSelectedCollection() {
     this.selectedCollection = null;
+  }
+
+  toggleCreateNew() {
+    this.showCreateNew = !this.showCreateNew;
+    if (this.showCreateNew) {
+      this.showDropdown = false;
+      this.newCollectionName.setValue('');
+      this.newCollectionDescription.setValue('');
+    }
+  }
+
+  createNewCollection() {
+    const name = this.newCollectionName.value?.trim();
+    if (!name) return;
+
+    this.creating = true;
+    const newCollection = {
+      name: name,
+      description: this.newCollectionDescription.value?.trim() || '',
+      userId: this.notebook?.userId
+    };
+
+    this.collectionService.create(newCollection).subscribe({
+      next: (created: any) => {
+        this.selectedCollection = created;
+        this.showCreateNew = false;
+        this.creating = false;
+        this.newCollectionName.setValue('');
+        this.newCollectionDescription.setValue('');
+        this.loadCollections('');
+      },
+      error: (err) => {
+        console.error('Error creating collection:', err);
+        this.creating = false;
+      }
+    });
   }
 
   cancel() {
