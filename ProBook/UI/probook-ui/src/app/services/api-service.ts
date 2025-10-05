@@ -30,7 +30,6 @@ export class ApiService {
       const queryString = this.getQueryString(params);
       url = `${url}?${queryString}`;
     }
-    console.log(url);
     return this.http.get<T>(url, {
       headers: this.getHeaders(),
       withCredentials: true,
