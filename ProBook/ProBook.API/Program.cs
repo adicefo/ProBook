@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using ProBook.API.Auth;
 using ProBook.API.Helper;
+using ProBook.API.Middleware;
 using ProBook.Services.Config;
 using ProBook.Services.Database;
 using ProBook.Services.Helper;
@@ -93,6 +94,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+//exception middlewar
+app.UseMiddleware<ExceptionMiddleware>();
 
 
 app.UseHttpsRedirection();

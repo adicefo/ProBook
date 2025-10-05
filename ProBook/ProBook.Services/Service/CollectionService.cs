@@ -4,6 +4,7 @@ using ProBook.Model.Model;
 using ProBook.Model.Request;
 using ProBook.Model.SearchObject;
 using ProBook.Services.Database;
+using ProBook.Services.Exceptions;
 using ProBook.Services.Interface;
 using System;
 using System.Collections.Generic;
@@ -24,16 +25,16 @@ namespace ProBook.Services.Service
         {
             Database.Notebook notebook = await Context.Notebooks.FirstOrDefaultAsync(x => x.Id == request.NotebookId);
             if (notebook == null)
-                throw new Exception("Sent invalid data,entity not found");
+                throw new NotFoundException($"Notebook with id {request.NotebookId} not found ");
             Database.Collection collection= await Context.Collections.FirstOrDefaultAsync(x=>x.Id== request.CollectionId);
             if(collection == null)
-                throw new Exception("Sent invalid data,entity not found");
+                throw new NotFoundException($"Collection with id {request.CollectionId} not found");
 
             var checkElement = await Context.NotebookCollections.
                 Where(x => x.NotebookId == request.NotebookId && x.CollectionId == request.CollectionId)
                 .AnyAsync();
             if (checkElement)
-                throw new Exception("Notebook already in collection");
+                throw new DuplicateException($"Notebook with id {request.NotebookId} already in collection");
 
 
             Database.NotebookCollection entity = new Database.NotebookCollection();
@@ -84,12 +85,12 @@ namespace ProBook.Services.Service
         {
             var collection = await Context.Collections.FirstOrDefaultAsync(x => x.Id == request.CollectionId);
             if (collection == null)
-                throw new Exception("Collection not found");
+                throw new NotFoundException($"Collection with id '{request.CollectionId}' does not exists.");
             var notebookCollection = await Context.NotebookCollections
                 .Where(x => x.CollectionId == request.CollectionId && x.NotebookId == request.NotebookId)
                 .FirstOrDefaultAsync();
             if (notebookCollection == null)
-                throw new Exception("Entity does not exist in collection");
+                throw new NotFoundException($"Notebook with id {request.NotebookId} does not exist in collection");
 
             return Mapper.Map<Model.Model.NotebookCollection>(notebookCollection);
         }
@@ -118,7 +119,7 @@ namespace ProBook.Services.Service
 
             Database.User user = await Context.Users.FirstOrDefaultAsync(x => x.Id == request.UserId);
             if (user == null)
-                throw new Exception("Entity not found");
+                throw new NotFoundException($"User with id {request.UserId} not found");
 
             entity.User = user;
             await base.BeforeInsert(entity, request);

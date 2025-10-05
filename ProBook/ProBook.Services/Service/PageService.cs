@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using ProBook.Model.Model;
 using ProBook.Model.Request;
 using ProBook.Model.SearchObject;
+using ProBook.Services.Exceptions;
 using ProBook.Services.Helper;
 using ProBook.Services.Interface;
 using System;
@@ -53,7 +54,7 @@ namespace ProBook.Services.Service
             entity.CreatedAt = DateTime.UtcNow;
             Database.Notebook notebook = await Context.Notebooks.FindAsync(request.NotebookId);
             if (notebook == null)
-                throw new Exception("Entity not found");
+                throw new NotFoundException($"Notebook with id {request.NotebookId} not found");
             entity.Notebook = notebook;
 
             if (request.File != null)

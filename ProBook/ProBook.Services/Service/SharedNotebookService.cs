@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using ProBook.Model.Request;
 using ProBook.Model.SearchObject;
 using ProBook.Services.Database;
+using ProBook.Services.Exceptions;
 using ProBook.Services.Interface;
 using System;
 using System.Collections.Generic;
@@ -23,7 +24,7 @@ namespace ProBook.Services.Service
         {
             var sharedNotebook = await Context.SharedNotebooks.FindAsync(id);
             if (sharedNotebook == null)
-                throw new Exception("Entity not found");
+                throw new NotFoundException("Entity not found");
 
             
             var comments = await Context.Comments
@@ -62,29 +63,29 @@ namespace ProBook.Services.Service
         public override async Task BeforeInsert(SharedNotebook entity, SharedNotebookInsertRequest request)
         {
             if (CheckIfAlreadyShared(request))
-                throw new Exception("Notebook has been already shared");
+                throw new DuplicateException($"Notebook with id {request.NotebookId} has been already shared");
 
             if (CheckValidNotebooks(request))
-                throw new Exception("Not valid elements");
+                throw new ValidationException("Not valid elements. Please check sent elements");
 
             if (request.FromUserId == request.ToUserId)
-                throw new Exception("Invalid request");
+                throw new ValidationException($"Invalid request,'fromUserId: '{request.FromUserId} and 'toUserId: '{request.ToUserId} should not be equal. ");
 
 
             entity.SharedDate= DateTime.UtcNow;
             Database.Notebook notebook = await Context.Notebooks.FindAsync(request.NotebookId);
             if (notebook == null)
-                throw new Exception("Entity not found");
+                throw new NotFoundException($"Notebook with id {request.NotebookId} not found");
             entity.Notebook = notebook;
 
             Database.User fromUser= await Context.Users.FindAsync(request.FromUserId);
             if (fromUser == null)
-                throw new Exception("Entity not found");
+                throw new NotFoundException($"User with id {request.FromUserId} not found");
             entity.FromUser = fromUser;
 
             Database.User toUser = await Context.Users.FindAsync(request.ToUserId);
             if (toUser == null)
-                throw new Exception("Entity not found");
+                throw new NotFoundException($"User with id {request.ToUserId} not found");
             entity.ToUser = toUser;
 
 

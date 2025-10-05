@@ -9,6 +9,7 @@ using ProBook.Services.Helper;
 using ProBook.Services.Interface;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -62,7 +63,7 @@ namespace ProBook.Services.Service
         public override async Task BeforeInsert(User entity, UserInsertRequest request)
         {
             if (request.Password != request.PasswordConfirm)
-                throw new Exception("Passwords do not match");
+                throw new ValidationException("Passwords do not match");
             entity.RegisteredDate= DateTime.UtcNow;
             entity.PasswordSalt = PasswordGenerate.GenerateSalt();
             var password = PasswordGenerate.GenerateHash(entity.PasswordSalt, request.Password);

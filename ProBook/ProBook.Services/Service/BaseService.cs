@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using ProBook.Model.Helper;
 using ProBook.Model.SearchObject;
 using ProBook.Services.Database;
+using ProBook.Services.Exceptions;
 using ProBook.Services.Interface;
 using System;
 using System.Collections.Generic;
@@ -56,7 +57,7 @@ namespace ProBook.Services.Service
             var entity = await query.FirstOrDefaultAsync(x => EF.Property<int>(x, "Id") == id);
 
             if (entity == null)
-                throw new Exception("Entity not found");
+                throw new NotFoundException("Entity not found");
 
             return Mapper.Map<TModel>(entity);
         }

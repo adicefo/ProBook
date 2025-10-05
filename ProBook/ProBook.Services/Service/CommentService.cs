@@ -4,6 +4,7 @@ using ProBook.Model.Model;
 using ProBook.Model.Request;
 using ProBook.Model.SearchObject;
 using ProBook.Services.Database;
+using ProBook.Services.Exceptions;
 using ProBook.Services.Interface;
 using System;
 using System.Collections.Generic;
@@ -43,7 +44,7 @@ namespace ProBook.Services.Service
             {
                 var comment = Context.Comments.FirstOrDefault(x => x.Id == id);
                 if(comment==null)
-                    throw new Exception("Entity not found,invalid operation");
+                    throw new NotFoundException($"Comment with id {id} not found,invalid operation");
                 if(comment.Viewed==false)
                 {
                     comment.Viewed = true;
@@ -77,17 +78,17 @@ namespace ProBook.Services.Service
             entity.CreatedAt= DateTime.UtcNow;
             Database.Page page = await Context.Pages.FirstOrDefaultAsync(x=>x.Id==request.PageId);
             if (page == null)
-                throw new Exception("Entity not found");
+                throw new NotFoundException($"Page with id {request.PageId} not found");
             entity.Page = page;
 
             Database.User user =  await Context.Users.FirstOrDefaultAsync(x=>x.Id==request.UserId);
             if (user == null)
-                throw new Exception("Entity not found");
+                throw new NotFoundException($"User with id {request.UserId} not found");
             entity.User = user;
 
             Database.SharedNotebook sn = await Context.SharedNotebooks.FirstOrDefaultAsync(x => x.Id == request.SharedNotebookId);
             if (sn == null)
-                throw new Exception("Entity not found");
+                throw new NotFoundException($"Shared notebook with id {request.SharedNotebookId} not found");
             entity.SharedNotebook = sn;
                 
             

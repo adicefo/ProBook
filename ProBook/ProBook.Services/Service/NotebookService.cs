@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using ProBook.Model.Request;
 using ProBook.Model.SearchObject;
 using ProBook.Services.Database;
+using ProBook.Services.Exceptions;
 using ProBook.Services.Helper;
 using ProBook.Services.Interface;
 using System;
@@ -62,7 +63,7 @@ namespace ProBook.Services.Service
 
             User user = await Context.Users.FindAsync(request.UserId);
             if (user == null)
-                throw new Exception("Entity not found");
+                throw new NotFoundException($"Entity with id {request.UserId} not found");
 
             entity.User = user;
 

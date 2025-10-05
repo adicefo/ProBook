@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using ProBook.Model.SearchObject;
 using ProBook.Services.Database;
+using ProBook.Services.Exceptions;
 using ProBook.Services.Interface;
 using System;
 using System.Collections.Generic;
@@ -41,7 +42,7 @@ namespace ProBook.Services.Service
                 .FirstOrDefaultAsync(x => EF.Property<int>(x, "Id") == id);
 
             if (entity == null)
-                throw new Exception("Entity not found");
+                throw new NotFoundException("Entity not found");
 
             entity = Mapper.Map(request, entity);
             await BeforeUpdate(entity, request);
@@ -60,7 +61,7 @@ namespace ProBook.Services.Service
                 .FirstOrDefaultAsync(x => EF.Property<int>(x, "Id") == id);
 
             if (entity == null)
-                throw new Exception("Entity not found");
+                throw new NotFoundException("Entity not found");
 
             set.Remove(entity);
             await Context.SaveChangesAsync();
