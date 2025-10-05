@@ -33,6 +33,19 @@ export class SharedNotebookComponent implements OnInit {
   commentCounts: Map<number, number> = new Map();
   commentIds: number[] = [];
 
+  // PAGINATION STATE FOR SHARED WITH ME"
+ 
+  sharedWithMeCurrentPage: number = 1;
+  sharedWithMePageSize: number = 4;
+  sharedWithMeTotalItems: number = 0;
+  sharedWithMeTotalPages: number = 0;
+
+  // PAGINATION  FOR SHARED BY ME 
+  sharedByMeCurrentPage: number = 1;
+  sharedByMePageSize: number = 4;
+  sharedByMeTotalItems: number = 0;
+  sharedByMeTotalPages: number = 0;
+
   constructor(
     private sharedNotebookService: SharedNotebookService,
     private userService: UserService,
@@ -56,13 +69,30 @@ export class SharedNotebookComponent implements OnInit {
     });
   }
 
-  loadSharedNotebooks(): void {
+
+  loadSharedWithMeNotebooks(): void {
     if (!this.currentUser?.id) return;
 
     this.loading = true;
-    this.sharedNotebookService.getAll({ toUserId: this.currentUser.id }).subscribe({
-      next: (result) => {
+
+    
+    const params = {
+      ToUserId: this.currentUser.id,
+      Page: this.sharedWithMeCurrentPage - 1,
+      PageSize: this.sharedWithMePageSize
+    };
+
+    this.sharedNotebookService.getAll(params).subscribe({
+      next: (result: any) => {
+        console.log("Shared with me:", result);
+        
         this.sharedWithMeNotebooks = result.result || [];
+
+
+        this.sharedWithMeTotalItems = result.count || 0;
+
+        this.sharedWithMeTotalPages = Math.ceil(this.sharedWithMeTotalItems / this.sharedWithMePageSize);
+
         this.loading = false;
       },
       error: (err) => {
@@ -71,13 +101,31 @@ export class SharedNotebookComponent implements OnInit {
         console.error('Error loading shared with me:', err);
       }
     });
+  }
+
+
+  loadSharedByMeNotebooks(): void {
+    if (!this.currentUser?.id) return;
 
     this.loadingSharedByMe = true;
-    this.sharedNotebookService.getAll({ fromUserId: this.currentUser.id }).subscribe({
-      next: (result) => {
+
+    const params = {
+      FromUserId: this.currentUser.id,
+      Page: this.sharedByMeCurrentPage - 1,
+      PageSize: this.sharedByMePageSize
+    };
+
+    this.sharedNotebookService.getAll(params).subscribe({
+      next: (result: any) => {
+        console.log("Shared by me:", result);
         this.sharedByMeNotebooks = result.result || [];
+
+        this.sharedByMeTotalItems = result.count || 0;
+
+        this.sharedByMeTotalPages = Math.ceil(this.sharedByMeTotalItems / this.sharedByMePageSize);
+
         this.loadingSharedByMe = false;
-        // Load comment counts for each shared notebook
+
         this.loadCommentCounts();
       },
       error: (err) => {
@@ -85,7 +133,12 @@ export class SharedNotebookComponent implements OnInit {
         console.error('Error loading shared by me:', err);
       }
     });
+  }
 
+
+  loadSharedNotebooks(): void {
+    this.loadSharedWithMeNotebooks();
+    this.loadSharedByMeNotebooks();
   }
 
   loadCommentCounts(): void {
@@ -121,11 +174,11 @@ export class SharedNotebookComponent implements OnInit {
 
     // TODO: Backend logic will be implemented later to mark comments as read
     // For now, just show a message
- 
-        this.router.navigate(['/app/notebook/', sharedNotebook.notebook?.id], {
-          queryParams: { isShare: false,snId:sharedNotebook.id }
-        });
-     
+
+    this.router.navigate(['/app/notebook/', sharedNotebook.notebook?.id], {
+      queryParams: { isShare: false, snId: sharedNotebook.id }
+    });
+
   }
 
   onNotebookClick(sharedNotebook: SharedNotebook): void {
@@ -135,7 +188,7 @@ export class SharedNotebookComponent implements OnInit {
         queryParams: {
           isShare: true,
           openComments: hasNewComments ? 'true' : 'false',
-          snId:sharedNotebook?.id
+          snId: sharedNotebook?.id
         }
       });
     }
@@ -201,5 +254,134 @@ export class SharedNotebookComponent implements OnInit {
 
   changeTab(tab: 'received' | 'shared'): void {
     this.selectedTab = tab;
+  }
+
+  // PAGINATION FOR SHARED WITH ME
+  goToSharedWithMePage(page: number): void {
+    if (page < 1 || page > this.sharedWithMeTotalPages || page === this.sharedWithMeCurrentPage) {
+      return; // Invalid page or already on this page
+    }
+
+    this.sharedWithMeCurrentPage = page;
+    this.loadSharedWithMeNotebooks();
+  }
+
+  
+  nextSharedWithMePage(): void {
+    if (this.sharedWithMeCurrentPage < this.sharedWithMeTotalPages) {
+      this.sharedWithMeCurrentPage++;
+      this.loadSharedWithMeNotebooks();
+    }
+  }
+
+ 
+  previousSharedWithMePage(): void {
+    if (this.sharedWithMeCurrentPage > 1) {
+      this.sharedWithMeCurrentPage--;
+      this.loadSharedWithMeNotebooks();
+    }
+  }
+
+
+  isSharedWithMeFirstPage(): boolean {
+    return this.sharedWithMeCurrentPage === 1;
+  }
+
+ 
+  isSharedWithMeLastPage(): boolean {
+    return this.sharedWithMeCurrentPage === this.sharedWithMeTotalPages || this.sharedWithMeTotalPages === 0;
+  }
+
+
+  getSharedWithMePageNumbers(): number[] {
+    const pages: number[] = [];
+    const maxPagesToShow = 5;
+
+    if (this.sharedWithMeTotalPages <= maxPagesToShow) {
+      // Show all pages if total is small
+      for (let i = 1; i <= this.sharedWithMeTotalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      const halfWindow = Math.floor(maxPagesToShow / 2);
+      let startPage = Math.max(1, this.sharedWithMeCurrentPage - halfWindow);
+      let endPage = Math.min(this.sharedWithMeTotalPages, this.sharedWithMeCurrentPage + halfWindow);
+
+      if (this.sharedWithMeCurrentPage <= halfWindow) {
+        endPage = maxPagesToShow;
+      } else if (this.sharedWithMeCurrentPage >= this.sharedWithMeTotalPages - halfWindow) {
+        startPage = this.sharedWithMeTotalPages - maxPagesToShow + 1;
+      }
+
+      for (let i = startPage; i <= endPage; i++) {
+        pages.push(i);
+      }
+    }
+
+    return pages;
+  }
+
+ // PAGINATION FOR SHARED BY ME
+  goToSharedByMePage(page: number): void {
+    if (page < 1 || page > this.sharedByMeTotalPages || page === this.sharedByMeCurrentPage) {
+      return;
+    }
+
+    this.sharedByMeCurrentPage = page;
+    this.loadSharedByMeNotebooks();
+  }
+
+ 
+  nextSharedByMePage(): void {
+    if (this.sharedByMeCurrentPage < this.sharedByMeTotalPages) {
+      this.sharedByMeCurrentPage++;
+      this.loadSharedByMeNotebooks();
+    }
+  }
+
+  
+  previousSharedByMePage(): void {
+    if (this.sharedByMeCurrentPage > 1) {
+      this.sharedByMeCurrentPage--;
+      this.loadSharedByMeNotebooks();
+    }
+  }
+
+  
+  isSharedByMeFirstPage(): boolean {
+    return this.sharedByMeCurrentPage === 1;
+  }
+
+
+  isSharedByMeLastPage(): boolean {
+    return this.sharedByMeCurrentPage === this.sharedByMeTotalPages || this.sharedByMeTotalPages === 0;
+  }
+
+
+  getSharedByMePageNumbers(): number[] {
+    const pages: number[] = [];
+    const maxPagesToShow = 5;
+
+    if (this.sharedByMeTotalPages <= maxPagesToShow) {
+      for (let i = 1; i <= this.sharedByMeTotalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      const halfWindow = Math.floor(maxPagesToShow / 2);
+      let startPage = Math.max(1, this.sharedByMeCurrentPage - halfWindow);
+      let endPage = Math.min(this.sharedByMeTotalPages, this.sharedByMeCurrentPage + halfWindow);
+
+      if (this.sharedByMeCurrentPage <= halfWindow) {
+        endPage = maxPagesToShow;
+      } else if (this.sharedByMeCurrentPage >= this.sharedByMeTotalPages - halfWindow) {
+        startPage = this.sharedByMeTotalPages - maxPagesToShow + 1;
+      }
+
+      for (let i = startPage; i <= endPage; i++) {
+        pages.push(i);
+      }
+    }
+
+    return pages;
   }
 }

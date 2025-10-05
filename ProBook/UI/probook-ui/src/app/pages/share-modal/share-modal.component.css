@@ -292,6 +292,7 @@
 .user-list::-webkit-scrollbar-thumb:hover {
     background: #3f51b5;
 }
-.user-email{
+
+.user-email {
     color: white;
 }

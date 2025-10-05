@@ -25,12 +25,12 @@ export class ShareModalComponent implements OnInit {
   filteredUsers: User[] = [];
   selectedUser: User | null = null;
   notebook: Notebook;
-  showDropdown:boolean = false;
+  showDropdown: boolean = false;
   constructor(
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<ShareModalComponent>,
     private userService: UserService,
-    @Inject(MAT_DIALOG_DATA) public data:any
+    @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     this.notebook = data.notebook;
     this.shareForm = this.fb.group({
@@ -40,7 +40,7 @@ export class ShareModalComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadUsers();
- 
+
     this.nameFilter.valueChanges
       .pipe(
         debounceTime(300),
@@ -85,7 +85,7 @@ export class ShareModalComponent implements OnInit {
       });
     }
 
-    
+
     this.showDropdown = Boolean(nameValue || surnameValue) && this.filteredUsers.length > 0;
   }
 
@@ -116,15 +116,15 @@ export class ShareModalComponent implements OnInit {
   }
 
   save(): void {
-    if(this.selectUser===null)return;
+    if (this.selectUser === null) return;
     this.loading = true;
-    const insertData={
+    const insertData = {
       toUserId: this.selectedUser?.id,
       notebookId: this.notebook?.id,
       fromUserId: this.shareForm.get('fromUserId')?.value,
-      isForEdit:false
+      isForEdit: false
     };
-  
+
 
     console.log(insertData);
 
@@ -133,11 +133,11 @@ export class ShareModalComponent implements OnInit {
       this.loading = false;
       this.dialogRef.close({
         formData: insertData,
-        data:{ 
+        data: {
           toUserId: this.selectedUser?.id,
           notebookId: this.notebook.id,
           fromUserId: this.shareForm.get('fromUserId')?.value,
-          isForEdit:false
+          isForEdit: false
         }
       });
     }, 1000);

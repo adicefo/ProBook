@@ -15,12 +15,12 @@
         <button class="tab-button" [class.active]="selectedTab === 'received'" (click)="changeTab('received')">
             <mat-icon>inbox</mat-icon>
             <span>Shared With Me</span>
-            <span class="badge" *ngIf="sharedWithMeNotebooks.length > 0">{{sharedWithMeNotebooks.length}}</span>
+            <span class="badge" *ngIf="sharedWithMeNotebooks.length > 0">{{sharedWithMeTotalItems}}</span>
         </button>
         <button class="tab-button" [class.active]="selectedTab === 'shared'" (click)="changeTab('shared')">
             <mat-icon>send</mat-icon>
             <span>Shared By Me</span>
-            <span class="badge" *ngIf="sharedByMeNotebooks.length > 0">{{sharedByMeNotebooks.length}}</span>
+            <span class="badge" *ngIf="sharedByMeNotebooks.length > 0">{{sharedByMeTotalItems}}</span>
         </button>
     </div>
 
@@ -115,6 +115,37 @@
                 <p>Notebooks shared with you will appear here</p>
             </div>
         </div>
+
+        <!-- Pagination Controls for "Shared With Me" -->
+        <div class="pagination-container"
+            *ngIf="!loading && sharedWithMeNotebooks.length > 0 && sharedWithMeTotalPages > 1">
+            <div class="pagination-info">
+                <span class="page-info">
+                    Page {{ sharedWithMeCurrentPage }} of {{ sharedWithMeTotalPages }}
+                    <span class="item-count">({{ sharedWithMeTotalItems }} total notebooks)</span>
+                </span>
+            </div>
+
+            <div class="pagination-controls">
+                <!-- Previous Button -->
+                <button class="page-btn prev-btn" (click)="previousSharedWithMePage()"
+                    [disabled]="isSharedWithMeFirstPage()" title="Previous page">
+                    <mat-icon>chevron_left</mat-icon>
+                </button>
+
+                <!-- Page Numbers -->
+                <button *ngFor="let page of getSharedWithMePageNumbers()" class="page-btn page-number"
+                    [class.active]="page === sharedWithMeCurrentPage" (click)="goToSharedWithMePage(page)">
+                    {{ page }}
+                </button>
+
+                <!-- Next Button -->
+                <button class="page-btn next-btn" (click)="nextSharedWithMePage()" [disabled]="isSharedWithMeLastPage()"
+                    title="Next page">
+                    <mat-icon>chevron_right</mat-icon>
+                </button>
+            </div>
+        </div>
     </div>
 
     <!-- Shared By Me Section -->
@@ -183,6 +214,37 @@
                 <h2>No Shared Notebooks</h2>
                 <p>You haven't shared any notebooks yet</p>
                 <p class="hint-text">Share notebooks from your notebook collection</p>
+            </div>
+        </div>
+
+        <!-- Pagination Controls for "Shared By Me" -->
+        <div class="pagination-container"
+            *ngIf="!loadingSharedByMe && sharedByMeNotebooks.length > 0 && sharedByMeTotalPages > 1">
+            <div class="pagination-info">
+                <span class="page-info">
+                    Page {{ sharedByMeCurrentPage }} of {{ sharedByMeTotalPages }}
+                    <span class="item-count">({{ sharedByMeTotalItems }} total shared)</span>
+                </span>
+            </div>
+
+            <div class="pagination-controls">
+                <!-- Previous Button -->
+                <button class="page-btn prev-btn" (click)="previousSharedByMePage()"
+                    [disabled]="isSharedByMeFirstPage()" title="Previous page">
+                    <mat-icon>chevron_left</mat-icon>
+                </button>
+
+                <!-- Page Numbers -->
+                <button *ngFor="let page of getSharedByMePageNumbers()" class="page-btn page-number"
+                    [class.active]="page === sharedByMeCurrentPage" (click)="goToSharedByMePage(page)">
+                    {{ page }}
+                </button>
+
+                <!-- Next Button -->
+                <button class="page-btn next-btn" (click)="nextSharedByMePage()" [disabled]="isSharedByMeLastPage()"
+                    title="Next page">
+                    <mat-icon>chevron_right</mat-icon>
+                </button>
             </div>
         </div>
     </div>

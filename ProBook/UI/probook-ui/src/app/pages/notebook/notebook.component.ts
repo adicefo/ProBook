@@ -191,7 +191,7 @@ export class NotebookComponent implements OnInit {
             duration:2000 
           });
          
-
+          
         
         })
       }
