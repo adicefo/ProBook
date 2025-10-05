@@ -52,6 +52,7 @@ builder.Services.AddTransient<INotebookService, NotebookService>();
 builder.Services.AddTransient<IPageService, PageService>();
 builder.Services.AddTransient<ISharedNotebookService, SharedNotebookService>();
 builder.Services.AddTransient<ICommentService, CommentService>();
+builder.Services.AddTransient<ICollectionService, CollectionService>();
 
 
 builder.Services.AddDbContext<ProBookDBContext>(options =>
