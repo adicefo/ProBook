@@ -1,5 +1,6 @@
 ﻿using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
+using ProBook.Model.Model;
 using ProBook.Model.Request;
 using ProBook.Model.SearchObject;
 using ProBook.Services.Database;
@@ -19,7 +20,37 @@ namespace ProBook.Services.Service
         {
         }
 
-        public override IQueryable<Collection> AddFilter(CollectionSearchObject search, IQueryable<Collection> query)
+        public async Task<Model.Model.NotebookCollection> AddToCollection(CollectionNotebookInsertRequest request)
+        {
+            Database.Notebook notebook = await Context.Notebooks.FirstOrDefaultAsync(x => x.Id == request.NotebookId);
+            if (notebook == null)
+                throw new Exception("Sent invalid data,entity not found");
+            Database.Collection collection= await Context.Collections.FirstOrDefaultAsync(x=>x.Id== request.CollectionId);
+            if(collection == null)
+                throw new Exception("Sent invalid data,entity not found");
+
+            var checkElement = await Context.NotebookCollections.
+                Where(x => x.NotebookId == request.NotebookId && x.CollectionId == request.CollectionId)
+                .AnyAsync();
+            if (checkElement)
+                throw new Exception("Notebook already in collection");
+
+
+            Database.NotebookCollection entity = new Database.NotebookCollection();
+            entity.NotebookId = request.NotebookId??0;
+            entity.CollectionId = request.CollectionId??0;
+            entity.Notebook = notebook;
+            entity.Collection = collection;
+            entity.CreatedAt= DateTime.UtcNow;
+
+            await Context.AddAsync(entity);
+            await Context.SaveChangesAsync();
+
+            return Mapper.Map<Model.Model.NotebookCollection>(entity);
+            
+        }
+
+        public override IQueryable<Database.Collection> AddFilter(CollectionSearchObject search, IQueryable<Database.Collection> query)
         {
             var filteredQuery = base.AddFilter(search, query);
 
@@ -33,12 +64,12 @@ namespace ProBook.Services.Service
             return filteredQuery;
         }
 
-        public override IQueryable<Collection> AddInclude(IQueryable<Collection> query)
+        public override IQueryable<Database.Collection> AddInclude(IQueryable<Database.Collection> query)
         {
             return query.Include(x => x.User);
         }
 
-        public override async Task BeforeInsert(Collection entity, CollectionInsertRequest request)
+        public override async Task BeforeInsert(Database.Collection entity, CollectionInsertRequest request)
         {
             entity.CreatedAt = DateTime.UtcNow;
 
@@ -52,7 +83,7 @@ namespace ProBook.Services.Service
 
         }
 
-        public override async Task BeforeUpdate(Collection entity, CollectionUpdateRequest request)
+        public override async Task BeforeUpdate(Database.Collection entity, CollectionUpdateRequest request)
         {
             await  base.BeforeUpdate(entity, request);
         }

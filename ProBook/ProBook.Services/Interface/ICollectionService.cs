@@ -1,4 +1,5 @@
-﻿using ProBook.Model.Request;
+﻿using ProBook.Model.Model;
+using ProBook.Model.Request;
 using ProBook.Model.SearchObject;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,6 @@ namespace ProBook.Services.Interface
     public interface ICollectionService:ICRUDService<Model.Model.Collection,CollectionSearchObject,
         CollectionInsertRequest,CollectionUpdateRequest>
     {
-
+        Task<CollectionResponse> AddToCollection(CollectionNotebookInsertRequest request);
     }
 }
