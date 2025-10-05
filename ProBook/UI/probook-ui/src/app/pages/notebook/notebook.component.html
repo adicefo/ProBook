@@ -47,6 +47,10 @@
                             <mat-icon>share</mat-icon>
                             <span>Share</span>
                         </button>
+                        <button mat-menu-item (click)="onMenuAction('add-collection', notebook)">
+                            <mat-icon>collections</mat-icon>
+                            <span>Add to Collection</span>
+                        </button>
                         <mat-divider></mat-divider>
                         <button mat-menu-item (click)="onMenuAction('delete', notebook)" class="delete-option">
                             <mat-icon>delete</mat-icon>

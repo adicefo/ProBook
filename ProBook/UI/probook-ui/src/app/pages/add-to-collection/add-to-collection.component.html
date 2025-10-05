@@ -1,0 +1,83 @@
+<h2 mat-dialog-title>Add to Collection</h2>
+
+<mat-dialog-content class="dialog-content">
+
+    <!-- Notebook Info (readonly) -->
+    <div class="notebook-info">
+        <label class="info-label">Notebook</label>
+        <div class="notebook-display">
+            <i class="bi bi-journal-text"></i>
+            <span>{{ notebook?.name }}</span>
+        </div>
+    </div>
+
+    <!-- Collection Search Section -->
+    <div class="collection-search-section">
+        <label class="info-label">Search Collection</label>
+
+        <!-- Search Input -->
+        <div class="input-group">
+            <span class="input-icon"><i class="bi bi-search"></i></span>
+            <input type="text" [formControl]="nameFilter" placeholder="Search collections..." class="form-control"
+                (focus)="onFilterFocus()" />
+        </div>
+
+        <!-- Collection Dropdown -->
+        <div class="collection-dropdown" *ngIf="showDropdown && !loading">
+            <div class="collection-list">
+                <div class="collection-item" *ngFor="let collection of filteredCollections"
+                    (click)="selectCollection(collection)">
+                    <div class="collection-icon">
+                        <i class="bi bi-folder2-open"></i>
+                    </div>
+                    <div class="collection-details">
+                        <div class="collection-name">{{ collection.name }}</div>
+                        <div class="collection-date" *ngIf="collection.createdAt">
+                            {{ collection.createdAt }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="no-results" *ngIf="filteredCollections.length === 0">
+                    <i class="bi bi-inbox"></i>
+                    <span>No collections found</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading Spinner -->
+        <div class="loading-state" *ngIf="loading">
+            <mat-spinner diameter="30"></mat-spinner>
+            <span>Loading collections...</span>
+        </div>
+    </div>
+
+    <!-- Selected Collection Display -->
+    <div class="selected-collection-section" *ngIf="selectedCollection">
+        <label class="info-label">Selected Collection</label>
+        <div class="selected-collection-card">
+            <div class="collection-info">
+                <div class="collection-icon-large">
+                    <i class="bi bi-folder2-open"></i>
+                </div>
+                <div class="collection-details">
+                    <div class="collection-name-large">{{ selectedCollection.name }}</div>
+                    <div class="collection-description" *ngIf="selectedCollection.description">
+                        {{ selectedCollection.description }}
+                    </div>
+                </div>
+            </div>
+            <button class="btn-remove" (click)="removeSelectedCollection()" title="Remove selection">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+    </div>
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button mat-button (click)="cancel()">Cancel</button>
+    <button mat-raised-button color="primary" (click)="save()" [disabled]="!selectedCollection || loading">
+        <span>Add</span>
+    </button>
+</mat-dialog-actions>

@@ -11,6 +11,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { AddNotebookComponent } from '../add-notebook/add-notebook.component';
 import { ShareModalComponent } from '../share-modal/share-modal.component';
 import { SharedNotebookService } from '../../services/sharedNotebook-service';
+import { AddToCollectionComponent } from '../add-to-collection/add-to-collection.component';
 @Component({
   selector: 'app-notebook',
   standalone: true,
@@ -161,7 +162,19 @@ export class NotebookComponent implements OnInit {
     if (action === 'share') {
       this.openShareModal(notebook);
     }
+    if(action==='add-collection'){
+      this.openAddCollectionDialog(notebook);
+    }
     // TODO: Implement menu actions (edit, delete, share, etc.)
+  }
+
+  openAddCollectionDialog(notebook: Notebook): void {
+    const dialogRef = this.dialog.open(AddToCollectionComponent, {
+      width: '500px',
+      data: {
+        notebook: notebook
+      }
+    });
   }
 
   cancelDelete(): void {

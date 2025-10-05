@@ -1,0 +1,276 @@
+/* Dialog Content */
+.dialog-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    width: 500px;
+    max-width: 90vw;
+    padding: 0.5rem 0;
+    overflow: hidden;
+}
+
+/* Labels */
+.info-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #424242;
+    margin-bottom: 0.5rem;
+    padding: 0 0.5rem;
+}
+
+/* Notebook Info Section */
+.notebook-info {
+    padding: 0 0.5rem;
+}
+
+.notebook-display {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    background-color: #f5f5f5;
+    border-radius: 6px;
+    border: 1px solid #e0e0e0;
+    margin: 0 0.5rem;
+}
+
+.notebook-display i {
+    color: #5e35b1;
+    font-size: 1.25rem;
+}
+
+.notebook-display span {
+    font-size: 0.95rem;
+    color: #212121;
+    font-weight: 500;
+}
+
+/* Collection Search Section */
+.collection-search-section {
+    position: relative;
+    padding: 0 0.5rem;
+}
+
+/* Search Input Group */
+.input-group {
+    position: relative;
+}
+
+.input-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #757575;
+    font-size: 1rem;
+    z-index: 1;
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.625rem 0.875rem 0.625rem 2.5rem;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #5e35b1;
+    box-shadow: 0 0 0 3px rgba(94, 53, 177, 0.1);
+}
+
+.form-control::placeholder {
+    color: #9e9e9e;
+}
+
+/* Collection Dropdown */
+.collection-dropdown {
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    max-height: 250px;
+    overflow-y: auto;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin-top: 0.5rem;
+}
+
+.collection-list {
+    padding: 0.5rem 0;
+}
+
+/* Collection Item */
+.collection-item {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-bottom: 1px solid #f5f5f5;
+}
+
+.collection-item:last-child {
+    border-bottom: none;
+}
+
+.collection-item:hover {
+    background: #f8f5ff;
+}
+
+.collection-icon {
+    color: #5e35b1;
+    font-size: 1.5rem;
+    margin-right: 0.875rem;
+    flex-shrink: 0;
+}
+
+.collection-details {
+    flex: 1;
+    min-width: 0;
+}
+
+.collection-name {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #212121;
+    margin-bottom: 0.25rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.collection-date {
+    font-size: 0.8rem;
+    color: #757575;
+}
+
+/* No Results */
+.no-results {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+    color: #9e9e9e;
+    text-align: center;
+}
+
+.no-results i {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    color: #bdbdbd;
+}
+
+.no-results span {
+    font-size: 0.875rem;
+}
+
+/* Loading State */
+.loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem 1rem;
+    gap: 0.75rem;
+}
+
+.loading-state span {
+    color: #757575;
+    font-size: 0.875rem;
+}
+
+/* Selected Collection Section */
+.selected-collection-section {
+    padding: 0 0.5rem;
+}
+
+.selected-collection-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 2px solid #5e35b1;
+    padding: 0.875rem 1rem;
+    border-radius: 6px;
+    background-color: #f8f5ff;
+    gap: 1rem;
+}
+
+.collection-info {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    flex: 1;
+    min-width: 0;
+}
+
+.collection-icon-large {
+    color: #5e35b1;
+    font-size: 2rem;
+    flex-shrink: 0;
+}
+
+.collection-name-large {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #212121;
+    margin-bottom: 0.25rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.collection-description {
+    font-size: 0.85rem;
+    color: #616161;
+    margin-top: 0.25rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Remove Button */
+.btn-remove {
+    background: none;
+    border: none;
+    color: #757575;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.btn-remove:hover {
+    color: #f44336;
+    background-color: #ffebee;
+}
+
+.btn-remove i {
+    font-size: 1rem;
+}
+
+/* Scrollbar Styling */
+.collection-dropdown::-webkit-scrollbar {
+    width: 6px;
+}
+
+.collection-dropdown::-webkit-scrollbar-track {
+    background: #f5f5f5;
+    border-radius: 8px;
+}
+
+.collection-dropdown::-webkit-scrollbar-thumb {
+    background: #bdbdbd;
+    border-radius: 8px;
+}
+
+.collection-dropdown::-webkit-scrollbar-thumb:hover {
+    background: #9e9e9e;
+}
