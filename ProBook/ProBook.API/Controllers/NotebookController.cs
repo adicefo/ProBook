@@ -20,7 +20,11 @@ namespace ProBook.API.Controllers
         {
             return await (_service as INotebookService).GetAllNotebooks(userId);
         }
-
+        [HttpPost("/Notebook/getAvailableNotebooks")]
+        public async Task<List<Model.Model.Notebook>> GetAvailableNotebooks([FromBody] GetAvailableNotebookInsertRequest request)
+        {
+            return await (_service as INotebookService).GetAvailableNotebooks(request);
+        }
         [HttpPost]
         public override  Task<Notebook> Insert([FromForm]NotebookInsertRequest request)
         {
@@ -31,6 +35,7 @@ namespace ProBook.API.Controllers
         {
             return await base.Update(id, request);
         }
+
 
     }
 }

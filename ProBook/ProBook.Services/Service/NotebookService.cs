@@ -38,6 +38,27 @@ namespace ProBook.Services.Service
             return null;
 
         }
+        public async Task<List<Model.Model.Notebook>> GetAvailableNotebooks(GetAvailableNotebookInsertRequest request)
+        {
+            var existedNotebooks = await Context.NotebookCollections.
+                Where(x => x.CollectionId == request.CollectionId && x.Collection.UserId == request.UserId)
+                .Select(x=>x.Notebook)
+                .ToListAsync();
+            var allNotebooks = await Context.Notebooks
+                .Where(x => x.UserId == request.UserId)
+                .ToListAsync();
+            if (existedNotebooks != null)
+            {
+                var availableNotebooks = allNotebooks
+    .Except(existedNotebooks)
+    .ToList();
+                return Mapper.Map<List<Model.Model.Notebook>>(availableNotebooks);
+            }
+            return Mapper.Map<List<Model.Model.Notebook>>(allNotebooks);
+            
+
+
+        }
         public override  IQueryable<Notebook> AddFilter(NotebookSearchObject search, IQueryable<Notebook> query)
         {
             var filteredQuery= base.AddFilter(search, query);
@@ -85,6 +106,6 @@ namespace ProBook.Services.Service
             await base.BeforeUpdate(entity, request);
         }
 
-        
+       
     }
 }

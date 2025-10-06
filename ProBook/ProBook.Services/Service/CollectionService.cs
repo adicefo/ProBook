@@ -58,12 +58,12 @@ namespace ProBook.Services.Service
             if (collections == null)
                 return null;
             var response = new List<CollectionResponse>();
-            collections.ForEach(async x =>
+            collections.ForEach(x =>
             {
-                var notebooks=await Context.NotebookCollections
+                var notebooks= Context.NotebookCollections
                 .Where(nc=>nc.CollectionId==x.Id)
                 .Select(nc=>nc.Notebook)
-                .ToListAsync();
+                .ToList();
 
                 response.Add(new CollectionResponse
                 {

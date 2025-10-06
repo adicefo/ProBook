@@ -32,4 +32,7 @@ export class NotebookService {
     getAllNotebooks(userId: number): Observable<Notebook[]> {
         return this.apiService.get<Notebook[]>(this.endpoint + '/getAllNotebooks/' +userId);
     }
+    getAvailableNotebooks(body:any):Observable<Notebook[]>{
+        return this.apiService.post<Notebook[]>(this.endpoint + '/getAvailableNotebooks', body);
+    }
 }
