@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogActions, MatDialogContent, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -15,7 +16,7 @@ export interface ConfirmDialogData {
   templateUrl: './confirm-dialog.component.html',
   styleUrls: ['./confirm-dialog.component.css'],
   standalone: true,
-  imports: [MatDialogModule, MatIconModule, MatDialogContent, MatDialogActions]
+  imports: [MatDialogModule, MatIconModule, MatDialogContent, MatDialogActions,CommonModule]
 })
 export class ConfirmDialogComponent {
   constructor(

@@ -177,6 +177,7 @@ export class NotebookPreviewComponent implements OnInit {
       event.stopPropagation();
     }
     if (action === 'delete') {
+      this.deletePage(page);
 
     } else if (action === 'edit') {
       this.editPage(page);

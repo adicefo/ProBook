@@ -91,6 +91,8 @@ namespace ProBook.Services.Service
                 .FirstOrDefaultAsync();
             if (notebookCollection == null)
                 throw new NotFoundException($"Notebook with id {request.NotebookId} does not exist in collection");
+            Context.Remove(notebookCollection);
+            await Context.SaveChangesAsync();
 
             return Mapper.Map<Model.Model.NotebookCollection>(notebookCollection);
         }

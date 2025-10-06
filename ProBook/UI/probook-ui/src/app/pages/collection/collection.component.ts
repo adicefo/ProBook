@@ -10,6 +10,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Notebook } from '../../interfaces/notebook-interface';
 import { NotebookService } from '../../services/notebook-service';
+import { ConfirmDialogComponent, ConfirmDialogData } from '../../utils/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-collection',
@@ -26,16 +27,16 @@ export class CollectionComponent implements OnInit {
   loading = true;
   error: string | null = null;
   loggedInUser: User | null = null;
-  showDeleteConfirmation: boolean = false;
   collectionToDelete: CollectionResponse | null = null;
 
-  // Modal for showing notebooks in collection
+  // modal for showing notebooks in collection
   showNotebooksModal: boolean = false;
   selectedCollection: CollectionResponse | null = null;
   allNotebooks: Notebook[] = [];
   loadingNotebooks: boolean = false;
+  availableNotebooks:Notebook[]=[];
 
-  // Pagination state
+  // pagination state
   collectionCurrentPage: number = 1;
   collectionPageSize: number = 4;
 
@@ -75,11 +76,21 @@ export class CollectionComponent implements OnInit {
       }
     });
   }
+  loadAvailableNotebooks():void{
+    this.notebookService.getAvailableNotebooks({userId:this.loggedInUser?.id,collectionId:this.selectedCollection?.id})
+   .subscribe((res:any)=>{
+    this.availableNotebooks=res||[];
+   },(err:any)=>{
+    console.log(err);
+   });
+      
+  }
 
   onCollectionClick(collection: CollectionResponse): void {
     this.selectedCollection = collection;
     this.showNotebooksModal = true;
     this.loadAllNotebooks();
+    this.loadAvailableNotebooks();
   }
 
   loadAllNotebooks(): void {
@@ -104,7 +115,10 @@ export class CollectionComponent implements OnInit {
       }
     });
   }
-
+  previewNotebook(notebook:Notebook,event:any){
+    event.stopPropagation();
+    this.router.navigate(['/app/notebook',notebook.id]);
+  }
   isNotebookInCollection(notebook: Notebook): boolean {
     if (!this.selectedCollection || !this.selectedCollection.notebooks) {
       return false;
@@ -127,6 +141,7 @@ export class CollectionComponent implements OnInit {
         if (this.selectedCollection && this.selectedCollection.notebooks) {
           this.selectedCollection.notebooks.push(notebook);
         }
+        this.loadAvailableNotebooks();
       },
       error: (err) => {
         this.snackBar.open('Failed to add notebook to collection', 'Close', { duration: 2000 });
@@ -138,24 +153,42 @@ export class CollectionComponent implements OnInit {
   removeNotebookFromCollection(notebook: Notebook): void {
     if (!this.selectedCollection) return;
 
-    const request = {
-      notebookId: notebook.id,
-      collectionId: this.selectedCollection.id
-    };
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '400px',
+      data: {
+        title: 'Confirm Deletion',
+        message: 'Are you sure you want to remove this notebook from collection?',
+        entityName: notebook.name,
+        confirmText: 'Remove Notebook'
+      } as ConfirmDialogData
+    });
 
-    this.collectionService.removeFromCollection(request).subscribe({
-      next: (res) => {
-        this.snackBar.open('Notebook removed from collection successfully', 'Close', { duration: 2000 });
-        this.loadCollections();
-        if (this.selectedCollection && this.selectedCollection.notebooks) {
-          this.selectedCollection.notebooks = this.selectedCollection.notebooks.filter(n => n.id !== notebook.id);
-        }
-      },
-      error: (err) => {
-        this.snackBar.open('Failed to remove notebook from collection', 'Close', { duration: 2000 });
-        console.error('Error removing notebook from collection:', err);
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        const request = {
+          notebookId: notebook.id,
+          collectionId: this.selectedCollection?.id
+        };   this.collectionService.removeFromCollection(request).subscribe({
+          next: (res) => {
+            this.snackBar.open('Notebook removed from collection successfully', 'Close', { duration: 2000 });
+            this.loadCollections();
+            if (this.selectedCollection && this.selectedCollection.notebooks) {
+              this.selectedCollection.notebooks = this.selectedCollection.notebooks.filter(n => n.id !== notebook.id);
+            }
+        this.loadAvailableNotebooks();
+
+          },
+          error: (err) => {
+            this.snackBar.open('Failed to remove notebook from collection', 'Close', { duration: 2000 });
+            console.error('Error removing notebook from collection:', err);
+          }
+        });
       }
     });
+
+   
+
+ 
   }
 
   closeNotebooksModal(): void {
@@ -174,32 +207,41 @@ export class CollectionComponent implements OnInit {
       event.stopPropagation();
     }
     if (action === 'delete') {
-      this.showDeleteConfirmation = true;
       this.collectionToDelete = collection;
+      this.deleteCollection();
     }
     if (action === 'edit') {
       this.snackBar.open('Edit functionality - To be implemented', 'Close', { duration: 2000 });
     }
   }
 
-  cancelDelete(): void {
-    this.showDeleteConfirmation = false;
-    this.collectionToDelete = null;
-  }
+  
 
   deleteCollection(): void {
     if (!this.collectionToDelete || !this.collectionToDelete.id) return;
 
-    this.collectionService.delete(this.collectionToDelete.id).subscribe({
-      next: (res) => {
-        this.loadCollections();
-        this.snackBar.open('Collection deleted successfully', 'Close', { duration: 2000 });
-        this.showDeleteConfirmation = false;
-        this.collectionToDelete = null;
-      },
-      error: (err) => {
-        this.snackBar.open('Failed to delete collection', 'Close', { duration: 2000 });
-        console.error('Error deleting collection:', err);
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '400px',
+      data: {
+        title: 'Confirm Deletion',
+        message: 'Are you sure you want to delete this collection?',
+        entityName: this.collectionToDelete.name,
+        confirmText: 'Delete Collection'
+      } as ConfirmDialogData
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.collectionService.delete(this.collectionToDelete?.id??0).subscribe({
+          next: (res) => {
+            this.loadCollections();
+            this.snackBar.open('Collection deleted successfully', 'Close', { duration: 2000 });
+            this.collectionToDelete = null;
+          },
+          error: (err) => {
+            this.snackBar.open('Failed to delete collection', 'Close', { duration: 2000 });
+            console.error('Error deleting collection:', err);
+          }
+        });
       }
     });
   }

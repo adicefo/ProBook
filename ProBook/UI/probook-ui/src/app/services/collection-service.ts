@@ -42,7 +42,7 @@ export class CollectionService {
     }
 
     removeFromCollection(request:any):Observable<NotebookCollection>{
-        return this.apiService.delete<NotebookCollection>(this.endpoint + '/removeFromCollection', request);
+        return this.apiService.deleteBody<NotebookCollection>(this.endpoint + '/removeFromCollection', request);
     }
     
     
