@@ -42,6 +42,8 @@ namespace ProBook.Services.Service
         {
             var filteredQuery= base.AddFilter(search, query);
 
+            if (search.UserId.HasValue)
+                filteredQuery = filteredQuery.Where(x => x.UserId == search.UserId);
             if (!string.IsNullOrEmpty(search.Name))
                 filteredQuery = filteredQuery.Where(x => x.Name.Contains(search.Name));
             if (!string.IsNullOrEmpty(search.Description))

@@ -31,6 +31,15 @@ export class NotebookComponent implements OnInit {
   loggedInUser: User | null = null;
   notebookToDelete: Notebook | null = null;
 
+
+  //pagination state
+  notebookCurrentPage: number = 1;
+  notebookPageSize: number = 4;
+  notebookTotalItems: number = 0;
+  notebookTotalPages: number = 0;
+
+
+
   constructor(
     private notebookService: NotebookService,
     private router: Router,
@@ -56,9 +65,17 @@ export class NotebookComponent implements OnInit {
 
     const userId = this.loggedInUser?.id ?? 0;
 
-    this.notebookService.getAllNotebooks(userId).subscribe({
+    const params={
+      Page:this.notebookCurrentPage-1,
+      PageSize:this.notebookPageSize,
+      UserId:userId
+    };
+
+    this.notebookService.getAll(params).subscribe({
       next: (notebooks) => {
-        this.notebooks = notebooks;
+        this.notebooks = notebooks.result||[];
+        this.notebookTotalItems = notebooks.count||0;
+        this.notebookTotalPages = Math.ceil(this.notebookTotalItems/this.notebookPageSize);
         this.loading = false;
       },
       error: (err) => {
@@ -238,4 +255,60 @@ export class NotebookComponent implements OnInit {
     ];
     return colors[index % colors.length];
   }
+
+  //pagination functions
+  previousNotebookPage():void{
+    if (this.notebookCurrentPage > 1) {
+      this.notebookCurrentPage--;
+      this.loadNotebooks();
+    }
+  }
+  nextNotebookPage():void{
+    if (this.notebookCurrentPage < this.notebookTotalPages) {
+      this.notebookCurrentPage++;
+      this.loadNotebooks();
+    }
+
+  }
+  isNotebookLastPage():boolean{
+    return this.notebookCurrentPage===this.notebookTotalPages||this.notebookTotalPages===0;
+  }
+  isNotebookFirstPage():boolean{
+    return this.notebookCurrentPage===1;
+  }
+  goToNotebookPage(page:number):void{
+    if (page < 1 || page > this.notebookTotalPages || page === this.notebookCurrentPage) {
+      return; // invalid page or already on this page
+    }
+
+    this.notebookCurrentPage = page;
+    this.loadNotebooks();
+  }
+  getNotebookPageNumbers():number[]{
+    const pages:number[]=[];
+    const maxPagesToShow=5;
+    if (this.notebookTotalPages<=maxPagesToShow) {
+      for (let i=1;i<=this.notebookTotalPages;i++) {
+        pages.push(i);
+      }
+    }
+    else{
+      const halfWindow=Math.floor(maxPagesToShow/2);
+      let startPage=Math.max(1,this.notebookCurrentPage-halfWindow);
+      let endPage=Math.min(this.notebookTotalPages,this.notebookCurrentPage+halfWindow);
+      
+      if (this.notebookCurrentPage<=halfWindow) {
+        endPage=maxPagesToShow;
+      }
+      else if (this.notebookCurrentPage>=this.notebookTotalPages-halfWindow) {
+        startPage=this.notebookTotalPages-maxPagesToShow+1;
+      }
+      for (let i=startPage;i<=endPage;i++) {
+        pages.push(i);
+        }
+    }
+     
+    return pages;
+  }
+
 }

@@ -100,6 +100,26 @@
             Create Notebook
         </button>
     </div>
+    <div class="pagination-controls">
+        <!-- Previous Button -->
+        <button class="page-btn prev-btn" (click)="previousNotebookPage()"
+            [disabled]="isNotebookFirstPage()" title="Previous page">
+            <mat-icon>chevron_left</mat-icon>
+        </button>
+
+        <!-- Page Numbers -->
+        <button *ngFor="let page of getNotebookPageNumbers()" class="page-btn page-number"
+            [class.active]="page === notebookCurrentPage" (click)="goToNotebookPage(page)">
+            {{ page }}
+        </button>
+
+        <!-- Next Button -->
+        <button class="page-btn next-btn" (click)="nextNotebookPage()" [disabled]="isNotebookLastPage()"
+            title="Next page">
+            <mat-icon>chevron_right</mat-icon>
+        </button>
+    </div>
+</div>
 
     <div class="modal" *ngIf="showDeleteConfirmation" (click)="cancelDelete()">
         <div class="modal-content delete-modal" (click)="$event.stopPropagation()">
@@ -121,4 +141,3 @@
             </div>
         </div>
     </div>
-</div>
