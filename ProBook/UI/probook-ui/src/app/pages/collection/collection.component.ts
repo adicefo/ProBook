@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { MaterialModule } from '../../material.module';
 import { CollectionService } from '../../services/collection-service';
 import { CollectionResponse } from '../../interfaces/collectionResponse';
+import { Collection } from '../../interfaces/collection-interface';
 import { Router } from '@angular/router';
 import { User } from '../../interfaces/user-interface';
 import { UserService } from '../../services/user-service';
@@ -11,6 +12,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Notebook } from '../../interfaces/notebook-interface';
 import { NotebookService } from '../../services/notebook-service';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../utils/confirm-dialog/confirm-dialog.component';
+import { AddCollectionComponent } from '../add-collection/add-collection.component';
 
 @Component({
   selector: 'app-collection',
@@ -34,7 +36,7 @@ export class CollectionComponent implements OnInit {
   selectedCollection: CollectionResponse | null = null;
   allNotebooks: Notebook[] = [];
   loadingNotebooks: boolean = false;
-  availableNotebooks:Notebook[]=[];
+  availableNotebooks: Notebook[] = [];
 
   // pagination state
   collectionCurrentPage: number = 1;
@@ -76,14 +78,14 @@ export class CollectionComponent implements OnInit {
       }
     });
   }
-  loadAvailableNotebooks():void{
-    this.notebookService.getAvailableNotebooks({userId:this.loggedInUser?.id,collectionId:this.selectedCollection?.id})
-   .subscribe((res:any)=>{
-    this.availableNotebooks=res||[];
-   },(err:any)=>{
-    console.log(err);
-   });
-      
+  loadAvailableNotebooks(): void {
+    this.notebookService.getAvailableNotebooks({ userId: this.loggedInUser?.id, collectionId: this.selectedCollection?.id })
+      .subscribe((res: any) => {
+        this.availableNotebooks = res || [];
+      }, (err: any) => {
+        console.log(err);
+      });
+
   }
 
   onCollectionClick(collection: CollectionResponse): void {
@@ -99,7 +101,7 @@ export class CollectionComponent implements OnInit {
 
     const params = {
       Page: 0,
-      PageSize: 1000, 
+      PageSize: 1000,
       UserId: userId
     };
 
@@ -115,9 +117,9 @@ export class CollectionComponent implements OnInit {
       }
     });
   }
-  previewNotebook(notebook:Notebook,event:any){
+  previewNotebook(notebook: Notebook, event: any) {
     event.stopPropagation();
-    this.router.navigate(['/app/notebook',notebook.id]);
+    this.router.navigate(['/app/notebook', notebook.id]);
   }
   isNotebookInCollection(notebook: Notebook): boolean {
     if (!this.selectedCollection || !this.selectedCollection.notebooks) {
@@ -168,14 +170,14 @@ export class CollectionComponent implements OnInit {
         const request = {
           notebookId: notebook.id,
           collectionId: this.selectedCollection?.id
-        };   this.collectionService.removeFromCollection(request).subscribe({
+        }; this.collectionService.removeFromCollection(request).subscribe({
           next: (res) => {
             this.snackBar.open('Notebook removed from collection successfully', 'Close', { duration: 2000 });
             this.loadCollections();
             if (this.selectedCollection && this.selectedCollection.notebooks) {
               this.selectedCollection.notebooks = this.selectedCollection.notebooks.filter(n => n.id !== notebook.id);
             }
-        this.loadAvailableNotebooks();
+            this.loadAvailableNotebooks();
 
           },
           error: (err) => {
@@ -186,9 +188,9 @@ export class CollectionComponent implements OnInit {
       }
     });
 
-   
 
- 
+
+
   }
 
   closeNotebooksModal(): void {
@@ -198,10 +200,30 @@ export class CollectionComponent implements OnInit {
   }
 
   openCreateCollectionDialog(): void {
-    this.snackBar.open('Create Collection dialog - To be implemented', 'Close', { duration: 2000 });
+   const dialogRef= this.dialog.open(AddCollectionComponent,{
+      width:'650px',
+      data:{
+        userId:this.loggedInUser?.id
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(
+      (result:any)=>{
+        if(result&&result.formData){
+          this.collectionService.create(result.formData).subscribe(
+            (res:any)=>{
+              this.snackBar.open('Collection created successfully','Close',{duration:2000});
+              this.loadCollections();
+            },(err:any)=>{
+              this.snackBar.open('Failed to create collection','Close',{duration:2000});
+            }
+          )
+        }
+      }
+    )
   }
 
-  onMenuAction(action: string, collection: CollectionResponse): void {
+  onMenuAction(action: string, collection: Collection): void {
     console.log(`${action} action for collection:`, collection);
     if (event) {
       event.stopPropagation();
@@ -211,11 +233,35 @@ export class CollectionComponent implements OnInit {
       this.deleteCollection();
     }
     if (action === 'edit') {
-      this.snackBar.open('Edit functionality - To be implemented', 'Close', { duration: 2000 });
+      this.editCollection(collection);
     }
   }
 
-  
+editCollection(collection:Collection):void{
+  const dialogRef=this.dialog.open(AddCollectionComponent,{
+    width:'650px',
+    data:{
+      userId:this.loggedInUser?.id,
+      collection:collection
+    }
+  })
+
+  dialogRef.afterClosed().subscribe((result:any)=>{
+
+    if(result&&result.formData){
+      this.collectionService.update(collection.id??0,result.formData).subscribe(
+        (res:any)=>{
+          this.snackBar.open('Collection updated successfully','Close',{duration:2000});
+          this.loadCollections();
+
+        }
+        ,(err:any)=>{
+          this.snackBar.open('Failed to update collection','Close',{duration:2000});
+        }
+      )
+    }
+  })
+}
 
   deleteCollection(): void {
     if (!this.collectionToDelete || !this.collectionToDelete.id) return;
@@ -231,7 +277,7 @@ export class CollectionComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.collectionService.delete(this.collectionToDelete?.id??0).subscribe({
+        this.collectionService.delete(this.collectionToDelete?.id ?? 0).subscribe({
           next: (res) => {
             this.loadCollections();
             this.snackBar.open('Collection deleted successfully', 'Close', { duration: 2000 });
@@ -257,14 +303,14 @@ export class CollectionComponent implements OnInit {
 
   getCollectionCoverColor(index: number): string {
     const colors = [
+      '#3b82f6', // blue
       '#6366f1', // indigo
       '#8b5cf6', // violet
-      '#06b6d4', // cyan
-      '#10b981', // emerald
-      '#f59e0b', // amber
-      '#ef4444', // red
-      '#84cc16',  // lime
-      '#ffea00'  //yellow
+      '#0ea5e9', // sky
+      '#0d9488', // teal
+      '#0891b2', // cyan
+      '#059669', // emerald
+      '#4f46e5'  // indigo-600
     ];
     return colors[index % colors.length];
   }
