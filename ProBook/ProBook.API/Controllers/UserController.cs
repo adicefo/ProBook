@@ -35,5 +35,10 @@ namespace ProBook.API.Controllers
         {
             return await (_service as IUserService).GetCurrentUserAsync();
         }
+        [HttpPost("/User/updatePassword/{id}")]
+        public async Task<bool> UpdatePasswordAsync(int id,UpdatePasswordRequest request)
+        {
+            return await (_service as IUserService).UpdatePasswordAsync(id,request);
+        }
     }
 }

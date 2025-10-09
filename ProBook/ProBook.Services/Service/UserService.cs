@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using ProBook.Model.Request;
 using ProBook.Model.SearchObject;
 using ProBook.Services.Database;
+using ProBook.Services.Exceptions;
 using ProBook.Services.Helper;
 using ProBook.Services.Interface;
 using System;
@@ -13,6 +14,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ValidationException = ProBook.Services.Exceptions.ValidationException;
 
 namespace ProBook.Services.Service
 {
@@ -22,6 +24,20 @@ namespace ProBook.Services.Service
         public UserService(ProBookDBContext context, IMapper mapper, IHttpContextAccessor httpContextAccessor) : base(context, mapper)
         {
             _httpContextAccessor = httpContextAccessor;
+        }
+        public async Task<bool> UpdatePasswordAsync(int id, UpdatePasswordRequest request)
+        {
+            var user = await Context.Users.FirstOrDefaultAsync(x => x.Id == id);
+            if (user == null)
+                throw new NotFoundException($"User with id: {id} not found");
+            if (request.Password != request.PasswordConfirm)
+                throw new ValidationException($"Password and password confirm must be same value");
+            var passwordSalt = PasswordGenerate.GenerateSalt();
+            var passwordHash = PasswordGenerate.GenerateHash(passwordSalt, request.Password);
+            user.PasswordSalt = passwordSalt;
+            user.PasswordHash = passwordHash;
+            await Context.SaveChangesAsync();
+            return true;
         }
         public Model.Model.User Login(string username, string password)
         {
@@ -78,6 +94,6 @@ namespace ProBook.Services.Service
             await base.BeforeUpdate(entity, request);
         }
 
-        
+       
     }
 }
