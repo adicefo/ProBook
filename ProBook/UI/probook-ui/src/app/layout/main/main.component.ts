@@ -49,6 +49,9 @@ export class MainComponent implements OnInit, OnDestroy {
     this.router.navigate(['/']);
   }
   navigateToProfile():void{
+    this.router.navigate(['/app/profile'],{
+      state: { user: this.loggedInUser }
+    });
 
   }
   navigateToSettings():void{

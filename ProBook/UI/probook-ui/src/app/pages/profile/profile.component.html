@@ -1,0 +1,139 @@
+<div class="profile-container">
+    <div class="profile-header">
+        <div class="header-content">
+            <div class="avatar-large">
+                <mat-icon class="avatar-icon">person</mat-icon>
+            </div>
+            <div class="header-info">
+                <h1 class="profile-title">My Profile</h1>
+                <p class="profile-subtitle">Manage your personal information</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="profile-content">
+        <mat-card class="profile-card">
+            <mat-card-content>
+                <div *ngIf="isLoading" class="loading-container">
+                    <mat-spinner diameter="50"></mat-spinner>
+                    <p>Loading profile...</p>
+                </div>
+
+                <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" *ngIf="!isLoading">
+                    <!-- Personal Information Section -->
+                    <div class="form-section">
+                        <h2 class="section-title">
+                            <mat-icon class="section-icon">person_outline</mat-icon>
+                            Personal Information
+                        </h2>
+
+                        <div class="form-row">
+                            <mat-form-field appearance="outline" class="form-field">
+                                <mat-label>First Name</mat-label>
+                                <input matInput formControlName="name" placeholder="Enter your first name">
+                                <mat-icon matPrefix class="input-icon">badge</mat-icon>
+                                <mat-error *ngIf="profileForm.get('name')?.invalid">
+                                    {{ getErrorMessage('name') }}
+                                </mat-error>
+                            </mat-form-field>
+
+                            <mat-form-field appearance="outline" class="form-field">
+                                <mat-label>Last Name</mat-label>
+                                <input matInput formControlName="surname" placeholder="Enter your last name">
+                                <mat-icon matPrefix class="input-icon">badge</mat-icon>
+                                <mat-error *ngIf="profileForm.get('surname')?.invalid">
+                                    {{ getErrorMessage('surname') }}
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+
+                        <div class="form-row">
+                            <mat-form-field appearance="outline" class="form-field readonly-field">
+                                <mat-label>Username</mat-label>
+                                <input matInput formControlName="username">
+                                <mat-icon matPrefix class="input-icon">account_circle</mat-icon>
+                                <mat-error *ngIf="profileForm.get('username')?.invalid">
+                                    {{ getErrorMessage('username') }}
+                                </mat-error>
+                            </mat-form-field>
+
+                            <mat-form-field appearance="outline" class="form-field">
+                                <mat-label>Gender</mat-label>
+                                <mat-select formControlName="gender" placeholder="Select your gender">
+                                    <mat-option *ngFor="let gender of genderOptions" [value]="gender">
+                                        {{ gender }}
+                                    </mat-option>
+                                </mat-select>
+                                <mat-icon matPrefix class="input-icon">wc</mat-icon>
+                            </mat-form-field>
+                        </div>
+                    </div>
+
+                    <!-- Contact Information Section -->
+                    <div class="form-section">
+                        <h2 class="section-title">
+                            <mat-icon class="section-icon">contact_mail</mat-icon>
+                            Contact Information
+                        </h2>
+
+                        <div class="form-row">
+                            <mat-form-field appearance="outline" class="form-field">
+                                <mat-label>Email Address</mat-label>
+                                <input matInput formControlName="email" placeholder="Enter your email address">
+                                
+                            </mat-form-field>
+
+                            <mat-form-field appearance="outline" class="form-field">
+                                <mat-label>Telephone Number</mat-label>
+                                <input matInput formControlName="telephoneNumber" placeholder="+1 (555) 123-4567">
+                                <mat-icon matPrefix class="input-icon">phone</mat-icon>
+                                <mat-error *ngIf="profileForm.get('telephoneNumber')?.invalid">
+                                    {{ getErrorMessage('telephoneNumber') }}
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                    </div>
+
+                    <!-- Security Section -->
+                    <div class="form-section">
+                        <h2 class="section-title">
+                            <mat-icon class="section-icon">security</mat-icon>
+                            Security
+                        </h2>
+
+                        <div class="security-content">
+                            <div class="password-info">
+                                <mat-icon class="lock-icon">lock</mat-icon>
+                                <div class="password-text">
+                                    <p class="password-label">Password</p>
+                                    <p class="password-hint">Keep your account secure by updating your password
+                                        regularly</p>
+                                </div>
+                            </div>
+                            <button mat-raised-button type="button" class="change-password-btn"
+                                (click)="openChangePasswordModal()">
+                                <mat-icon>vpn_key</mat-icon>
+                                Change Password
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="form-actions">
+                        <button mat-stroked-button type="button" class="cancel-btn" (click)="resetForm()"
+                            [disabled]="isSaving">
+                            <mat-icon>close</mat-icon>
+                            Discard Changes
+                        </button>
+                        <button mat-raised-button type="submit" class="save-btn"
+                            [disabled]="profileForm.invalid || isSaving">
+                            <mat-spinner *ngIf="isSaving" diameter="20" class="button-spinner"></mat-spinner>
+                            <mat-icon *ngIf="!isSaving">save</mat-icon>
+                            {{ isSaving ? 'Saving...' : 'Save Changes' }}
+                        </button>
+                    </div>
+                </form>
+            </mat-card-content>
+        </mat-card>
+    </div>
+</div>

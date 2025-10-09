@@ -13,5 +13,7 @@ namespace ProBook.Services.Interface
     {
         Model.Model.User Login(string username, string password);
         Task<Model.Model.User> GetCurrentUserAsync();
+
+        Task<bool> UpdatePasswordAsync(int id, UpdatePasswordRequest request);
     }
 }

@@ -31,4 +31,7 @@ export class UserService {
     getCurrentUser(): Observable<User> {
         return this.apiService.get<User>(this.endpoint + '/getCurrentUser');
     }
+    updatePassword(id:number,body:any):Observable<User>{
+        return this.apiService.post<User>(this.endpoint + '/updatePassword/'+id,body);
+    }
 }
