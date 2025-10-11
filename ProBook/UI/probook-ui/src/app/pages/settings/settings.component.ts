@@ -63,6 +63,8 @@ export class SettingsComponent implements OnInit {
   }
 
   onEditPermissionChange(notebook:SharedNotebook):void{
+    if(!notebook.id) return;
+    notebook.isForEdit=!notebook.isForEdit;
     this.sharedNotebookService.update(notebook.id??0,{isForEdit:notebook.isForEdit}).subscribe({
       next: (res) => {
         this.snackBar.open('Permission updated successfully', 'Close', { duration: 3000 });

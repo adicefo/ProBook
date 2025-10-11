@@ -33,6 +33,7 @@ export class AddPageComponent implements OnInit {
   contentType: 'text' | 'image' | 'both' = 'text';
   notebook: Notebook | null = null;
   existingImageUrl: string | null = null;
+  isShare:boolean=false;
 
   constructor(
     private fb: FormBuilder,
@@ -52,6 +53,7 @@ export class AddPageComponent implements OnInit {
     this.route.params.subscribe(params => {
       this.notebookId = +params['id'];
       const pageId = params['pageId'];
+      this.isShare = this.route.snapshot.queryParams['isShare'] as boolean;
 
       this.notebookService.getNotebookById(this.notebookId).subscribe((notebook: Notebook) => {
         this.notebook = notebook;
@@ -168,6 +170,11 @@ export class AddPageComponent implements OnInit {
           this.snackBar.open('Page updated successfully!', 'Close', {
             duration: 3000
           });
+          if(this.isShare)
+          {
+            this.router.navigate(['/app/sharedNotebooks']);
+            return;
+          }
           this.router.navigate(['/app/notebook', this.notebookId]);
         },
         error: (error) => {
@@ -185,6 +192,11 @@ export class AddPageComponent implements OnInit {
           this.snackBar.open('Page created successfully!', 'Close', {
             duration: 3000
           });
+          if(this.isShare)
+          {
+            this.router.navigate(['/app/sharedNotebooks']);
+            return;
+          }
           this.router.navigate(['/app/notebook', this.notebookId]);
         },
         error: (error) => {

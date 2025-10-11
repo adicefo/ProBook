@@ -15,6 +15,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../utils/confirm-dialog/confirm-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { SharedNotebookService } from '../../services/sharedNotebook-service';
+import { SharedNotebook } from '../../interfaces/sharedNotebook-interface';
 
 @Component({
   selector: 'app-notebook-preview',
@@ -36,6 +37,7 @@ export class NotebookPreviewComponent implements OnInit {
   snackBar: MatSnackBar = new MatSnackBar();
   isShare: boolean = false;
   sharedNotebookId: number = 0;
+  sharedNotebook:SharedNotebook|null=null;
   // Comment-related properties
   showCommentPanel: boolean = false;
   selectedPageForComments: Page | null = null;
@@ -76,6 +78,8 @@ export class NotebookPreviewComponent implements OnInit {
       console.log(this.isShare + ":" + this.sharedNotebookId);
       if (notebookId) {
         this.loadNotebook(notebookId);
+        if(this.sharedNotebookId>0)
+          this.loadSharedNotebook(this.sharedNotebookId);
         this.loadPages(notebookId).then(() => {
 
           this.loadAllPageCommentCounts();
@@ -94,7 +98,15 @@ export class NotebookPreviewComponent implements OnInit {
       }
     });
   }
-
+ loadSharedNotebook(id:number):void{
+  this.sharedNotebookService.getById(id).subscribe({
+    next: (sn) => {
+      this.sharedNotebook=sn;
+    }, error:(err)=>{
+      console.error('Error loading shared notebook:', err);
+    }
+  })
+ }
   loadNotebook(id: number): void {
     this.notebookService.getNotebookById(id).subscribe({
       next: (notebook) => {
@@ -167,7 +179,7 @@ export class NotebookPreviewComponent implements OnInit {
 
   onCreateNewPage(): void {
     if (this.notebook?.id) {
-      this.router.navigate(['/app/notebook', this.notebook.id, 'add-page']);
+      this.router.navigate(['/app/notebook', this.notebook.id, 'add-page'], { queryParams: { isShare: this.isShare } });
     }
   }
 
@@ -190,7 +202,7 @@ export class NotebookPreviewComponent implements OnInit {
 
   editPage(page: Page): void {
     if (this.notebook?.id && page.id) {
-      this.router.navigate(['/app/notebook', this.notebook.id, 'edit-page', page.id]);
+      this.router.navigate(['/app/notebook', this.notebook.id, 'edit-page', page.id], { queryParams: { isShare: this.isShare } });
     }
   }
 
