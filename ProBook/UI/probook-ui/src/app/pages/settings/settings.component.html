@@ -1,0 +1,35 @@
+<div class="settings-container">
+  <div class="settings-header">
+    <h1>Settings</h1>
+    <p class="settings-description">Change your settings</p>
+  </div>
+
+  <div class="settings-content">
+    <section class="shared-notebooks-section">
+      <h2>Shared Notebooks</h2>
+      
+      <div class="shared-notebooks-list" *ngIf="!loading && sharedNotebooks.length > 0">
+        <div class="notebook-item" *ngFor="let notebook of sharedNotebooks">
+          <div class="notebook-info">
+            <span class="notebook-name">{{notebook.notebook?.name}}</span>
+            <span class="shared-with">{{notebook.toUser?.name}} {{notebook.toUser?.surname}}</span>
+          </div>
+          <mat-slide-toggle
+            [checked]="notebook.isForEdit"
+            (change)="onEditPermissionChange(notebook)"
+            color="primary">
+            Can Edit
+          </mat-slide-toggle>
+        </div>
+      </div>
+
+      <div class="no-notebooks" *ngIf="!loading && sharedNotebooks.length === 0">
+        No shared notebooks found
+      </div>
+
+      <div class="loading" *ngIf="loading">
+        Loading shared notebooks...
+      </div>
+    </section>
+  </div>
+</div>

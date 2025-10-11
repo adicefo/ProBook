@@ -16,6 +16,8 @@ import { MatDialogModule, MatDialogContent, MatDialogTitle, MatDialogActions } f
 import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
+
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 @NgModule({
     imports: [
         MatDialogContent,
@@ -42,7 +44,8 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
         MatDialogActions,
         MatSelectModule,
         MatOptionModule,
-        MatButtonToggleModule
+        MatButtonToggleModule,
+        MatSlideToggleModule
     ]
 })
 export class MaterialModule { }

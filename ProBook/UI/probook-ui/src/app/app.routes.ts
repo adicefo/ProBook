@@ -8,6 +8,7 @@ import { CollectionComponent } from './pages/collection/collection.component';
 import { SharedNotebookComponent } from './pages/shared-notebook/shared-notebook.component';
 import { RegisterComponent } from './pages/register/register.component';
 import { ProfileComponent } from './pages/profile/profile.component';
+import { SettingsComponent } from './pages/settings/settings.component';
 
 export const routes: Routes = [
     { path: '', pathMatch: 'full', component: LoginComponent },
@@ -23,7 +24,8 @@ export const routes: Routes = [
             { path: 'notebook/:id/edit-page/:pageId', component: AddPageComponent },
             { path: 'collections', component: CollectionComponent },
             { path: 'sharedNotebooks', component: SharedNotebookComponent,},
-            {path:'profile',component:ProfileComponent,data:{user:null}}
+            {path:'profile',component:ProfileComponent,data:{user:null}},
+            {path:'settings',component:SettingsComponent}
         ]
     },
     { path: '**', redirectTo: '' }

@@ -55,6 +55,6 @@ export class MainComponent implements OnInit, OnDestroy {
 
   }
   navigateToSettings():void{
-    
+    this.router.navigate(['/app/settings']);
   }
 }
