@@ -1,5 +1,5 @@
 
-ProBook\UI\probook-ui\src\*.ts linguist-detectable=false
+ProBook/UI/probook-ui/src/*.ts linguist-detectable=false
 
 
 # Ensure C# files are counted
