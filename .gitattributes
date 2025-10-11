@@ -1,5 +1,5 @@
-# Ignore frontend files from language statistics
+# Ignore frontend (UI) code from language statistics
 ProBook/UI/probook-ui/src linguist-detectable=false
 
-# Mark all C# files as detectable (ensures they count)
+# Ensure backend (C#) files are counted
 *.cs linguist-detectable=true
