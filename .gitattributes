@@ -1,8 +1,6 @@
 
-ProBook\UI\probook-ui\* linguist-detectable=false
+ProBook\UI\probook-ui\src\*.ts linguist-detectable=false
 
-
-ProBook\UI\probook-ui\src\app\app.config.ts linguist-detectable=true
 
 # Ensure C# files are counted
 *.cs linguist-detectable=true
