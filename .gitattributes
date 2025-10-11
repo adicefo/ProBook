@@ -1,6 +1,9 @@
-# Ignore frontend (UI) code from language statistics
-ProBook/UI/probook-ui/src/app/pages/* linguist-detectable=false
+# Ignore all frontend source code from stats
+ProBook/UI/probook-ui/src/* linguist-detectable=false
 
+# Optionally, include specific TypeScript files outside src (for example main.ts, config.ts, etc.)
+*.ts linguist-detectable=true
+*.tsx linguist-detectable=true
 
-# Ensure backend (C#) files are counted
+# Prioritize backend C# files
 *.cs linguist-detectable=true
