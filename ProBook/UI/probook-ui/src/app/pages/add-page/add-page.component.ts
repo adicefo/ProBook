@@ -1,5 +1,10 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MaterialModule } from '../../material.module';
 import { PageService } from '../../services/page-service';
@@ -12,13 +17,9 @@ import { Page } from '../../interfaces/page-interface';
 @Component({
   selector: 'app-add-page',
   standalone: true,
-  imports: [
-    CommonModule,
-    MaterialModule,
-    ReactiveFormsModule
-  ],
+  imports: [CommonModule, MaterialModule, ReactiveFormsModule],
   templateUrl: './add-page.component.html',
-  styleUrl: './add-page.component.css'
+  styleUrl: './add-page.component.css',
 })
 export class AddPageComponent implements OnInit {
   @Input() page: Page | null = null; // Optional input for edit mode
@@ -33,7 +34,7 @@ export class AddPageComponent implements OnInit {
   contentType: 'text' | 'image' | 'both' = 'text';
   notebook: Notebook | null = null;
   existingImageUrl: string | null = null;
-  isShare:boolean=false;
+  isShare: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -45,19 +46,21 @@ export class AddPageComponent implements OnInit {
   ) {
     this.pageForm = this.fb.group({
       title: ['', Validators.required],
-      content: ['']
+      content: [''],
     });
   }
 
   ngOnInit(): void {
-    this.route.params.subscribe(params => {
+    this.route.params.subscribe((params) => {
       this.notebookId = +params['id'];
       const pageId = params['pageId'];
       this.isShare = this.route.snapshot.queryParams['isShare'] as boolean;
 
-      this.notebookService.getNotebookById(this.notebookId).subscribe((notebook: Notebook) => {
-        this.notebook = notebook;
-      });
+      this.notebookService
+        .getNotebookById(this.notebookId)
+        .subscribe((notebook: Notebook) => {
+          this.notebook = notebook;
+        });
 
       this.isEditMode = !!this.page || !!pageId;
 
@@ -82,10 +85,10 @@ export class AddPageComponent implements OnInit {
       error: (error) => {
         console.error('Error loading page for edit:', error);
         this.snackBar.open('Failed to load page for editing!', 'Close', {
-          duration: 3000
+          duration: 3000,
         });
         this.router.navigate(['/app/notebook', this.notebookId]);
-      }
+      },
     });
   }
 
@@ -94,7 +97,7 @@ export class AddPageComponent implements OnInit {
 
     this.pageForm.patchValue({
       title: this.page.title || '',
-      content: this.page.content || ''
+      content: this.page.content || '',
     });
 
     if (this.page.imageUrl) {
@@ -141,9 +144,16 @@ export class AddPageComponent implements OnInit {
       case 'text':
         return titleValid && this.pageForm.get('content')?.valid;
       case 'image':
-        return titleValid && (!!this.selectedFile || (this.isEditMode && !!this.existingImageUrl));
+        return (
+          titleValid &&
+          (!!this.selectedFile || (this.isEditMode && !!this.existingImageUrl))
+        );
       case 'both':
-        return titleValid && this.pageForm.get('content')?.valid && (!!this.selectedFile || (this.isEditMode && !!this.existingImageUrl));
+        return (
+          titleValid &&
+          this.pageForm.get('content')?.valid &&
+          (!!this.selectedFile || (this.isEditMode && !!this.existingImageUrl))
+        );
       default:
         return false;
     }
@@ -168,10 +178,9 @@ export class AddPageComponent implements OnInit {
         next: (response) => {
           this.loading = false;
           this.snackBar.open('Page updated successfully!', 'Close', {
-            duration: 3000
+            duration: 3000,
           });
-          if(this.isShare)
-          {
+          if (this.isShare) {
             this.router.navigate(['/app/sharedNotebooks']);
             return;
           }
@@ -181,19 +190,18 @@ export class AddPageComponent implements OnInit {
           this.loading = false;
           console.error('Error updating page:', error);
           this.snackBar.open('Failed to update page!', 'Close', {
-            duration: 3000
+            duration: 3000,
           });
-        }
+        },
       });
     } else {
       this.pageService.create(formData).subscribe({
         next: (response) => {
           this.loading = false;
           this.snackBar.open('Page created successfully!', 'Close', {
-            duration: 3000
+            duration: 3000,
           });
-          if(this.isShare)
-          {
+          if (this.isShare) {
             this.router.navigate(['/app/sharedNotebooks']);
             return;
           }
@@ -203,14 +211,18 @@ export class AddPageComponent implements OnInit {
           this.loading = false;
           console.error('Error creating page:', error);
           this.snackBar.open('Failed to create page!', 'Close', {
-            duration: 3000
+            duration: 3000,
           });
-        }
+        },
       });
     }
   }
 
   cancel(): void {
+    if (this.isShare) {
+      this.router.navigate(['/app/sharedNotebooks']);
+      return;
+    }
     this.router.navigate(['/app/notebook', this.notebookId]);
   }
 
