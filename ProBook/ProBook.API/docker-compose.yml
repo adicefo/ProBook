@@ -1,0 +1,39 @@
+﻿version: "3.9"
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: probook_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ${SQL_USER}
+      POSTGRES_PASSWORD: ${SQL_PASSWORD}
+      POSTGRES_DB: ${SQL_DB}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    networks:
+      - probook-net
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: probook_api
+    depends_on:
+      - postgres
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      ConnectionStrings__DefaultConnection: "Host=${SQL_HOST};Port=5432;Database=${SQL_DB};Username=${SQL_USER};Password=${SQL_PASSWORD}"
+    ports:
+      - "7012:7012"
+    networks:
+      - probook-net
+
+networks:
+  probook-net:
+    driver: bridge
+
+volumes:
+  pg_data:
