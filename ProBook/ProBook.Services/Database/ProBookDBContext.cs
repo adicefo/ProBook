@@ -45,7 +45,10 @@ namespace ProBook.Services.Database
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_Comments_SharedNotebooks_SharedNotebookId");
 
+
             modelBuilder.Entity<User>().SeedData();
         }
+        
+
     }
 }

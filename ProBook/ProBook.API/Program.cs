@@ -57,7 +57,7 @@ builder.Services.AddTransient<ICollectionService, CollectionService>();
 
 
 builder.Services.AddDbContext<ProBookDBContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("ProBookDocker")));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 
 builder.Services.AddMapster();
@@ -84,12 +84,16 @@ builder.Services.AddCors(options =>
             .AllowAnyHeader()
             .AllowCredentials());
 });
+/*builder.WebHost.ConfigureKestrel(serverOptions =>
+{
+    serverOptions.ListenAnyIP(7012);
+});*/
 
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment() || true)
 {
     app.UseSwagger();
     app.UseSwaggerUI();
