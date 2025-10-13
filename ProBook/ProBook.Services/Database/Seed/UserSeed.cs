@@ -14,7 +14,7 @@ namespace ProBook.Services.Database.Seed
             entity.HasData(
                 new User()
                 {
-                    Id=1,
+                    Id = 1,
                     Name="User1",
                     Surname="User1",
                     Username="user1",
@@ -23,7 +23,7 @@ namespace ProBook.Services.Database.Seed
                     PasswordHash= "UbzzxOGag4pPmBhguTkyKnpEZw4=",
                     TelephoneNumber="061-234-444",
                     Gender="Male",
-                    RegisteredDate=DateTime.UtcNow,
+                    RegisteredDate= new DateTime(2025, 10, 13, 19, 49, 05, DateTimeKind.Utc),
                     IsStudent=true
                 },
                 new User()
@@ -37,7 +37,7 @@ namespace ProBook.Services.Database.Seed
                     PasswordHash = "UbzzxOGag4pPmBhguTkyKnpEZw4=",
                     TelephoneNumber = "063-234-444",
                     Gender = "Male",
-                    RegisteredDate = DateTime.UtcNow,
+                    RegisteredDate = new DateTime(2025, 10, 13, 19, 49, 05, DateTimeKind.Utc),
                     IsStudent = true
                 }, new User()
                 {
@@ -50,7 +50,7 @@ namespace ProBook.Services.Database.Seed
                     PasswordHash = "UbzzxOGag4pPmBhguTkyKnpEZw4=",
                     TelephoneNumber = "065-234-444",
                     Gender = "Female",
-                    RegisteredDate = DateTime.UtcNow,
+                    RegisteredDate = new DateTime(2025, 10, 13, 19, 49, 05, DateTimeKind.Utc),
                     IsStudent = true
                 }
                 );

@@ -57,7 +57,7 @@ builder.Services.AddTransient<ICollectionService, CollectionService>();
 
 
 builder.Services.AddDbContext<ProBookDBContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("ProBookDocker")));
 
 
 builder.Services.AddMapster();
@@ -110,7 +110,7 @@ app.MapControllers();
 using (var scope = app.Services.CreateScope())
 {
     var dataContext = scope.ServiceProvider.GetRequiredService<ProBookDBContext>();
-    dataContext.Database.EnsureCreated();
+    //dataContext.Database.EnsureCreated();
 
     dataContext.Database.Migrate();
 }

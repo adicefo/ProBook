@@ -18,13 +18,12 @@ services:
 
   api:
     build:
-      context: .
-      dockerfile: Dockerfile
+      context: ..
+      dockerfile: ProBook.API/Dockerfile
     container_name: probook_api
     depends_on:
       - postgres
     environment:
-      ASPNETCORE_ENVIRONMENT: "Development"
       ConnectionStrings__DefaultConnection: "Host=${SQL_HOST};Port=5432;Database=${SQL_DB};Username=${SQL_USER};Password=${SQL_PASSWORD}"
     ports:
       - "7012:7012"
