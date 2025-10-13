@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using ProBook.Services.Database.Seed;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,6 +44,8 @@ namespace ProBook.Services.Database
                 .HasForeignKey(c=>c.SharedNotebookId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_Comments_SharedNotebooks_SharedNotebookId");
+
+            modelBuilder.Entity<User>().SeedData();
         }
     }
 }
