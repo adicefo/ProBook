@@ -47,6 +47,10 @@ namespace ProBook.Services.Database
 
 
             modelBuilder.Entity<User>().SeedData();
+            modelBuilder.Entity<Notebook>().SeedData();
+            modelBuilder.Entity<Collection>().SeedData();
+            modelBuilder.Entity<NotebookCollection>().SeedData();
+            modelBuilder.Entity<SharedNotebook>().SeedData();
         }
         
 

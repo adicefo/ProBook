@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using ProBook.Services.Database;
@@ -11,9 +12,11 @@ using ProBook.Services.Database;
 namespace ProBook.Services.Migrations
 {
     [DbContext(typeof(ProBookDBContext))]
-    partial class ProBookDBContextModelSnapshot : ModelSnapshot
+    [Migration("20251014144941_NotebookCollectionSeedMig")]
+    partial class NotebookCollectionSeedMig
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -492,53 +495,6 @@ namespace ProBook.Services.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("SharedNotebooks");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            FromUserId = 1,
-                            IsForEdit = false,
-                            NotebookId = 1,
-                            SharedDate = new DateTime(2025, 10, 13, 19, 49, 5, 0, DateTimeKind.Utc),
-                            ToUserId = 2
-                        },
-                        new
-                        {
-                            Id = 2,
-                            FromUserId = 3,
-                            IsForEdit = true,
-                            NotebookId = 14,
-                            SharedDate = new DateTime(2025, 10, 13, 11, 49, 5, 0, DateTimeKind.Utc),
-                            ToUserId = 2
-                        },
-                        new
-                        {
-                            Id = 3,
-                            FromUserId = 2,
-                            IsForEdit = false,
-                            NotebookId = 7,
-                            SharedDate = new DateTime(2025, 10, 11, 19, 49, 5, 0, DateTimeKind.Utc),
-                            ToUserId = 3
-                        },
-                        new
-                        {
-                            Id = 4,
-                            FromUserId = 1,
-                            IsForEdit = true,
-                            NotebookId = 4,
-                            SharedDate = new DateTime(2025, 10, 10, 11, 49, 5, 0, DateTimeKind.Utc),
-                            ToUserId = 3
-                        },
-                        new
-                        {
-                            Id = 5,
-                            FromUserId = 3,
-                            IsForEdit = false,
-                            NotebookId = 13,
-                            SharedDate = new DateTime(2025, 10, 9, 10, 49, 5, 0, DateTimeKind.Utc),
-                            ToUserId = 2
-                        });
                 });
 
             modelBuilder.Entity("ProBook.Services.Database.User", b =>

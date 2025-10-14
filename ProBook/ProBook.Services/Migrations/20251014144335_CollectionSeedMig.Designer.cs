@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using ProBook.Services.Database;
@@ -11,9 +12,11 @@ using ProBook.Services.Database;
 namespace ProBook.Services.Migrations
 {
     [DbContext(typeof(ProBookDBContext))]
-    partial class ProBookDBContextModelSnapshot : ModelSnapshot
+    [Migration("20251014144335_CollectionSeedMig")]
+    partial class CollectionSeedMig
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -316,113 +319,6 @@ namespace ProBook.Services.Migrations
                     b.HasIndex("NotebookId");
 
                     b.ToTable("NotebookCollections");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            CollectionId = 1,
-                            CreatedAt = new DateTime(2025, 10, 11, 19, 49, 5, 0, DateTimeKind.Utc),
-                            NotebookId = 1
-                        },
-                        new
-                        {
-                            Id = 2,
-                            CollectionId = 1,
-                            CreatedAt = new DateTime(2025, 10, 11, 11, 49, 5, 0, DateTimeKind.Utc),
-                            NotebookId = 2
-                        },
-                        new
-                        {
-                            Id = 3,
-                            CollectionId = 1,
-                            CreatedAt = new DateTime(2025, 10, 11, 10, 49, 5, 0, DateTimeKind.Utc),
-                            NotebookId = 3
-                        },
-                        new
-                        {
-                            Id = 4,
-                            CollectionId = 2,
-                            CreatedAt = new DateTime(2025, 10, 10, 19, 49, 5, 0, DateTimeKind.Utc),
-                            NotebookId = 4
-                        },
-                        new
-                        {
-                            Id = 5,
-                            CollectionId = 2,
-                            CreatedAt = new DateTime(2025, 10, 9, 19, 49, 5, 0, DateTimeKind.Utc),
-                            NotebookId = 5
-                        },
-                        new
-                        {
-                            Id = 6,
-                            CollectionId = 3,
-                            CreatedAt = new DateTime(2025, 10, 9, 12, 49, 5, 0, DateTimeKind.Utc),
-                            NotebookId = 6
-                        },
-                        new
-                        {
-                            Id = 7,
-                            CollectionId = 3,
-                            CreatedAt = new DateTime(2025, 10, 6, 19, 49, 5, 0, DateTimeKind.Utc),
-                            NotebookId = 7
-                        },
-                        new
-                        {
-                            Id = 8,
-                            CollectionId = 3,
-                            CreatedAt = new DateTime(2025, 10, 5, 19, 49, 5, 0, DateTimeKind.Utc),
-                            NotebookId = 8
-                        },
-                        new
-                        {
-                            Id = 9,
-                            CollectionId = 4,
-                            CreatedAt = new DateTime(2025, 10, 11, 19, 49, 5, 0, DateTimeKind.Utc),
-                            NotebookId = 9
-                        },
-                        new
-                        {
-                            Id = 10,
-                            CollectionId = 4,
-                            CreatedAt = new DateTime(2025, 10, 1, 19, 49, 5, 0, DateTimeKind.Utc),
-                            NotebookId = 10
-                        },
-                        new
-                        {
-                            Id = 11,
-                            CollectionId = 5,
-                            CreatedAt = new DateTime(2025, 10, 2, 19, 49, 5, 0, DateTimeKind.Utc),
-                            NotebookId = 11
-                        },
-                        new
-                        {
-                            Id = 12,
-                            CollectionId = 5,
-                            CreatedAt = new DateTime(2025, 10, 4, 22, 49, 5, 0, DateTimeKind.Utc),
-                            NotebookId = 12
-                        },
-                        new
-                        {
-                            Id = 13,
-                            CollectionId = 5,
-                            CreatedAt = new DateTime(2025, 6, 11, 19, 49, 5, 0, DateTimeKind.Utc),
-                            NotebookId = 13
-                        },
-                        new
-                        {
-                            Id = 14,
-                            CollectionId = 6,
-                            CreatedAt = new DateTime(2025, 9, 11, 19, 49, 5, 0, DateTimeKind.Utc),
-                            NotebookId = 14
-                        },
-                        new
-                        {
-                            Id = 15,
-                            CollectionId = 6,
-                            CreatedAt = new DateTime(2025, 10, 6, 19, 49, 5, 0, DateTimeKind.Utc),
-                            NotebookId = 15
-                        });
                 });
 
             modelBuilder.Entity("ProBook.Services.Database.Page", b =>
@@ -492,53 +388,6 @@ namespace ProBook.Services.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("SharedNotebooks");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            FromUserId = 1,
-                            IsForEdit = false,
-                            NotebookId = 1,
-                            SharedDate = new DateTime(2025, 10, 13, 19, 49, 5, 0, DateTimeKind.Utc),
-                            ToUserId = 2
-                        },
-                        new
-                        {
-                            Id = 2,
-                            FromUserId = 3,
-                            IsForEdit = true,
-                            NotebookId = 14,
-                            SharedDate = new DateTime(2025, 10, 13, 11, 49, 5, 0, DateTimeKind.Utc),
-                            ToUserId = 2
-                        },
-                        new
-                        {
-                            Id = 3,
-                            FromUserId = 2,
-                            IsForEdit = false,
-                            NotebookId = 7,
-                            SharedDate = new DateTime(2025, 10, 11, 19, 49, 5, 0, DateTimeKind.Utc),
-                            ToUserId = 3
-                        },
-                        new
-                        {
-                            Id = 4,
-                            FromUserId = 1,
-                            IsForEdit = true,
-                            NotebookId = 4,
-                            SharedDate = new DateTime(2025, 10, 10, 11, 49, 5, 0, DateTimeKind.Utc),
-                            ToUserId = 3
-                        },
-                        new
-                        {
-                            Id = 5,
-                            FromUserId = 3,
-                            IsForEdit = false,
-                            NotebookId = 13,
-                            SharedDate = new DateTime(2025, 10, 9, 10, 49, 5, 0, DateTimeKind.Utc),
-                            ToUserId = 2
-                        });
                 });
 
             modelBuilder.Entity("ProBook.Services.Database.User", b =>
