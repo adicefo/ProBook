@@ -54,7 +54,7 @@
                         </button>
 
                         <mat-menu #menu="matMenu">
-                            <button mat-menu-item (click)="onMenuAction('edit',leftPage)" [disabled]="isShare&&!sharedNotebook?.isForEdit">
+                            <button mat-menu-item (click)="onMenuAction('edit',leftPage)" [disabled]="isShare&&!sharedNotebook?.isForEdit&&sharedNotebook?.fromUserId!==currentUser?.id">
                                 <mat-icon>edit</mat-icon>
                                 <span>Edit</span>
                             </button>

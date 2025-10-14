@@ -315,7 +315,7 @@ export class NotebookPreviewComponent implements OnInit {
     const newComment = {
       content: this.newCommentText,
       pageId: this.selectedPageForComments.id,
-      userid: this.currentUser?.id,
+      userId: this.currentUser?.id,
       sharedNotebookId: this.sharedNotebookId,
       viewed: false
     };
