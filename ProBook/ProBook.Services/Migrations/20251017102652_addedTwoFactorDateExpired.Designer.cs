@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using ProBook.Services.Database;
@@ -11,9 +12,11 @@ using ProBook.Services.Database;
 namespace ProBook.Services.Migrations
 {
     [DbContext(typeof(ProBookDBContext))]
-    partial class ProBookDBContextModelSnapshot : ModelSnapshot
+    [Migration("20251017102652_addedTwoFactorDateExpired")]
+    partial class addedTwoFactorDateExpired
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -737,7 +740,6 @@ namespace ProBook.Services.Migrations
                             RegisteredDate = new DateTime(2025, 10, 13, 19, 49, 5, 0, DateTimeKind.Utc),
                             Surname = "User1",
                             TelephoneNumber = "061-234-444",
-                            TwoFactorAuthEnabled = false,
                             Username = "user1"
                         },
                         new
@@ -752,7 +754,6 @@ namespace ProBook.Services.Migrations
                             RegisteredDate = new DateTime(2025, 10, 13, 19, 49, 5, 0, DateTimeKind.Utc),
                             Surname = "User2",
                             TelephoneNumber = "063-234-444",
-                            TwoFactorAuthEnabled = false,
                             Username = "user2"
                         },
                         new
@@ -767,7 +768,6 @@ namespace ProBook.Services.Migrations
                             RegisteredDate = new DateTime(2025, 10, 13, 19, 49, 5, 0, DateTimeKind.Utc),
                             Surname = "User3",
                             TelephoneNumber = "065-234-444",
-                            TwoFactorAuthEnabled = false,
                             Username = "user3"
                         });
                 });

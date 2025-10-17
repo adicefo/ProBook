@@ -40,5 +40,18 @@ namespace ProBook.API.Controllers
         {
             return await (_service as IUserService).UpdatePasswordAsync(id,request);
         }
+
+        [AllowAnonymous]
+        [HttpPost("/User/auth")]
+        public async Task<LoginResponse?> AuthenticateAsync(string username,string password)
+        {
+            return await (_service as IUserService).AuthenticateUserAsync(username,password);
+        }
+        [AllowAnonymous]
+        [HttpPost("/User/Verify2FA")]
+        public async Task<LoginResponse?> Verify2FAAsync(string username, string code)
+        {
+            return await (_service as IUserService).VerifyTwoFactorAsync(username, code);
+        }
     }
 }

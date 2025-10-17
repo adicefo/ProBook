@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using ProBook.Model.Model;
 using ProBook.Model.Request;
 using ProBook.Model.SearchObject;
 using System;
@@ -11,6 +12,9 @@ namespace ProBook.Services.Interface
 {
     public interface IUserService:ICRUDService<Model.Model.User,UserSearchObject,UserInsertRequest,UserUpdateRequest>
     {
+        Task<LoginResponse?> AuthenticateUserAsync(string username, string password);
+
+        Task<LoginResponse?> VerifyTwoFactorAsync(string username, string code);
         Model.Model.User Login(string username, string password);
         Task<Model.Model.User> GetCurrentUserAsync();
 
