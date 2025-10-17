@@ -44,6 +44,9 @@ namespace ProBook.Services.Database
         [MaxLength(20)]
         public string? Gender { get; set; }
 
+        public bool? TwoFactorAuthEnabled { get; set; }
+        public string? TwoFactorCode { get; set; }
+
         public ICollection<Notebook> Notebooks { get; set; } = new List<Notebook>();
         public ICollection<Collection> Collections { get; set; }=new List<Collection>();
         public ICollection<Comment> Comments { get; set; } = new List<Comment>();

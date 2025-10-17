@@ -57,7 +57,7 @@ builder.Services.AddTransient<ICollectionService, CollectionService>();
 
 
 builder.Services.AddDbContext<ProBookDBContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("ProBookDocker")));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 
 builder.Services.AddMapster();
@@ -84,10 +84,10 @@ builder.Services.AddCors(options =>
             .AllowAnyHeader()
             .AllowCredentials());
 });
-builder.WebHost.ConfigureKestrel(serverOptions =>
-{
-    serverOptions.ListenAnyIP(7012);
-});
+//builder.WebHost.ConfigureKestrel(serverOptions =>
+//{
+//    serverOptions.ListenAnyIP(7012);
+//});
 
 
 var app = builder.Build();
@@ -111,12 +111,12 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-using (var scope = app.Services.CreateScope())
-{
-    var dataContext = scope.ServiceProvider.GetRequiredService<ProBookDBContext>();
-    //dataContext.Database.EnsureCreated();
+//using (var scope = app.Services.CreateScope())
+//{
+//    var dataContext = scope.ServiceProvider.GetRequiredService<ProBookDBContext>();
+//    //dataContext.Database.EnsureCreated();
 
-    dataContext.Database.Migrate();
-}
+//    dataContext.Database.Migrate();
+//}
 
 app.Run();
