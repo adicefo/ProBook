@@ -112,24 +112,37 @@ namespace ProBook.Services.Service
 
             if (user.TwoFactorEnabled==true)
             {
-                var code = new Random().Next(100000, 999999).ToString();
-                user.TwoFactorCode = code;
-                user.TwoFactorCodeExpiresAt = DateTime.UtcNow.AddMinutes(5);
-
-                Context.Users.Update(user);
-                await Context.SaveChangesAsync();
-
-                await _emailService.SendEmailAsync(
-                    user.Email,
-                    "Your verification code",
-                    $"Your 2FA code is {code}. It will expire in 5 minutes."
-                );
-
-                return new LoginResponse
+                if(user.TwoFactorCodeExpiresAt<= DateTime.UtcNow)
                 {
-                    RequiresTwoFactor = true,
-                    Message = "2FA code sent to your email."
-                };
+                    var code = new Random().Next(100000, 999999).ToString();
+                    user.TwoFactorCode = code;
+                    user.TwoFactorCodeExpiresAt = DateTime.UtcNow.AddMinutes(5);
+
+                    Context.Users.Update(user);
+                    await Context.SaveChangesAsync();
+
+                    await _emailService.SendEmailAsync(
+                        user.Email,
+                        "Your verification code",
+                        $"Your 2FA code is {code}. It will expire in 5 minutes."
+                    );
+
+                    return new LoginResponse
+                    {
+                        RequiresTwoFactor = true,
+                        Message = "2FA code sent to your email."
+                    };
+                }
+                else
+                {
+                    return new LoginResponse
+                    {
+
+                        RequiresTwoFactor = true,
+                        Message = "2FA has been already sent"
+                    };
+                }
+                
             }
 
             return new LoginResponse

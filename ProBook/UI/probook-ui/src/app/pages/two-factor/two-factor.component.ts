@@ -13,6 +13,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
     MaterialModule,
     FormsModule,
     ReactiveFormsModule,
+    MatSnackBarModule
   ],
   templateUrl: './two-factor.component.html',
   styleUrls: ['./two-factor.component.css']
@@ -22,7 +23,7 @@ export class TwoFactorComponent {
   username: string = '';
   error: string = '';
 
-  constructor(private fb: FormBuilder, private router: Router, private userService: UserService) {
+  constructor(private fb: FormBuilder, private router: Router, private userService: UserService,private snackBar:MatSnackBar) {
     this.twoFactorForm = this.fb.group({
       code: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(6)]]
     });
@@ -51,6 +52,8 @@ export class TwoFactorComponent {
           this.twoFactorForm.reset();
           return;
         }
+          this.snackBar.open('Two-factor authentication successful!', 'Close', { duration: 2000, horizontalPosition: 'right',
+      verticalPosition: 'top',});
         localStorage.removeItem('pendingUser');
         this.router.navigate(['/app']);
       }, 
