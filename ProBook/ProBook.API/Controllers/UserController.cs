@@ -36,22 +36,28 @@ namespace ProBook.API.Controllers
             return await (_service as IUserService).GetCurrentUserAsync();
         }
         [HttpPost("/User/updatePassword/{id}")]
-        public async Task<bool> UpdatePasswordAsync(int id,UpdatePasswordRequest request)
+        public async Task<bool> UpdatePasswordAsync(int id,[FromBody]UpdatePasswordRequest request)
         {
             return await (_service as IUserService).UpdatePasswordAsync(id,request);
         }
 
         [AllowAnonymous]
         [HttpPost("/User/auth")]
-        public async Task<LoginResponse?> AuthenticateAsync(string username,string password)
+        public async Task<LoginResponse?> AuthenticateAsync(LoginInsertRequest request)
         {
-            return await (_service as IUserService).AuthenticateUserAsync(username,password);
+            return await (_service as IUserService).AuthenticateUserAsync(request);
         }
         [AllowAnonymous]
-        [HttpPost("/User/Verify2FA")]
-        public async Task<LoginResponse?> Verify2FAAsync(string username, string code)
+        [HttpPost("/User/verify-2FA")]
+        public async Task<LoginResponse?> Verify2FAAsync(TwoFactorRequest request)
         {
-            return await (_service as IUserService).VerifyTwoFactorAsync(username, code);
+            return await (_service as IUserService).VerifyTwoFactorAsync(request);
+        }
+        [AllowAnonymous]
+        [HttpPut("/User/update-2FA/{userId}")]
+        public async Task<bool> UpdateTwoFactorEnabledAsync(int userId, [FromBody]TwoFactorUpdateRequest request)
+        {
+            return await (_service as IUserService).UpdateTwoFactorEnabledAsync(userId,request);
         }
     }
 }

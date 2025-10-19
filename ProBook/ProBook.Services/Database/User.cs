@@ -44,7 +44,8 @@ namespace ProBook.Services.Database
         [MaxLength(20)]
         public string? Gender { get; set; }
 
-        public bool? TwoFactorAuthEnabled { get; set; } = false;
+        public bool TwoFactorEnabled { get; set; }
+     
         public string? TwoFactorCode { get; set; }
         public DateTime? TwoFactorCodeExpiresAt { get; set; }
 

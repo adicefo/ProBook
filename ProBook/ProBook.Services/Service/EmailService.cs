@@ -19,8 +19,8 @@ namespace ProBook.Services.Service
         {
             string smtpServer = Environment.GetEnvironmentVariable("SMTP_SERVER") ?? "smtp.gmail.com";
             int smtpPort = int.Parse(Environment.GetEnvironmentVariable("SMTP_PORT") ?? "587");
-            string fromMail = Environment.GetEnvironmentVariable("SMTP_USERNAME") ?? "ecaraplikacija@gmail.com";
-            string password = Environment.GetEnvironmentVariable("SMTP_PASSWORD") ?? "ofai kzfk maog tynq";
+            string fromMail = Environment.GetEnvironmentVariable("SMTP_USERNAME") ?? "probookaplikacija@gmail.com";
+            string password = Environment.GetEnvironmentVariable("SMTP_PASSWORD") ?? "umfj dajr lmeb uzeg";
             var smtpClient = new SmtpClient()
             {
                 Host = smtpServer,
@@ -34,7 +34,6 @@ namespace ProBook.Services.Service
                 From = new MailAddress(fromMail),
                 Subject = subject,
                 Body = body,
-                IsBodyHtml = false
             };
 
             mailMessage.To.Add(to);

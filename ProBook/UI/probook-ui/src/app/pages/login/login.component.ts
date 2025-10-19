@@ -31,14 +31,26 @@ export class LoginComponent {
     if (this.loginForm.valid) {
       this.authService.login(this.loginForm.value.username, this.loginForm.value.password);
       try {
-        this.userService.getAllUsers().subscribe(
-          (res: any) => {
-            this.router.navigate(['/app']);
-          },
-          (err: any) => {
+        const request={
+          username: this.loginForm.value.username,
+          password: this.loginForm.value.password
+        };
+        this.userService.authenticateUser(request).subscribe({
+          next: (response) => {
+            console.log(response);
+            if(response.requiresTwoFactor===true){
+              localStorage.setItem('pendingUser', this.loginForm.value.username);
+              this.router.navigate(['/two-factor']);
+
+            }
+            else
+            {
+              this.router.navigate(['/app']);
+            }
+          },error:(err)=>{
             this.error = "Invalid username or password";
           }
-        );
+        },);
 
       }
       catch (err: any) {

@@ -9,15 +9,19 @@ import { SharedNotebookComponent } from './pages/shared-notebook/shared-notebook
 import { RegisterComponent } from './pages/register/register.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { SettingsComponent } from './pages/settings/settings.component';
+import { TwoFactorComponent } from './pages/two-factor/two-factor.component';
 
 export const routes: Routes = [
     { path: '', pathMatch: 'full', component: LoginComponent },
     { path: 'register', component: RegisterComponent },
+            { path: 'two-factor', component: TwoFactorComponent },
+
     {
         path: 'app',
         component: MainComponent,
         children: [
             { path: '', redirectTo: 'notebooks', pathMatch: 'full' },
+
             { path: 'notebooks', component: NotebookComponent },
             { path: 'notebook/:id', component: NotebookPreviewComponent,data:{isShare:false,snId:0}},
             { path: 'notebook/:id/add-page', component: AddPageComponent, },

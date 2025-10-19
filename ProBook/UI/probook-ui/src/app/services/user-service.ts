@@ -34,4 +34,12 @@ export class UserService {
     updatePassword(id:number,body:any):Observable<User>{
         return this.apiService.post<User>(this.endpoint + '/updatePassword/'+id,body);
     }
+    
+    authenticateUser(body:any):Observable<any>{
+        return this.apiService.post<any>(this.endpoint+'/auth',body);
+    }
+
+    verifyTwoFactor(body:any):Observable<any>{
+        return this.apiService.post<any>(this.endpoint+'/verify-2FA',body);
+    }
 }

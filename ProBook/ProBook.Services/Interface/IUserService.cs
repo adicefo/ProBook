@@ -12,9 +12,10 @@ namespace ProBook.Services.Interface
 {
     public interface IUserService:ICRUDService<Model.Model.User,UserSearchObject,UserInsertRequest,UserUpdateRequest>
     {
-        Task<LoginResponse?> AuthenticateUserAsync(string username, string password);
+        Task<bool> UpdateTwoFactorEnabledAsync(int userId,TwoFactorUpdateRequest request);
+        Task<LoginResponse?> AuthenticateUserAsync(LoginInsertRequest request);
 
-        Task<LoginResponse?> VerifyTwoFactorAsync(string username, string code);
+        Task<LoginResponse?> VerifyTwoFactorAsync(TwoFactorRequest request);
         Model.Model.User Login(string username, string password);
         Task<Model.Model.User> GetCurrentUserAsync();
 

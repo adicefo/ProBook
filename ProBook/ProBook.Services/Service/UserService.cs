@@ -97,17 +97,26 @@ namespace ProBook.Services.Service
             await base.BeforeUpdate(entity, request);
         }
 
-        public async Task<Model.Model.LoginResponse?> AuthenticateUserAsync(string username, string password)
+        public async Task<Model.Model.LoginResponse?> AuthenticateUserAsync(LoginInsertRequest request)
         {
-            var user = Context.Users.FirstOrDefault(x => x.Username == username);
-            if (user == null || !PasswordGenerate.VerifyPassword(password,user.PasswordHash,user.PasswordSalt))
-                return null;
+            var user = await Context.Users
+                .FirstOrDefaultAsync(x => x.Username == request.Username);
 
-            if ((bool)user.TwoFactorAuthEnabled)
+            if (user == null)
+                throw new NotFoundException($"User with username {request.Username} does not exist");
+
+            if (!PasswordGenerate.VerifyPassword(request.Password, user.PasswordHash, user.PasswordSalt))
+                throw new ValidationException("Password is not valid");
+
+            Console.WriteLine($"[Auth] User: {user.Username}, 2FA Enabled: {user.TwoFactorCode}");
+
+            if (user.TwoFactorEnabled==true)
             {
                 var code = new Random().Next(100000, 999999).ToString();
                 user.TwoFactorCode = code;
                 user.TwoFactorCodeExpiresAt = DateTime.UtcNow.AddMinutes(5);
+
+                Context.Users.Update(user);
                 await Context.SaveChangesAsync();
 
                 await _emailService.SendEmailAsync(
@@ -130,10 +139,11 @@ namespace ProBook.Services.Service
             };
         }
 
-        public async Task<Model.Model.LoginResponse?> VerifyTwoFactorAsync(string username, string code)
+
+        public async Task<Model.Model.LoginResponse?> VerifyTwoFactorAsync(TwoFactorRequest request)
         {
-            var user = Context.Users.FirstOrDefault(x => x.Username == username);
-            if (user == null || user.TwoFactorCode != code || user.TwoFactorCodeExpiresAt < DateTime.UtcNow)
+            var user = Context.Users.FirstOrDefault(x => x.Username == request.Username);
+            if (user == null || user.TwoFactorCode != request.Code || user.TwoFactorCodeExpiresAt < DateTime.UtcNow)
                 return new LoginResponse { Message = "Invalid or expired code." };
 
             user.TwoFactorCode = null;
@@ -143,5 +153,29 @@ namespace ProBook.Services.Service
             
             return new LoginResponse { Message = "2FA verified. Login successful." };
         }
+
+        public async Task<bool> UpdateTwoFactorEnabledAsync(int userId, TwoFactorUpdateRequest request)
+        {
+            var trackedUser = Context.Users.Local.FirstOrDefault(u => u.Id == userId);
+
+            if (trackedUser != null)
+            {
+                trackedUser.TwoFactorEnabled = request.TwoFactorEnabled;
+            }
+            else
+            {
+                var user = await Context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+                if (user == null)
+                    throw new NotFoundException($"User with id {userId} does not exist");
+
+                user.TwoFactorEnabled = request.TwoFactorEnabled;
+                Context.Update(user);
+            }
+
+            await Context.SaveChangesAsync();
+            return true;
+        }
+
+
     }
 }

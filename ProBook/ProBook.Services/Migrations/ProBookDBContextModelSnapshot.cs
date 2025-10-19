@@ -706,14 +706,16 @@ namespace ProBook.Services.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)");
 
-                    b.Property<bool?>("TwoFactorAuthEnabled")
-                        .HasColumnType("boolean");
-
                     b.Property<string>("TwoFactorCode")
                         .HasColumnType("text");
 
                     b.Property<DateTime?>("TwoFactorCodeExpiresAt")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false);
 
                     b.Property<string>("Username")
                         .IsRequired()
@@ -737,7 +739,7 @@ namespace ProBook.Services.Migrations
                             RegisteredDate = new DateTime(2025, 10, 13, 19, 49, 5, 0, DateTimeKind.Utc),
                             Surname = "User1",
                             TelephoneNumber = "061-234-444",
-                            TwoFactorAuthEnabled = false,
+                            TwoFactorEnabled = false,
                             Username = "user1"
                         },
                         new
@@ -752,7 +754,7 @@ namespace ProBook.Services.Migrations
                             RegisteredDate = new DateTime(2025, 10, 13, 19, 49, 5, 0, DateTimeKind.Utc),
                             Surname = "User2",
                             TelephoneNumber = "063-234-444",
-                            TwoFactorAuthEnabled = false,
+                            TwoFactorEnabled = false,
                             Username = "user2"
                         },
                         new
@@ -767,7 +769,7 @@ namespace ProBook.Services.Migrations
                             RegisteredDate = new DateTime(2025, 10, 13, 19, 49, 5, 0, DateTimeKind.Utc),
                             Surname = "User3",
                             TelephoneNumber = "065-234-444",
-                            TwoFactorAuthEnabled = false,
+                            TwoFactorEnabled = false,
                             Username = "user3"
                         });
                 });

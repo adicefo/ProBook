@@ -24,7 +24,7 @@ services:
     depends_on:
       - postgres
     environment:
-      ConnectionStrings__DefaultConnection: "Host=${SQL_HOST};Port=5432;Database=${SQL_DB};Username=${SQL_USER};Password=${SQL_PASSWORD}"
+      ConnectionStrings__ProBookDocker: "Host=${SQL_HOST};Port=5432;Database=${SQL_DB};Username=${SQL_USER};Password=${SQL_PASSWORD}"
     ports:
       - "7012:7012"
     networks:

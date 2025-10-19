@@ -1,0 +1,94 @@
+:host {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+
+
+    background: linear-gradient(135deg, #3f51b5, #ffa0f9);
+}
+
+mat-card {
+    max-width: 400px;
+    width: 100%;
+    min-height: 400px;
+    border-radius: 12px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+    background: #fff;
+}
+
+mat-card-header {
+    display: flex;
+    flex-direction: column;
+}
+
+mat-card-title {
+    text-align: center;
+    font-size: 24px;
+    font-weight: 600;
+    padding: 20px 0;
+}
+
+mat-card-content {
+    padding: 0 20px 20px;
+}
+
+.subtitle-center {
+    text-align: center;
+}
+
+.image-center {
+    width: 120px;
+    height: 100px;
+    margin-left: 120px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    margin-top: 30px;
+}
+
+mat-form-field {
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+.error-message {
+    margin: 10px 0;
+    text-align: center;
+    font-size: 14px;
+}
+
+
+
+button {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    border-radius: 15px;
+    font-weight: bold;
+    margin-left: 70px;
+    width: 65%;
+    padding: 25px;
+}
+
+.password-field {
+    width: 100%;
+}
+
+.visibility-icon {
+    cursor: pointer;
+}
+
+mat-icon {
+    color: #3f51b5;
+}
+
+.register-link{
+    margin-left: 70px;
+
+}
+.register-link a{
+    color:rgb(72, 68, 68);
+}
