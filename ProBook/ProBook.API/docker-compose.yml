@@ -23,12 +23,19 @@ services:
     container_name: probook_api
     depends_on:
       - postgres
+    volumes:
+     - ../../Keys/singular-arcana-449521-v2-3e6e244fc118.json:/app/Keys/singular-arcana-449521-v2-3e6e244fc118.json:roo
     environment:
       ConnectionStrings__ProBookDocker: "Host=${SQL_HOST};Port=5432;Database=${SQL_DB};Username=${SQL_USER};Password=${SQL_PASSWORD}"
+
+
+      GoogleCloudSettings__CredentialPath: /app/Keys/singular-arcana-449521-v2-3e6e244fc118.json
+
     ports:
       - "7012:7012"
     networks:
       - probook-net
+    user: root
 
 networks:
   probook-net:
