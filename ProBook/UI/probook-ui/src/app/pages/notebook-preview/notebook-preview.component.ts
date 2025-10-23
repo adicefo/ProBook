@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { MaterialModule } from '../../material.module';
@@ -16,7 +16,8 @@ import { ConfirmDialogComponent, ConfirmDialogData } from '../../utils/confirm-d
 import { MatDialog } from '@angular/material/dialog';
 import { SharedNotebookService } from '../../services/sharedNotebook-service';
 import { SharedNotebook } from '../../interfaces/sharedNotebook-interface';
-
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 @Component({
   selector: 'app-notebook-preview',
   standalone: true,
@@ -29,6 +30,8 @@ import { SharedNotebook } from '../../interfaces/sharedNotebook-interface';
   styleUrl: './notebook-preview.component.css'
 })
 export class NotebookPreviewComponent implements OnInit {
+@ViewChild('pdfExportContainer', { static: false }) pdfExportContainer!: ElementRef;
+
   notebook: Notebook | null = null;
   pages: Page[] = [];
   currentPageIndex = 0;
@@ -383,6 +386,54 @@ export class NotebookPreviewComponent implements OnInit {
     
 
   }
+  tryExport():void{
+const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '400px',
+      data: {
+        title: 'Confirm Export',
+        message: 'Are you sure you want to export notebook?',
+        entityName: "",
+        confirmText: 'Export to PDF'
+      } as ConfirmDialogData
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if(result){
+        this.exportToPDF();
+      }
+    });
+  }
+  exportToPDF():void {
+ 
+   if (!this.pdfExportContainer) {
+    console.error('PDF export container not ready');
+    return;
+  }
+
+  setTimeout(() => {
+    const container = this.pdfExportContainer.nativeElement;
+    const pages = container.children;
+    const pdf = new jsPDF('p', 'mm', 'a4');
+
+    const promises = Array.from(pages).map((page: any) =>
+      html2canvas(page, { scale: 2, useCORS: true })
+    );
+
+    Promise.all(promises).then(canvases => {
+      canvases.forEach((canvas, index) => {
+        const imageData = canvas.toDataURL('image/png');
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+        pdf.addImage(imageData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+        if (index < canvases.length - 1) pdf.addPage();
+      });
+
+      pdf.save(`${this.notebook?.name || 'notebook'}.pdf`);
+    });
+  }, 100); 
+}
+
 
   getUnreadCommentCount(): number {
     return this.comments.filter(c => !c.viewed).length;

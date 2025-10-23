@@ -7,8 +7,8 @@
         <div class="notebook-info" *ngIf="notebook">
             <h2> {{ notebook.name }}</h2>
         </div>
-        <div class="header-button">
-          <button mat-raised-button color="warn">
+        <div class="header-button" (click)="tryExport()">
+          <button mat-raised-button color="warn" >
   <mat-icon>picture_as_pdf</mat-icon>
   Export to PDF
 </button>
@@ -40,9 +40,9 @@
         </button>
 
         <!-- Notebook spread (two pages side by side) -->
-        <div class="notebook-spread">
+        <div class="notebook-spread" #pageToExport >
             <!-- Left Page -->
-            <div class="page left-page">
+            <div class="page left-page" >
                 <div class="page-content" *ngIf="leftPage; else emptyLeftPage">
                     <!-- New Comments Badge -->
                     <div class="new-comments-indicator" *ngIf="hasPageNewComments(leftPage.id)"
@@ -100,7 +100,7 @@
             </div>
 
             <!-- Right Page -->
-            <div class="page right-page">
+            <div class="page right-page" >
                 <div class="page-content" *ngIf="rightPage; else emptyRightPage">
                     <!-- New Comments Badge -->
                     <div class="new-comments-indicator" *ngIf="hasPageNewComments(rightPage.id)"
@@ -212,6 +212,16 @@
 
     </div>
 
+<div #pdfExportContainer style="position: absolute; left: -9999px; top: 0; width: 210mm;">
+  <div *ngFor="let page of pages" class="pdf-page" style="width: 210mm; min-height: 297mm; padding: 10mm; box-sizing: border-box; background: white; border: 1px solid #ccc; margin-bottom: 5mm;">
+    <h3>{{ page.title || 'Untitled' }}</h3>
+    <span>{{ formatDate(page.createdAt) }}</span>
+    <div *ngIf="page.imageUrl">
+      <img [src]="page.imageUrl" [alt]="page.title || 'Page image'" style="max-width: 100%;"/>
+    </div>
+    <p>{{ page.content || 'No content' }}</p>
+  </div>
+</div>
 
 
     <!-- Comment Side Panel -->
