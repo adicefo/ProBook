@@ -7,12 +7,18 @@
         <div class="notebook-info" *ngIf="notebook">
             <h2> {{ notebook.name }}</h2>
         </div>
+        <div class="header-button">
+          <button mat-raised-button color="warn">
+  <mat-icon>picture_as_pdf</mat-icon>
+  Export to PDF
+</button>
+        </div>
     </div>
 
     <!-- Loading state -->
     <div class="loading-container" *ngIf="loading">
         <mat-spinner></mat-spinner>
-        <p>Loading pages...</p>
+         <p>Loading pages...</p>
     </div>
 
     <!-- Error state -->

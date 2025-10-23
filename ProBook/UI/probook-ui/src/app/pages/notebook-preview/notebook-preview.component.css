@@ -19,7 +19,11 @@
     margin-right: 15px;
     color: black;
 }
-
+.header-button{
+    position: absolute;
+    right: 80px;
+    color:red;
+}
 .notebook-info h2 {
     color: #333;
     font-weight: 600;
