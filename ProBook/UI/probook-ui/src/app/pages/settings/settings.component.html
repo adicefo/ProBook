@@ -12,7 +12,7 @@
         <div class="notebook-item" *ngFor="let notebook of sharedNotebooks">
           <div class="notebook-info">
             <span class="notebook-name">{{notebook.notebook?.name}}</span>
-            <span class="shared-with">{{notebook.toUser?.name}} {{notebook.toUser?.surname}}</span>
+            <span class="shared-with"> Shared with: <span style="font-weight: bold;">{{notebook.toUser?.name}} {{notebook.toUser?.surname}}</span></span>
           </div>
           <mat-slide-toggle
             [checked]="notebook.isForEdit"

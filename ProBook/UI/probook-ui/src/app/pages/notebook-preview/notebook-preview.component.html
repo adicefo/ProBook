@@ -81,7 +81,7 @@
                             <img [src]="leftPage.imageUrl" [alt]="leftPage.title || 'Page image'" />
                         </div>
                         <div class="page-text">
-                            <p>{{ leftPage.content || 'No content' }}</p>
+                            <p>{{ leftPage.content}}</p>
                         </div>
                     </div>
                 </div>
@@ -118,7 +118,7 @@
                         </button>
 
                         <mat-menu #menu="matMenu">
-                            <button mat-menu-item (click)="onMenuAction('edit',rightPage)" [disabled]="isShare&&!sharedNotebook?.isForEdit">
+                            <button mat-menu-item (click)="onMenuAction('edit',rightPage)" [disabled]="isShare&&!sharedNotebook?.isForEdit&&sharedNotebook?.fromUserId!==currentUser?.id">
                                 <mat-icon>edit</mat-icon>
                                 <span>Edit</span>
                             </button>
@@ -139,7 +139,7 @@
                             <img [src]="rightPage.imageUrl" [alt]="rightPage.title || 'Page image'" />
                         </div>
                         <div class="page-text">
-                            <p>{{ rightPage.content || 'No content' }}</p>
+                            <p>{{ rightPage.content  }}</p>
                         </div>
                     </div>
                 </div>
