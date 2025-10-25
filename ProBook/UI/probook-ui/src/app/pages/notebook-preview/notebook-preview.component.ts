@@ -415,8 +415,32 @@ const dialogRef = this.dialog.open(ConfirmDialogComponent, {
     const pages = container.children;
     const pdf = new jsPDF('p', 'mm', 'a4');
 
+    // creating first page
+
+    const title=this.notebook?.name||'No name';
+    const username=this.currentUser?.username ||'Unknown User';
+    const date=new Date().toLocaleDateString();
+
+        const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+
+    pdf.setFont('helvetica', 'bold');
+    pdf.setFontSize(24);
+    pdf.text(title, pageWidth/2, pageHeight/2-10, { align: 'center' });
+
+    pdf.setFont('helvetica', 'normal');
+    pdf.setFontSize(12);
+    pdf.text(`Date: ${date}`, pageWidth - 20, 20, { align: 'right' });
+
+    pdf.setFontSize(14);
+     pdf.text(`User: ${username}`, pageWidth / 2, pageHeight / 2 + 10, { align: 'center' });
+
+     pdf.addPage();
+    
+     //ading other pages
     const promises = Array.from(pages).map((page: any) =>
-      html2canvas(page, { scale: 2, useCORS: true })
+      html2canvas(page, { scale: 2, useCORS: true }),
+
     );
 
     Promise.all(promises).then(canvases => {
