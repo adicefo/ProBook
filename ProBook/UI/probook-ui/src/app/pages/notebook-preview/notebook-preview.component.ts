@@ -439,6 +439,7 @@ const dialogRef = this.dialog.open(ConfirmDialogComponent, {
     
      //ading other pages
     const promises = Array.from(pages).map((page: any) =>
+      
       html2canvas(page, { scale: 2, useCORS: true }),
 
     );

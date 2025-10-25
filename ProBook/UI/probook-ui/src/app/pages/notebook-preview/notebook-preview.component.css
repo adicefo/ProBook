@@ -31,6 +31,11 @@
     position: absolute;
     left: 47%;
     top: 5%;
+}.pdf-page-date {
+  display: block;
+  margin-bottom: 16px;
+  position: absolute;
+  right: 10px;
 }
 
 .notebook-info .description {
